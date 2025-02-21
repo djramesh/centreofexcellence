@@ -1,0 +1,29 @@
+import React from "react";
+import Products from "./Products";
+
+function Home() {
+  return (
+    <div id="container" className="container">
+      <div className="content">
+        <div className="text-section animated fade-in-left">
+          <h1>Welcome to Centre of Excellence.</h1>
+          <p>
+            Explore our products and services. We are dedicated to providing the
+            best experience for you.
+          </p>
+        </div>
+        <div className="image-section animated fade-in-right">
+          <img src="./assets/home-image.png" alt="home-image" />
+        </div>
+      </div>
+      <div className="scroll-downs">
+        <div className="mousey">
+          <div className="scroller"></div>
+        </div>
+      </div>
+      <Products />
+    </div>
+  );
+}
+
+export default Home;

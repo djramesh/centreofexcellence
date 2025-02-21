@@ -1,0 +1,29 @@
+.content-about{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    margin-top: 50px;
+    padding-bottom: 50px;
+}
+
+
+@media (max-width: 768px) {
+  .content {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    /* gap: -10px; */
+    margin-left: 50px;
+    margin-top: -10px;
+  }
+    .content-about {
+      display: block;
+      justify-content: center;
+      align-items: center;
+      /* gap: -10px; */
+      margin-left: 50px;
+      margin-top: -10px;
+    }
+}

@@ -1,11 +1,8 @@
-.container {
+.container-footer {
   width: calc(100% - 40px);
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
   margin-top: 20px;
-}
-
-footer {
   background-color: #1a1a1a;
   padding: 20px;
   text-align: center;

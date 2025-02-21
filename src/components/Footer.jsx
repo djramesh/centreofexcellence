@@ -3,8 +3,7 @@ import "../footer.css";
 
 const Footer = () => {
   return (
-    <div className="container">
-      <footer>
+    <div className="container-footer">
         <div className="logo-section">
           <div className="footer-logo">
             <img src="./assets/coe-logo.png" alt="Logo" />
@@ -52,7 +51,6 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-      </footer>
     </div>
   );
 };

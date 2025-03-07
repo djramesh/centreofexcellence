@@ -141,7 +141,7 @@ function Products() {
       title: "Stole",
       description:
         "Crafted from natural fibers, each piece is uniquely colored using plant-based dyes lending it a soft, earthy palette.",
-      imgSrc: "../assets/handloom3.jpg",
+      imgSrc: "../assets/glry-6.jpg",
     },
     {
       id: 17,

@@ -27,8 +27,9 @@ function About() {
             sectors.
           </p>
         </div>
+        <div className="animated-heading"></div>
         <div className="image-section animated fade-in-right">
-          <img src="/assets/product-card.png" alt="about-image" />
+          <img src="/assets/about-us-1.png" alt="about-image" />
         </div>
       </div>
       <div className="content-about">
@@ -42,7 +43,7 @@ function About() {
           </p>
         </div>
         <div className="image-section animated fade-in-left">
-          <img src="./assets/product-img-3.png" alt="about-image" />
+          <img src="./assets/about-img-2.png" alt="about-image" className="about-img-2" />
         </div>
       </div>
       <div className="content">
@@ -66,7 +67,7 @@ function About() {
           </p>
         </div>
         <div className="image-section animated fade-in-right">
-          <img src="./assets/handloom1.jpg" alt="about-image" />
+          <img src="./assets/about-img-3.png" alt="about-image" className="about-img-3"/>
         </div>
       </div>
     </div>

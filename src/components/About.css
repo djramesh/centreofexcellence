@@ -1,11 +1,26 @@
 .content-about{
     display: flex;
-    flex-direction: row-reverse;
-    justify-content: space-between;
+    /* flex-direction: row-reverse; */
+    justify-content: space-around;
     align-items: center;
     gap: 30px;
     margin-top: 50px;
     padding-bottom: 50px;
+}
+
+.content{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.about-img-2{
+  transform: rotate(5deg);
+}
+
+.about-img-3{
+  transform: rotate(-5deg);
 }
 
 

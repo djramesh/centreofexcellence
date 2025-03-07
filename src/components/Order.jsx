@@ -31,7 +31,7 @@ function Contact() {
     emailjs
       .send(
         "service_vbta2ys",
-        "template_5l601df", //template id
+        "template_5l601df",
         {
           name: formData.name,
           email: formData.email,

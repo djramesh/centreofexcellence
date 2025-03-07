@@ -4,7 +4,7 @@ import Products from "./Products";
 function Home() {
   return (
     <div id="container" className="container">
-      <div className="content">
+      <div className="content-about">
         <div className="text-section animated fade-in-left">
           <h1>Welcome to <br /> Centre of Excellence.</h1>
           <p>

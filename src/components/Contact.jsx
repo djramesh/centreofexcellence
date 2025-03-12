@@ -8,6 +8,7 @@ import {
   FaPhone,
 } from "react-icons/fa";
 import "./Contact.css";
+
 import emailjs from "emailjs-com";
 
 function Contact() {
@@ -169,7 +170,7 @@ function Contact() {
             <FaPen className="icon" />
           </h3>
           <p>
-            Take your time and send us an email at example@gmail.com with your
+            Take your time and send us an email at manjit.thakuria@schoolnetindia.com with your
             specific questions or specific requests.
           </p>
         </div>

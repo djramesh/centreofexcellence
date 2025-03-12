@@ -179,7 +179,7 @@
 /* Single Product Card */
 .product-card {
   width: 340px;
-  height: 580px;
+  height: 600px;
   border-radius: 23px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -230,6 +230,11 @@
 .price-tag {
   font-size: large;
   font-weight: 500;
+}
+
+.scroll-link{
+  text-decoration-color: rgb(99, 99, 255);
+  text-decoration-thickness: 3px;
 }
 
 @media (max-width: 768px) {

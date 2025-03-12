@@ -8,6 +8,7 @@ import {
   FaPhone,
 } from "react-icons/fa";
 import "./Contact.css";
+import './Order.css';
 import emailjs from "emailjs-com";
 
 function Contact() {
@@ -65,11 +66,11 @@ function Contact() {
           </p>
           <p>
             <FaEnvelope className="icon" />
-            <strong>manjit.thakuria@schoolnetindia.com</strong>
+            <a href="mailto:manjit.thakuria@schoolnetindia.com" className="order-links">manjit.thakuria@schoolnetindia.com</a>
           </p>
           <p>
             <FaPhone className="icon" />
-            <strong>86380-15540</strong>
+            <a href="tel:8638015540" className="order-links">+91 86380-15540</a>
           </p>
         </div>
 

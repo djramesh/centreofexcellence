@@ -9,6 +9,12 @@
     height: 100%;
     object-fit: cover;
     border-radius: 10px;
+    cursor: pointer;
+}
+
+.gallery-container img:hover{
+    transform: scale(1.2);
+    transition: all 0.5s ease-in-out;
 }
 
 .gallery-container{
@@ -23,5 +29,4 @@
     .gallery-container{
         grid-template-columns: repeat(2, 1fr);
     }
-    
 }

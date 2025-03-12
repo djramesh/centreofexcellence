@@ -32,7 +32,7 @@ function Products() {
         "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant.",
       imgSrc: "../assets/hand-bag-1.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 2,
@@ -41,7 +41,7 @@ function Products() {
         "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant.",
       imgSrc: "../assets/hand-bag-2.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 3,
@@ -50,7 +50,7 @@ function Products() {
         "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant.",
       imgSrc: "../assets/hand-bag-3.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 4,
@@ -59,7 +59,7 @@ function Products() {
         "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant.",
       imgSrc: "../assets/hand-bag-4.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 5,
@@ -68,7 +68,7 @@ function Products() {
         "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant.",
       imgSrc: "../assets/hand-bag-5.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 6,
@@ -77,7 +77,7 @@ function Products() {
         "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant.",
       imgSrc: "../assets/hand-bag-6.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 7,
@@ -86,34 +86,34 @@ function Products() {
         "Water hyacinth Hats are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant.",
       imgSrc: "../assets/hat-1.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 8,
       title: "Table Mat",
       description:
-        "Water hyacinth table mats are a charming and sustainable addition to any dining space. Handcrafted from this resilient aquatic plant.",
+        "Water hyacinth table mats are a charming and sustainable addition to any dining space.",
       imgSrc: "../assets/table-mat-1.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 9,
       title: "Table Mat",
       description:
-        "Water hyacinth table mats are a charming and sustainable addition to any dining space. Handcrafted from this resilient aquatic plant.",
+        "Water hyacinth table mats are a charming and sustainable addition to any dining space.",
       imgSrc: "../assets/table-mat-2.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 10,
       title: "Table Mat",
       description:
-        "Water hyacinth table mats are a charming and sustainable addition to any dining space. Handcrafted from this resilient aquatic plant.",
+        "Water hyacinth table mats are a charming and sustainable addition to any dining space.",
       imgSrc: "../assets/tablemat-3.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
     {
       id: 11,
@@ -122,7 +122,7 @@ function Products() {
         "Water hyacinth baskets are a beautiful and sustainable craft that showcases the versatility of this aquatic plant.",
       imgSrc: "../assets/basket-1.jpg",
       productDetails:
-        "Water hyacinth is a fast growing freshwater weed which forms dense, impenetrable mats that clog waterways, making boating, fishing and almost all other water activities, impossible. It also reduces biodiversity by crowding out native plants at the water's surface and below. Water hyacinth mats also degrade water quality by blocking the air-water interface and greatly reducing oxygen levels in the water, eliminating underwater animals such as fish. Thus, use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre run by OIL India Rural Development Society, which is an initiative of OIL India Limited, for socio economic development of the youth of Duliajan. The entire product is made by the members of the Shristi Handicraft Co-operative Society.",
+        "The use of water hyacinth helps in use of this abundantly available local resource and provides alternative use and provides an opportunity to prevent the negative impact of this plant, at the same time curtailing the the use of plastic or other artificial covers. These artisans have traditional skills and have undergone formal training at the Handicraft Training & Production Centre.",
     },
   ];
 
@@ -178,55 +178,55 @@ function Products() {
       id: 17,
       title: "Runner set",
       description:
-        "Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space.",
       imgSrc: "../assets/handloom4.jpg",
       productDetails:
-        " Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
     },
     {
       id: 18,
       title: "Runner Set",
       description:
-        "Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space.",
       imgSrc: "../assets/handloom5.jpg",
       productDetails:
-        " Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
     },
     {
       id: 19,
       title: "Runner Set",
       description:
-        "Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space.",
       imgSrc: "../assets/handloom6.jpg",
       productDetails:
-        " Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
     },
     {
       id: 20,
       title: "Runner Set",
       description:
-        "Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space.",
       imgSrc: "../assets/handloom7.jpg",
       productDetails:
-        " Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
     },
     {
       id: 21,
       title: "Runner Set",
       description:
-        "Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space.",
       imgSrc: "../assets/handloom8.jpg",
       productDetails:
-        " Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
     },
     {
       id: 22,
       title: "Runner Set",
       description:
-        "Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space.",
       imgSrc: "../assets/handloom10.jpg",
       productDetails:
-        " Handloom table runners are exquisite textile pieces that bring warmth and character to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
+        "The Handloom table runners are exquisite textile pieces that bring warmth to any dining or living space. Crafted using traditional weaving techniques, these runners often feature intricate patterns and rich textures that reflect the artistry of skilled artisans.Each handloom table runner is unique, showcasing the subtle variations in color and weave that come from the manual process. Made from natural fibers they are not only beautiful but also durable and eco-friendly.",
     },
   ];
 
@@ -328,7 +328,7 @@ function Products() {
                     className="button"
                     // onClick={() => handleOrderClick(product)}
                   >
-                    Order Now
+                    Order Now &nbsp; <FontAwesomeIcon icon={faShoppingBag} />
                   </button>
                 </Link>
               </div>
@@ -379,7 +379,7 @@ function Products() {
                     className="button"
                     // onClick={() => handleOrderClick(product)}
                   >
-                    Order Now
+                    Order Now &nbsp; <FontAwesomeIcon icon={faShoppingBag} />
                   </button>
                 </Link>
               </div>

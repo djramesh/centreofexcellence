@@ -13,17 +13,16 @@ function Society() {
             Co-operative Society
           </h1>
           <p>
-            Shristi Handicraft Co-operative Society, based in Duliajan, operates
-            under the support of the Center of Excellence (CoE), an initiative
-            of Oil India Rural Development Society (OIRDS). The society focuses
+            Shristi Handicraft Co-operative Society society focuses
             on empowering artisans by promoting sustainable livelihoods through
             handcrafted products made from water hyacinth. <br /> <br /> Water
             hyacinth, often considered an invasive plant, is skilfully
             transformed into eco-friendly products such as{" "}
             <strong>
-              baskets, handbags, mats, home décor items, and utility accessories
+              baskets, handbags, mats, home décor items, and utility accessories.
             </strong>
-            .Through training, capacity building, and market linkages
+            <br /><br />
+            Through training, capacity building, and market linkages
             facilitated by CoE, Shristi Handicraft enhances rural
             entrepreneurship while promoting sustainable craft practices. Their
             work not only provides economic opportunities to local artisans,
@@ -32,7 +31,7 @@ function Society() {
           </p>
         </div>
         <div className="image-section animated animated-heading-1 fade-in-right">
-          <img src="/assets/society-img-1.png" alt="about-image" />
+          <img src="/assets/society-img-1.png" alt="about-image" className="about-img"/>
         </div>
       </div>
       <div className="content-about">
@@ -43,14 +42,13 @@ function Society() {
             Co-operative Society
           </h1>
           <p>
-            Prerana Handloom Co-operative Society, based in Duliajan, is
-            supported by the Center of Excellence (CoE) under Oil India Rural
-            Development Society (OIRDS). The society is dedicated to preserving
+            Prerana Handloom Co-operative Society is dedicated to preserving
             and promoting traditional handloom weaving while empowering local
             artisans, especially women. <br /><br /> Specializing in <strong>handwoven textiles,
             Prerana Handloom produces mekhela chadors, gamusas, stoles, cushion
             covers, and other woven home furnishing products</strong> that reflect
-            Assam’s rich cultural heritage. With training, modern techniques,
+            Assam’s rich cultural heritage. <br /><br />
+            With training, modern techniques,
             and market support provided by CoE, the society enhances artisans'
             skills, improves product quality, and creates sustainable livelihood
             opportunities. Through its efforts, Prerana Handloom not only

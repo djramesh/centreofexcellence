@@ -6,7 +6,8 @@ function Home() {
     <div id="container" className="container">
       <div className="content-about">
         <div className="text-section animated fade-in-left">
-          <h1>Welcome to <br /> Centre of Excellence.</h1>
+          <h1>Welcome to <br /> Centre of Excellence</h1>
+          <h2 className="text-section-h2">Handloom & Handicrafts</h2>
           <p>
             Explore our products and services. We are dedicated to providing the
             best experience for you.

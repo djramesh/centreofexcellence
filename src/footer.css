@@ -3,7 +3,7 @@
   max-width: 1200px;
   margin: 0 auto;
   margin-top: 20px;
-  background-color: #1a1a1a;
+  background: linear-gradient(135deg, rgb(26, 26, 46), rgb(22, 33, 62));
   padding: 20px;
   text-align: center;
   color: #fff;

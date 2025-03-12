@@ -15,12 +15,21 @@
   align-items: center;
 }
 
+.about-img{
+  width: 550px;
+  height: 550px;
+}
+
 .about-img-2{
   transform: rotate(5deg);
+  width: 450px;
+  height: 450px;
 }
 
 .about-img-3{
   transform: rotate(-5deg);
+  width: 450px;
+  height: 450px;
 }
 
 

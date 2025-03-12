@@ -13,7 +13,7 @@ function Society() {
             Co-operative Society
           </h1>
           <p>
-            Shristi Handicraft Co-operative Society society focuses
+            Shristi Handicraft Co-operative Society focuses
             on empowering artisans by promoting sustainable livelihoods through
             handcrafted products made from water hyacinth. <br /> <br /> Water
             hyacinth, often considered an invasive plant, is skilfully

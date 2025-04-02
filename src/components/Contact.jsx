@@ -52,7 +52,7 @@ function Contact() {
   return (
     <div className="container">
       <div className="content">
-        <div className="text-section animated fade-in-left">
+        <div className="text-section-contact animated fade-in-left">
           <h1>Contact us</h1>
           <p>
             Email, call or complete the form to learn how we can solve your
@@ -60,7 +60,7 @@ function Contact() {
           </p>
           <p>
             <FaEnvelope className="icon" />
-            <a href="mailto:manjit.thakuria@schoolnetindia.com" className="order-links">manjit.thakuria@schoolnetindia.com</a>
+            <a href="mailto:manjit.thakuria@schoolnetindia.com" className="order-links">order@assamshilp.com</a>
           </p>
           <p>
             <FaPhone className="icon" />
@@ -69,7 +69,7 @@ function Contact() {
         </div>
 
         <div className="image-section animated fade-in-right">
-          <img src="./assets/contact-img.png" alt="about-image" />
+          <img src="./assets/contact-img.JPG" alt="about-image" className="contact-img" />
         </div>
       </div>
       <div className="get-in-touch product-heading">

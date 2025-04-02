@@ -58,15 +58,15 @@ function Contact() {
   return (
     <div className="container">
       <div className="content">
-        <div className="text-section animated fade-in-left">
+        <div className="text-section-contact animated fade-in-left">
           <h1>Order now</h1>
           <p>
-            Email, call or complete the form to place an order. You can also
+            Email, call or complete the form to place an order. <br /> You can also
             contact for any kind of enquiry or Bulk order.
           </p>
           <p>
             <FaEnvelope className="icon" />
-            <a href="mailto:manjit.thakuria@schoolnetindia.com" className="order-links">manjit.thakuria@schoolnetindia.com</a>
+            <a href="mailto:order@assamshilp.com" className="order-links">order@assamshilp.com</a>
           </p>
           <p>
             <FaPhone className="icon" />
@@ -75,7 +75,7 @@ function Contact() {
         </div>
 
         <div className="image-section animated fade-in-right">
-          <img src="./assets/deliver-img.jpg" alt="about-image" />
+          <img src="./assets/order-img.JPG" alt="about-image" className="order-img"/>
         </div>
       </div>
       <div className="get-in-touch product-heading">

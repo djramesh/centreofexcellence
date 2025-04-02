@@ -7,9 +7,14 @@ import "./Common.css";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const navigate = useNavigate();
@@ -23,9 +28,8 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="logo">
         <li>
-          {" "}
           <Link to="/">
-            <img src="./assets/coe-logo.png" alt="CoE>" />
+            <img src="./assets/ph-logo.png" alt="CoE" className="ph-logo" />
           </Link>
         </li>
       </div>
@@ -35,24 +39,50 @@ const Navbar = () => {
             Home
           </Link>
         </li>
+
+        <li className="dropdown">
+          <Link
+            to="/"
+            onClick={(e) => {
+              e.preventDefault(); // Prevent navigation
+              toggleDropdown(); // Toggle dropdown
+              setIsMenuOpen(true); // Keep menu open
+            }}
+          >
+            About us <i className="bi bi-chevron-down ms-1"></i>
+          </Link>
+          <div
+            className={`dropdown-content ${isDropdownOpen ? "show" : ""}`} // Add show class conditionally
+          >
+            <Link to="/oirds" onClick={() => setIsMenuOpen(false)}>
+              OIRDS
+            </Link>
+            <Link to="/coe" onClick={() => setIsMenuOpen(false)}>
+              CoE
+            </Link>
+            <div className="nested-dropdown">
+              <span onClick={(e) => e.stopPropagation()}>Societies</span>
+              <div className="nested-dropdown-content">
+                <Link
+                  to="/shristi-handicraft"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Srishti Handicraft
+                </Link>
+                <Link
+                  to="/prerana-handloom"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Prerna Handloom
+                </Link>
+              </div>
+            </div>
+          </div>
+        </li>
+
         <li>
           <Link to="/products" onClick={() => setIsMenuOpen(false)}>
             Products
-          </Link>
-        </li>
-        <li>
-          <Link to="/societies" onClick={() => setIsMenuOpen(false)}>
-            Societies
-          </Link>
-        </li>
-        <li>
-          <Link to="/gallery" onClick={() => setIsMenuOpen(false)}>
-            Gallery
-          </Link>
-        </li>
-        <li>
-          <Link to="/about" onClick={() => setIsMenuOpen(false)}>
-            About us
           </Link>
         </li>
         <li>
@@ -61,12 +91,15 @@ const Navbar = () => {
           </Link>
         </li>
       </ul>
-      <button className="button" onClick={handleOrderClick}>
-        Shop Now &nbsp; <FontAwesomeIcon icon={faShoppingBag} />
-        <div className="hoverEffect">
-          <div></div>
-        </div>
-      </button>
+      <div className="logo">
+        <li>
+          <Link to="/">
+            <div>
+              <img src="./assets/logo-2.png" alt="CoE" className="sh-logo" />
+            </div>
+          </Link>
+        </li>
+      </div>
       <div className="hamburger" onClick={toggleMenu}>
         <span className="bar"></span>
         <span className="bar"></span>

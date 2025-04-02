@@ -1,5 +1,5 @@
 import React from "react";
-import "../footer.css";
+import "./footer.css";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -7,7 +7,12 @@ const Footer = () => {
     <div className="container-footer">
       <div className="logo-section">
         <div className="footer-logo">
-          <img src="./assets/coe-logo.png" alt="Logo" />
+          <div className="ph-logo-bg">
+            <img src="./assets/ph-logo.png" alt="Logo" />
+          </div>
+          <div className="sh-logo-bg">
+            <img src="./assets/logo-2.png" alt="Logo" />
+          </div>
         </div>
         <div className="footer-location">
           <h4>Location</h4>
@@ -17,8 +22,10 @@ const Footer = () => {
           <h4>Email</h4>
           <p>
             <a href="mailto:manjit.thakuria@schoolnetindia.com">
-              manjit.thakuria@schoolnetindia.com
+              order@assamshilp.com
             </a>
+            <br />
+            <a href="tel:+91 86380-15540">+91 86380-15540</a>
           </p>
         </div>
       </div>

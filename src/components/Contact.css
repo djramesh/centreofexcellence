@@ -19,6 +19,24 @@
   margin-bottom: 20px;
 }
 
+.contact-img{
+  width: 300px;
+  height: 300px;
+}
+
+.text-section-contact h1 {
+  font-size: 2.5rem;
+  color: #525151;
+  margin-top: 15px;
+}
+
+.text-section-contact p {
+  font-size: 1rem;
+  color: #525151;
+  font-weight: 300;
+  margin-right: 30px;
+}
+
 .contact-details {
   display: flex;
   justify-content: space-around;
@@ -48,6 +66,7 @@
   border-radius: 20px;
   text-align: center;
   margin: 0 auto 40px;
+  margin-top: 50px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -141,11 +160,12 @@ address {
 
 @media (max-width: 768px) {
   .contact-details {
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     /* gap: -10px; */
-    margin-left: 50px;
+    /* margin-left: 50px; */
     margin-top: -10px;
   }
 
@@ -153,14 +173,22 @@ address {
     display: block;
     width: 80%;
     margin: 0 auto 40px auto;
-    margin-left: 32px;
+    margin-top: 30px;
+    /* margin-left: 32px; */
   }
 
   .location {
+    display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 20px;
   }
 
+  .location h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
   .map-container {
     width: 80%;
   }

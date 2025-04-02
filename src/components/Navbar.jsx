@@ -94,7 +94,7 @@ const Navbar = () => {
       <div className="logo">
         <li>
           <Link to="/">
-            <div>
+            <div className="sh-logo-bg">
               <img src="./assets/logo-2.png" alt="CoE" className="sh-logo" />
             </div>
           </Link>

@@ -212,13 +212,13 @@ body {
   }
 
   .text-section-right p {
-    max-width: 310px;
+    max-width: 300px;
     text-align: center;
-    /* margin-left: 10px; */
+    margin-left: -20px;
   }
 
   .text-section h1 {
-    font-size: 3.1rem;
+    font-size: 3rem;
     line-height: 135%;
     color: #333;
   }

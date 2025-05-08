@@ -165,15 +165,7 @@ function Products() {
       productDetails:
         "A hand woven stole dyed with natural pigments is a blend of elegance and sustainability. Crafted from natural fibers, each piece is uniquely colored using plant-based dyes like indigo, turmeric, or madder root, lending it a soft, earthy palette. This eco-friendly stole not only showcases traditional artistry but also embodies a gentle footprint, making it a timeless, conscious choice for any wardrobe.",
     },
-    {
-      id: 16,
-      title: "Stole",
-      description:
-        "Crafted from natural fibers, each piece is uniquely colored using plant-based dyes lending it a soft, earthy palette.",
-      imgSrc: "../assets/glry-6.jpg",
-      productDetails:
-        "A hand woven stole dyed with natural pigments is a blend of elegance and sustainability. Crafted from natural fibers, each piece is uniquely colored using plant-based dyes like indigo, turmeric, or madder root, lending it a soft, earthy palette. This eco-friendly stole not only showcases traditional artistry but also embodies a gentle footprint, making it a timeless, conscious choice for any wardrobe.",
-    },
+
     {
       id: 17,
       title: "Runner set",

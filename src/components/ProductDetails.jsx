@@ -63,19 +63,11 @@ function ProductDetails() {
       : product.title.includes("Basket")
       ? "350g"
       : "250g",
-    careInstructions:
-      "Clean with Care.",
-    origin: product.title.includes("Hand Bag") 
-      ? "Shristi Handicrafts Co operative society"
-      : product.title.includes("Hat")
-      ? "Shristi Handicrafts Co operative society"
-      : product.title.includes("Table Mat")
-      ? "Shristi Handicrafts Co operative society"
-      : product.title.includes("Basket")
-      ? "Shristi Handicrafts Co operative society"
-      : product.title.includes("Bamboo Bag") 
-      ? "Shristi Handicrafts Co operative society",
-  };
+    careInstructions: "Clean with Care.",
+    origin: ["Hand Bag", "Hat", "Table Mat", "Basket", "Bamboo Bag"].some(keyword => product.title.includes(keyword))
+      ? "Shristi Handicrafts Co-operative Society"
+      : "Prerana Co-operative Society",
+};
 
   return (
     <div className="product-details-container" data-aos="fade-up">

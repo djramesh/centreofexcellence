@@ -65,16 +65,16 @@ function ProductDetails() {
       : "250g",
     careInstructions:
       "Clean with Care.",
-    origin: product.title.material("Hand Bag") 
+    origin: product.title.includes("Hand Bag") 
       ? "Shristi Handicrafts Co operative society"
-      : product.title.material("Hat")
+      : product.title.includes("Hat")
       ? "Shristi Handicrafts Co operative society"
-      : product.title.material("Table Mat")
+      : product.title.includes("Table Mat")
       ? "Shristi Handicrafts Co operative society"
-      : product.title.material("Basket")
+      : product.title.includes("Basket")
       ? "Shristi Handicrafts Co operative society"
-      : product.title.material("Bamboo Bag") 
-      ? "Shristi Handicrafts Co operative society"
+      : product.title.includes("Bamboo Bag") 
+      ? "Shristi Handicrafts Co operative society",
   };
 
   return (

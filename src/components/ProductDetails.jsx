@@ -65,7 +65,7 @@ function ProductDetails() {
       : "250g",
     careInstructions:
       "Clean with Care.",
-    origin: product.title.material("Hand Bag")   || 
+    origin: product.title.material("Hand Bag") 
       ? "Shristi Handicrafts Co operative society"
       : product.title.material("Hat")
       ? "Shristi Handicrafts Co operative society"

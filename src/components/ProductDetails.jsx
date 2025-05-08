@@ -66,7 +66,7 @@ function ProductDetails() {
     careInstructions: "Clean with Care.",
     origin: ["Hand Bag", "Hat", "Table Mat", "Basket", "Bamboo Bag"].some(keyword => product.title.includes(keyword))
       ? "Shristi Handicrafts Co-operative Society"
-      : "Prerana Co-operative Society",
+      : "Prerana Handloom Co-operative Society",
 };
 
   return (

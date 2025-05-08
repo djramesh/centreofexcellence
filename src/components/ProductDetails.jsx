@@ -65,7 +65,8 @@ function ProductDetails() {
       : "250g",
     careInstructions:
       "Clean with Care.",
-    origin: "Handcrafted by artisans in CoE",
+    origin: product.title.material("Hand Bag") || product.title.material("Hat") || product.title.material("Table Mat") || product.title.material("Basket") || product.title.material("Bamboo Bag") 
+      ? "Shristi Handicrafts Co operative society"
   };
 
   return (

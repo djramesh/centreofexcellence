@@ -60,12 +60,12 @@ function Contact() {
           </p>
           <p>
             <FaEnvelope className="icon" />
-            <a href="mailto:manjit.thakuria@schoolnetindia.com" className="order-links">order@assamshilp.com</a>
+            <a href="mailto:Rimpi.Bora@schoolnetindia.com" className="order-links">Rimpi.Bora@schoolnetindia.com</a>
           </p>
           <p>
             <FaPhone className="icon" />
             <a href="tel:7002301360" className="order-links">+91 70023 01360</a>
-           
+            {" "}
             <FaPhone className="icon" />
             <a href="tel:6901977654" className="order-links">+91 69019 77654</a>
           </p>

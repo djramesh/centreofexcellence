@@ -65,7 +65,7 @@ function Contact() {
           <p>
             <FaPhone className="icon" />
             <a href="tel:7002301360" className="order-links">+91 70023 01360</a>
-            <br>
+           
             <FaPhone className="icon" />
             <a href="tel:6901977654" className="order-links">+91 69019 77654</a>
           </p>

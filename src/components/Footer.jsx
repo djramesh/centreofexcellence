@@ -25,7 +25,9 @@ const Footer = () => {
               order@assamshilp.com
             </a>
             <br />
-            <a href="tel:+91 86380-15540">+91 86380-15540</a>
+            <a href="tel:+91 69019 77654">+91 69019 77654</a>
+            <br />
+            <a href="tel:+91 70023 01360 ">+91 70023 01360 </a>
           </p>
         </div>
       </div>

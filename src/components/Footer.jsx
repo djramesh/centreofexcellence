@@ -21,8 +21,8 @@ const Footer = () => {
         <div className="footer-email">
           <h4>Email</h4>
           <p>
-            <a href="mailto:manjit.thakuria@schoolnetindia.com">
-              order@assamshilp.com
+            <a href="mailto:order@assamcrafts.com">
+              order@assamcrafts.com
             </a>
             <br />
             <a href="tel:+91 69019 77654">+91 69019 77654</a>

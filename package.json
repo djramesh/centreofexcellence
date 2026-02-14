@@ -1,35 +1,16 @@
 {
   "name": "coe-project",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "COE Project - Frontend (React) + Backend (Node)",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "aos": "^2.3.4",
-    "emailjs-com": "^3.2.0",
-    "locomotive-scroll": "^4.1.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-icons": "^5.4.0",
-    "react-router-dom": "^7.1.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.17.0",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
-    "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^9.17.0",
-    "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.16",
-    "globals": "^15.14.0",
-    "vite": "^6.0.5"
+    "dev": "npm run dev:frontend",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "lint": "cd frontend && npm run lint",
+    "preview": "cd frontend && npm run preview",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
   }
 }

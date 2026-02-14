@@ -1,3 +1,10 @@
+# Environment variables - NEVER COMMIT
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+
 # Logs
 logs
 *.log
@@ -7,6 +14,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
 dist
 dist-ssr
@@ -23,4 +31,14 @@ dist-ssr
 *.sln
 *.sw?
 
-node_modules
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build output
+/dist
+build/
+
+# IDE
+.vscode/
+.idea/

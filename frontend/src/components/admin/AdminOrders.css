@@ -1,0 +1,149 @@
+.admin-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-filters label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.admin-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  min-width: 140px;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 0.875rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+
+.admin-orders .admin-table th,
+.admin-orders .admin-table td {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.admin-orders .admin-table th {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.admin-orders .admin-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.admin-muted {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  margin: 0.25rem 0 0 0;
+}
+
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.admin-pagination-info {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.admin-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+
+.admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-btn-primary {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.admin-btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.admin-btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.admin-btn-secondary:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.admin-order-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-order-card {
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-order-card h3 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0 0 0.75rem 0;
+}
+
+.admin-order-card p {
+  margin: 0.25rem 0;
+  font-size: 0.9375rem;
+  color: #0f172a;
+}
+
+.admin-order-status-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.admin-order-items {
+  grid-column: 1 / -1;
+}
+
+.admin-order-total {
+  margin-top: 1rem !important;
+  font-size: 1rem !important;
+}
+
+.admin-back {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}

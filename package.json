@@ -5,7 +5,9 @@
   "description": "COE Project - Frontend (React) + Backend (Node)",
   "scripts": {
     "postinstall": "cd frontend && npm install && cd ../backend && npm install",
+    "setup-db": "cd backend && node setup-db.js",
     "start": "cd backend && npm start",
+    "start:with-setup": "npm run setup-db && cd backend && npm start",
     "dev": "npm run dev:frontend",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",

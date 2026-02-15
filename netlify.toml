@@ -1,4 +1,4 @@
-# Netlify Configuration
+# Netlify Configuration for COE E-Commerce Frontend
 [build]
   base = "frontend"
   command = "npm run build"
@@ -6,6 +6,9 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  # Set VITE_API_URL in Netlify UI to your Railway backend URL
+  # Example: https://coe-backend-production.railway.app
+  # Or via CLI: netlify env:set VITE_API_URL "https://your-backend-url"
 
 [[redirects]]
   from = "/*"

@@ -20,17 +20,25 @@ const requiredEnvVars = [
 const missingVars = requiredEnvVars.filter((key) => !process.env[key]);
 
 if (missingVars.length > 0) {
-  console.error("ERROR: Missing required environment variables:");
-  missingVars.forEach((key) => console.error(`   - ${key}`));
-  console.error("\n Please copy backend/.env.example to backend/.env and fill in the values");
-  process.exit(1);
+  // Only fail in production. In development/testing, warn and continue
+  if (process.env.NODE_ENV === "production") {
+    console.error("ERROR: Missing required environment variables:");
+    missingVars.forEach((key) => console.error(`   - ${key}`));
+    console.error("\n Please set these environment variables in your deployment platform (Railway, Heroku, etc.)");
+    process.exit(1);
+  } else {
+    console.warn("⚠️  Warning: Missing environment variables (OK in development):");
+    missingVars.forEach((key) => console.warn(`   - ${key}`));
+  }
 }
 
 // Warn if using default/weak JWT secret in production
-if (process.env.NODE_ENV === "production" && process.env.JWT_SECRET?.length < 32) {
-  console.error(" ERROR: JWT_SECRET must be at least 32 characters in production");
-  console.error("   Generate a strong secret: node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"");
-  process.exit(1);
+if (process.env.NODE_ENV === "production") {
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET?.length < 32) {
+    console.error("❌ ERROR: JWT_SECRET must be at least 32 characters in production");
+    console.error("   Generate a strong secret: node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"");
+    process.exit(1);
+  }
 }
 
 // ============= START SERVER =============

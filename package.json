@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "COE Project - Frontend (React) + Backend (Node)",
   "scripts": {
+    "start": "cd backend && npm start",
     "dev": "npm run dev:frontend",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",

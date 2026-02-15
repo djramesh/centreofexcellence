@@ -57,22 +57,12 @@ app.use(express.urlencoded({ limit: "1mb", extended: true }));
 // Add request ID to all requests
 app.use((req, res, next) => {
   req.id = req.get("x-request-id") || uuidv4();
-  res.set("X-Request-ID", req.id);
   next();
 });
 
-// Request logging (before rate limiting so we can log rate limit hits)
-app.use(morgan((tokens, req, res) => {
-  return JSON.stringify({
-    requestId: req.id,
-    timestamp: tokens.date(req, res, "iso"),
-    method: tokens.method(req, res),
-    url: tokens.url(req, res),
-    status: tokens.status(req, res),
-    responseTime: tokens.response_time(req, res),
-    contentLength: tokens.res(req, res, "content-length"),
-  });
-}));
+// Simple request logging format
+const logFormat = ':remote-addr - :method :url :status :response-time ms - :req[x-request-id]';
+app.use(morgan(logFormat));
 
 app.use(requestLogger);
 

@@ -5,24 +5,24 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Load .env
 dotenv.config({ path: path.join(__dirname, ".env") });
 
-// Get database credentials
+// Parse MYSQL_URL properly
+const mysqlUrl = process.env.MYSQL_URL || 
+  `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
+
+const url = new URL(mysqlUrl);
 const config = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  multipleStatements: true,
+  host: url.hostname,
+  user: url.username,
+  password: url.password,
+  database: url.pathname.slice(1), // removes leading /
 };
 
 console.log(`🔧 Setting up database at ${config.host}...`);
 
 async function setupDatabase() {
   try {
-    // Connect to MySQL
     const connection = await mysql.createConnection({
       host: config.host,
       user: config.user,
@@ -32,7 +32,6 @@ async function setupDatabase() {
 
     console.log("✅ Connected to MySQL server");
 
-    // Read schema.sql
     const schemaPath = path.join(__dirname, "db", "schema.sql");
     const schemaSQL = fs.readFileSync(schemaPath, "utf8");
 
@@ -40,7 +39,6 @@ async function setupDatabase() {
     await connection.query(schemaSQL);
     console.log("✅ Schema created successfully");
 
-    // Read seed.sql
     const seedPath = path.join(__dirname, "db", "seed.sql");
     const seedSQL = fs.readFileSync(seedPath, "utf8");
 
@@ -48,7 +46,6 @@ async function setupDatabase() {
     await connection.query(seedSQL);
     console.log("✅ Seed data inserted successfully");
 
-    // Verify
     const [tables] = await connection.query(
       `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?`,
       [config.database]

@@ -255,16 +255,20 @@
 }
 
 @media (max-width: 768px) {
-
-  .product-cards-container{
+  .product-cards-container {
     display: grid;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
   }
 
   .products-container {
     margin-top: 80px;
-    
+    padding: 0 15px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .product-heading {
@@ -272,9 +276,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 38px;
+    margin-left: 0;
     font-size: 1.3rem;
     font-weight: 500;
+    width: 100%;
   }
 
   .product-card {
@@ -282,43 +287,47 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-left: 20px;
+    margin-left: 0;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
   }
+
   .img-1 {
     top: -60px;
-    left: -6px;
-    width: 120px;
-    /* transform: rotate(-15deg); */
-    /* z-index: -1; */
+    left: 50% !important;
+    transform: translateX(-50%);
+    width: 100px;
   }
 
   .img-2 {
     top: -45px;
-    left: 195px;
-    width: 140px;
-    /* z-index: -1; */
+    left: 50% !important;
+    transform: translateX(-50%);
+    width: 110px;
   }
 
   .img-3 {
-    bottom: -120px;
-    left: 35%;
-    width: 120px;
+    bottom: -100px;
+    left: 50% !important;
+    width: 100px;
     transform: translateX(-50%);
-    /* z-index: -1; */
   }
 
   .products-label-text {
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
   }
 
-  .products-label{
+  .products-label {
     display: flex;
     flex-direction: column;
-    width: 190px;
+    width: 100%;
+    max-width: 180px;
     justify-content: center;
     align-items: center;
     gap: 1px;
+    margin: 0 auto;
   }
 
   .animated-heading {
@@ -327,16 +336,20 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin-left: 30px;
-    font-size: 3rem;
+    margin-left: 0;
+    margin: 0 auto;
+    font-size: 2rem;
+    width: 100%;
   }
 
   .animated-heading-1 {
     display: block;
     justify-content: center;
     align-items: center;
-    /* text-align: center; */
-    margin-left: 30px;
-    font-size: 2rem;
+    text-align: center;
+    margin-left: 0;
+    margin: 0 auto;
+    font-size: 1.5rem;
+    width: 100%;
   }
 }

@@ -12,7 +12,7 @@ body {
   margin: 0;
   padding: 0;
   scroll-behavior: smooth;
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   /* align-items: flex-start; */
   min-height: 100vh;
@@ -180,72 +180,46 @@ body {
 
 @media (max-width: 768px) {
   body {
-    padding-top: 60px;
+    padding-top: 70px; 
+    font-size: 16px;            
   }
 
-  .content {
-    flex-direction: column;
+  h1, .animated-heading {
+    font-size: 1.8rem !important;
+  }
+
+  h2, .product-heading {
+    font-size: 1.4rem !important;
+  }
+
+  .container-fluid, .conatiner {
+    padding: 0 12px;
+  }
+
+  .products-label {
+    margin: 40px auto 20px !important;
     justify-content: center;
-    align-items: center;
-    margin-left: 0;
-    margin-top: -30px;
-    padding: 0 15px;
+    text-align: center;
   }
 
-  .container {
-    width: 100%;
-    max-width: 100%;
-    margin-top: 30px;
+  .product-cards-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 0 15px;
-    box-sizing: border-box;
+    gap: 24px;
+    margin-top: 40px !important;
+    padding: 0 8px;
   }
 
-  .text-section {
-    max-width: 100%;
-    padding: 0 10px;
+  .product-card {
+    width: 100% !important;
+    max-width: 380px;
+    height: auto !important; 
+    border-radius: 16px;
   }
 
-  .cloth-pattern-img {
-    width: 100%;
-    height: 30px;
-  }
-
-  .text-section-right {
-    max-width: 100%;
-    padding: 0 10px;
-  }
-
-  .text-section-right h1 {
-    text-align: center;
-    margin-left: 0;
-    font-size: 1.8rem;
-  }
-
-  .text-section-right p {
-    max-width: 100%;
-    text-align: center;
-    margin-left: 0;
-    font-size: 0.95rem;
-  }
-
-  .text-section h1 {
-    font-size: 2rem;
-    line-height: 135%;
-    color: #333;
-  }
-
-  .image-section {
-    max-width: 100%;
-    margin-top: 20px;
-    padding: 0 10px;
-    box-sizing: border-box;
-  }
-
-  .scroll-downs {
-    display: none;
+  .product-card-img {
+    height: 260px !important; 
+    object-fit: cover;
   }
 }

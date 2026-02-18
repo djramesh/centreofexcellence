@@ -1,78 +1,89 @@
 USE coe_ecommerce;
 
--- Add new categories for Prerana and Shristi
+-- ============================================================
+-- CATEGORIES
+-- ============================================================
 INSERT INTO categories (name, slug, description) VALUES
-  ('Prerana', 'prerana', 'Beautiful handcrafted products from Prerana community'),
-  ('Shristi', 'shristi', 'Exquisite handcrafted products from Shristi community')
+  ('Prerana',             'prerana',             'Beautiful handcrafted products from Prerana community'),
+  ('Shristi',             'shristi',             'Exquisite handcrafted products from Shristi community'),
+  ('Cotton Cushion Cover','cotton-cushion-cover', 'Handwoven cotton cushion covers'),
+  ('Mekhela Sador',       'mekhela-sador',        'Traditional Assamese attire'),
+  ('Cotton Stole',        'cotton-stole',         'Handwoven cotton stoles'),
+  ('Eri Stole',           'eri-stole',            'Handwoven eri silk stoles'),
+  ('Runner Set',          'runner-set',           'Table runner sets'),
+  ('Mens Kurta',          'mens-kurta',           'Traditional mens kurta'),
+  ('Yarn',                'yarn',                 'Naturally dyed yarn')
 ON DUPLICATE KEY UPDATE
-  name = VALUES(name),
+  name        = VALUES(name),
   description = VALUES(description);
 
--- Insert Prerana Products (31 products)
+-- ============================================================
+-- PRERANA PRODUCTS
+-- ============================================================
 INSERT INTO products (name, slug, description, price, stock, category_id, thumbnail_url, is_active) VALUES
-('Prerana Product 1', 'prerana-product-1', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0001.jpg', 1),
-('Prerana Product 2', 'prerana-product-2', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0002.jpg', 1),
-('Prerana Product 3', 'prerana-product-3', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0003.jpg', 1),
-('Prerana Product 4', 'prerana-product-4', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0004.jpg', 1),
-('Prerana Product 5', 'prerana-product-5', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0005.jpg', 1),
-('Prerana Product 6', 'prerana-product-6', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0006.jpg', 1),
-('Prerana Product 7', 'prerana-product-7', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0007.jpg', 1),
-('Prerana Product 8', 'prerana-product-8', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0008.jpg', 1),
-('Prerana Product 9', 'prerana-product-9', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0009.jpg', 1),
-('Prerana Product 10', 'prerana-product-10', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0010.jpg', 1),
-('Prerana Product 11', 'prerana-product-11', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0011.jpg', 1),
-('Prerana Product 12', 'prerana-product-12', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0012.jpg', 1),
-('Prerana Product 13', 'prerana-product-13', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0013.jpg', 1),
-('Prerana Product 14', 'prerana-product-14', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0014.jpg', 1),
-('Prerana Product 15', 'prerana-product-15', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0015.jpg', 1),
-('Prerana Product 16', 'prerana-product-16', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0016.jpg', 1),
-('Prerana Product 17', 'prerana-product-17', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0017.jpg', 1),
-('Prerana Product 18', 'prerana-product-18', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0018.jpg', 1),
-('Prerana Product 19', 'prerana-product-19', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0019.jpg', 1),
-('Prerana Product 20', 'prerana-product-20', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0020.jpg', 1),
-('Prerana Product 21', 'prerana-product-21', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0021.jpg', 1),
-('Prerana Product 22', 'prerana-product-22', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0022.jpg', 1),
-('Prerana Product 23', 'prerana-product-23', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0023.jpg', 1),
-('Prerana Product 24', 'prerana-product-24', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0024.jpg', 1),
-('Prerana Product 25', 'prerana-product-25', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0025.jpg', 1),
-('Prerana Product 26', 'prerana-product-26', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0026.jpg', 1),
-('Prerana Product 27', 'prerana-product-27', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0027.jpg', 1),
-('Prerana Product 28', 'prerana-product-28', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0028.jpg', 1),
-('Prerana Product 29', 'prerana-product-29', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0029.jpg', 1),
-('Prerana Product 30', 'prerana-product-30', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0030.jpg', 1),
-('Prerana Product 31', 'prerana-product-31', 'Beautiful handcrafted product from Prerana community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/IMG-20260129-WA0031.jpg', 1)
+('Cotton Cushion Cover',                  'prerana-cotton-cushion-cover',              'Handwoven cotton cushion cover crafted by Prerana artisans using traditional techniques.',                              650.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/cotton cushion cover.jpg',                                    1),
+('Cotton Cushion Cover',                  'prerana-cotton-cushion-cover-2',            'Handwoven cotton cushion cover crafted by Prerana artisans using traditional techniques.',                              650.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/cotton cushion cover 2.jpg',                                  1),
+('Cotton Cushion Cover',                  'prerana-cotton-cushion-cover-3',            'Handwoven cotton cushion cover crafted by Prerana artisans using traditional techniques.',                              650.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/cotton cushion cover 3.jpg',                                  1),
+('Natural Dye Cushion Cover',             'prerana-natural-dye-cushion-cover',         'Beautiful cushion cover dyed using natural pigments — earthy tones that are eco-friendly and unique.',                750.00,  8, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/Natural dye cushion cover.jpg',                               1),
+('Cotton Mekhela Sador',                  'prerana-cotton-mekhela-sador',              'Traditional Assamese two-piece attire (Mekhela Sador) handwoven in pure cotton by Prerana weavers.',               3200.00,  5, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/cotton mekhela sador.jpg',                                    1),
+('Cotton Mekhela Sador',                  'prerana-cotton-mekhela-sador-full',         'Traditional Assamese Mekhela Sador — handwoven full-length cotton with elegant drape.',                             3500.00,  5, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/cotton mekhela sador full.jpg',                               1),
+('Cotton Mekhela Sador (Henna Dyed)',     'prerana-cotton-mekhela-sador-henna',        'Naturally dyed with henna, this handwoven Mekhela Sador has a soft golden-green earthy tone.',                     3800.00,  4, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/cotton mekhela sador naturally dyed with henna.jpg',          1),
+('Natural Dye Cotton-Eri Mekhela Sador',  'prerana-natural-dye-cotton-eri-mekhela-sador', 'Exquisite Mekhela Sador blending cotton and eri silk, dyed using natural plant-based pigments.',              4200.00,  4, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/Natural dye Cotton- eri mekhela sador.jpg',                   1),
+('Cotton Stole',                          'prerana-cotton-stole',                      'Handwoven cotton stole in earthy natural tones — lightweight, breathable and elegant.',                               900.00, 12, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/Cotton stole.jpg',                                            1),
+('Cotton Stole',                          'prerana-cotton-stole-2',                    'Handwoven cotton stole featuring subtle natural dye patterns — perfect everyday accessory.',                          950.00, 12, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/cotton stole 2.jpg',                                          1),
+('Eri Stole',                             'prerana-eri-stole',                         'Luxuriously soft eri silk stole handwoven by Prerana artisans — warm, breathable and sustainable.',                 1400.00,  8, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/eri stole.jpg',                                               1),
+('Eri Stole',                             'prerana-eri-stole-2',                       'Handwoven eri silk stole with delicate texture — a timeless sustainable fashion accessory.',                         1450.00,  8, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/eri stole 2.jpg',                                             1),
+('Eri Stole (Close-up)',                  'prerana-eri-stole-closeup',                 'Premium handwoven eri stole showcasing intricate weave detail and natural silk sheen.',                              1500.00,  6, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/eri stole close up 1.jpg',                                    1),
+('Eri Stole (Full)',                      'prerana-eri-stole-full',                    'Full-length eri silk stole — soft, warm and crafted with care by Prerana weavers.',                                 1550.00,  6, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/eri stole full.jpg',                                          1),
+('Naturally Dyed Eri Yarn',               'prerana-natural-dye-eri-yarn',              'Hand-spun eri silk yarn dyed with natural plant extracts — available for crafters and weavers.',                     600.00, 15, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/naturally dyed eri yarn.jpg',                                 1),
+('Runner Set (Cotton)',                   'prerana-runner-set-cotton',                 'Handwoven cotton runner set — perfect for dining tables, showcasing traditional Assamese weaving.',                  1800.00,  8, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/runner set ( cotton) 1.jpg',                                  1),
+('Runner Set (Cotton)',                   'prerana-runner-set-cotton-2',               'Elegant handwoven cotton table runner set with intricate pattern detailing.',                                        1800.00,  8, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/Runnner set ( cotton) 2.jpg',                                 1),
+('Runner Set (Cotton)',                   'prerana-runner-set-cotton-3',               'Handwoven cotton runner set crafted in soft neutral tones for any dining aesthetic.',                                1750.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/Runner set ( cotton) 3.jpg',                                  1),
+('Runner Set (Cotton)',                   'prerana-runner-set-cotton-4',               'Beautiful cotton table runner with traditional motifs, handcrafted by Prerana weavers.',                             1750.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/runner set ( cotton) 4.jpg',                                  1),
+('Runner Set (Cotton)',                   'prerana-runner-set-cotton-5',               'Handloom cotton runner set — adds a natural, artisanal touch to your table setting.',                               1800.00,  8, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/runner set ( cotton) 5.jpg',                                  1),
+('Runner Set (Cotton)',                   'prerana-runner-set-cotton-6',               'Sustainably woven cotton runner set with rich texture and traditional Assamese design.',                             1800.00,  8, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/runner set ( cotton) 6.jpg',                                  1),
+('Runner Set (Cotton)',                   'prerana-runner-set-cotton-7',               'Handwoven cotton runner — lightweight and easy-care with beautiful woven details.',                                  1750.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/runner set ( cotton) 7.jpg',                                  1),
+('Runner Set (Cotton)',                   'prerana-runner-set-cotton-8',               'Elegant handwoven cotton runner set — a statement piece for any dining table.',                                     1750.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/runner set ( cotton) 8.jpg',                                  1),
+('Tie and Dye Men''s Kurta',             'prerana-tie-dye-mens-kurta',                'Handcrafted tie and dye kurta for men — each piece uniquely patterned with vibrant natural dyes.',                  1600.00,  6, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/tie and dye men''s kurta.jpg',                               1),
+('Handcrafted Textile',                   'prerana-handcrafted-textile-1',             'Handcrafted textile product from the Prerana women''s artisan collective.',                                          800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/IMG-20260129-WA0008.jpg',                                     1),
+('Handcrafted Textile',                   'prerana-handcrafted-textile-2',             'Handcrafted textile product from the Prerana women''s artisan collective.',                                          800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/IMG-20260129-WA0018.jpg',                                     1),
+('Handcrafted Textile',                   'prerana-handcrafted-textile-3',             'Handcrafted textile product from the Prerana women''s artisan collective.',                                          800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/IMG-20260129-WA0021.jpg',                                     1),
+('Handcrafted Textile',                   'prerana-handcrafted-textile-4',             'Handcrafted textile product from the Prerana women''s artisan collective.',                                          800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/IMG-20260129-WA0022.jpg',                                     1),
+('Handcrafted Textile',                   'prerana-handcrafted-textile-5',             'Handcrafted textile product from the Prerana women''s artisan collective.',                                          800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/IMG-20260129-WA0025.jpg',                                     1),
+('Handcrafted Textile',                   'prerana-handcrafted-textile-6',             'Handcrafted textile product from the Prerana women''s artisan collective.',                                          800.00, 10, (SELECT id FROM categories WHERE slug = 'prerana' LIMIT 1), '/assets/prerana/IMG-20260129-WA0027.jpg',                                     1)
 ON DUPLICATE KEY UPDATE
-  description = VALUES(description),
-  price = VALUES(price),
-  stock = VALUES(stock),
+  description   = VALUES(description),
+  price         = VALUES(price),
+  stock         = VALUES(stock),
   thumbnail_url = VALUES(thumbnail_url),
-  is_active = VALUES(is_active);
+  is_active     = VALUES(is_active);
 
--- Insert Shristi Products (20 products)
+-- ============================================================
+-- SHRISTI PRODUCTS
+-- ============================================================
 INSERT INTO products (name, slug, description, price, stock, category_id, thumbnail_url, is_active) VALUES
-('Shristi Product 1', 'shristi-product-1', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3865.jpeg', 1),
-('Shristi Product 2', 'shristi-product-2', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3866.jpeg', 1),
-('Shristi Product 3', 'shristi-product-3', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3867.jpeg', 1),
-('Shristi Product 4', 'shristi-product-4', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3868.jpeg', 1),
-('Shristi Product 5', 'shristi-product-5', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3869.jpeg', 1),
-('Shristi Product 6', 'shristi-product-6', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3870.jpeg', 1),
-('Shristi Product 7', 'shristi-product-7', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3874.jpeg', 1),
-('Shristi Product 8', 'shristi-product-8', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3875.jpeg', 1),
-('Shristi Product 9', 'shristi-product-9', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3876.jpeg', 1),
-('Shristi Product 10', 'shristi-product-10', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3877.jpeg', 1),
-('Shristi Product 11', 'shristi-product-11', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_3879.jpeg', 1),
-('Shristi Product 12', 'shristi-product-12', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_4338.jpeg', 1),
-('Shristi Product 13', 'shristi-product-13', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_4339.jpeg', 1),
-('Shristi Product 14', 'shristi-product-14', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_4341.jpeg', 1),
-('Shristi Product 15', 'shristi-product-15', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_4342.jpeg', 1),
-('Shristi Product 16', 'shristi-product-16', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_4394.jpeg', 1),
-('Shristi Product 17', 'shristi-product-17', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_4397.jpeg', 1),
-('Shristi Product 18', 'shristi-product-18', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_4398.jpeg', 1),
-('Shristi Product 19', 'shristi-product-19', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_4399.jpeg', 1),
-('Shristi Product 20', 'shristi-product-20', 'Beautiful handcrafted product from Shristi community', 800.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/IMG_4401.jpeg', 1)
+('Hand Bag',                                    'shristi-hand-bag',                       'Handcrafted bag from the Shristi women''s collective — durable, stylish and sustainably made.',                       950.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/hand bag.jpeg',                                1),
+('Small Hand Bag',                              'shristi-small-hand-bag',                 'Compact handcrafted bag by Shristi artisans — perfect everyday carry in a sustainable design.',                        750.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/small handbag.jpeg',                           1),
+('Bamboo Tray',                                 'shristi-bamboo-tray',                    'Handcrafted bamboo tray — lightweight, eco-friendly and beautifully finished.',                                        650.00, 12, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/bamboo tray.jpeg',                             1),
+('Round Tray',                                  'shristi-round-tray',                     'Elegant round handwoven tray from Shristi collective — versatile for serving or display.',                             700.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/round tray.jpeg',                              1),
+('Bamboo Coaster',                              'shristi-bamboo-coaster',                 'Set of handcrafted bamboo coasters — natural, sturdy and eco-friendly.',                                               350.00, 20, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/bamboo coster.jpeg',                           1),
+('Water Hyacinth Place Mat',                    'shristi-water-hyacinth-place-mat',       'Handwoven water hyacinth place mat — adds a natural, earthy charm to your dining table.',                             480.00, 15, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/Place mat.jpeg',                               1),
+('Water Hyacinth Place Mat',                    'shristi-water-hyacinth-place-mat-2',     'Beautifully handwoven water hyacinth place mat — sustainable and stylish dining accessory.',                          480.00, 15, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/water hyacinth placemat 2.jpeg',               1),
+('Table Mat',                                   'shristi-table-mat',                      'Handcrafted table mat from Shristi collective — natural fibers woven into a durable, beautiful mat.',                 450.00, 15, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/table mat.jpeg',                               1),
+('Runner Set (Cotton & Water Hyacinth)',        'shristi-runner-set-cotton-hyacinth',     'Unique table runner set blending cotton and water hyacinth — handwoven by Shristi artisans.',                        1900.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/runner set ( cotton-water hyacinth).jpeg',     1),
+('Runner Set (Cotton & Water Hyacinth)',        'shristi-runner-set-cotton-hyacinth-2',   'Handwoven cotton and water hyacinth runner set — an elegant sustainable centerpiece.',                               1900.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/runner set ( cotton- water hyacinth) 2.jpeg',  1),
+('Cushion Cover',                               'shristi-cushion-cover',                  'Handwoven cushion cover from Shristi collective — adds artisanal warmth to any living space.',                        700.00, 12, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/cushion cover.jpeg',                           1),
+('Napkin Holder',                               'shristi-napkin-holder',                  'Handcrafted napkin holder — a practical and stylish addition to your dining table.',                                   400.00, 15, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/napkin holder.jpeg',                           1),
+('Small Planter',                               'shristi-small-planter',                  'Handwoven small planter — a beautiful eco-friendly home for your indoor plants.',                                      550.00, 12, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/small planter.jpeg',                           1),
+('Medium Planter',                              'shristi-medium-planter',                 'Handwoven medium planter by Shristi artisans — natural and stylish home décor.',                                      750.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/planter medium.jpeg',                          1),
+('Flower Vase',                                 'shristi-flower-vase',                    'Handcrafted flower vase from Shristi — a beautiful, sustainable piece for home decoration.',                           600.00, 10, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/flower vase.jpeg',                             1),
+('Handcrafted Product',                         'shristi-handcrafted-1',                  'Handcrafted product from the Shristi women''s collective.',                                                             700.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/IMG_3875.jpeg',                                1),
+('Handcrafted Product',                         'shristi-handcrafted-2',                  'Handcrafted product from the Shristi women''s collective.',                                                             700.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/IMG_3876.jpeg',                                1),
+('Handcrafted Product',                         'shristi-handcrafted-3',                  'Handcrafted product from the Shristi women''s collective.',                                                             700.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/IMG_3877.jpeg',                                1),
+('Handcrafted Product',                         'shristi-handcrafted-4',                  'Handcrafted product from the Shristi women''s collective.',                                                             700.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/IMG_4401.jpeg',                                1)
 ON DUPLICATE KEY UPDATE
-  description = VALUES(description),
-  price = VALUES(price),
-  stock = VALUES(stock),
+  description   = VALUES(description),
+  price         = VALUES(price),
+  stock         = VALUES(stock),
   thumbnail_url = VALUES(thumbnail_url),
-  is_active = VALUES(is_active);
+  is_active     = VALUES(is_active);

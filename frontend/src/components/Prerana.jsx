@@ -102,7 +102,7 @@ function Prerana() {
                 With training, modern techniques, and market support provided by CoE, the society enhances artisans' skills, improves product quality, and creates sustainable livelihood opportunities. Through its efforts, Prerana Handloom not only sustains traditional weaving practices but also helps artisans gain better market access, ensuring the growth of Assam's handloom industry.
               </p>
               <p className="shristi-support">
-                <strong>Prerana Handloom Co-operative Society is promoted &amp; supported under Oil CSR Initaitive.</strong>
+                <strong>Prerana Handloom Co-operative Society is promoted &amp; supported under the Oil CSR Initiative.</strong>
               </p>
             </div>
           </div>

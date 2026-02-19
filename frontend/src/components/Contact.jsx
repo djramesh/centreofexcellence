@@ -97,11 +97,11 @@ function Contact() {
           </p>
 
           <div className="contact-hero-chips">
-            <a href="mailto:Rimpi.Bora@schoolnetindia.com" className="contact-chip">
+            <a href="mailto:contactuscoe@gmail.com" className="contact-chip">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
               </svg>
-              Rimpi.Bora@schoolnetindia.com
+              contactuscoe@gmail.com
             </a>
             <a href="tel:7002301360" className="contact-chip">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
@@ -205,10 +205,7 @@ function Contact() {
               <FaEnvelope />
             </div>
             <h3>Email Us</h3>
-            <a href="mailto:Rimpi.Bora@schoolnetindia.com">Rimpi.Bora@schoolnetindia.com</a>
-            <a href="mailto:manjit.thakuria@schoolnetindia.com" style={{ marginTop: "4px" }}>
-              manjit.thakuria@schoolnetindia.com
-            </a>
+            <a href="mailto:contactuscoe@gmail.com">contactuscoe@gmail.com</a>
           </div>
 
           <div className="info-card c-reveal delay-2">
@@ -216,8 +213,7 @@ function Contact() {
               <FaPhone />
             </div>
             <h3>Call Us</h3>
-            <a href="tel:7002301360">+91 70023 01360</a>
-            <a href="tel:6901977654" style={{ marginTop: "4px" }}>+91 69019 77654</a>
+            <a href="tel:6001773030">+91 60017 73030</a>
           </div>
 
           <div className="info-card c-reveal delay-3">
@@ -273,10 +269,10 @@ function Contact() {
             <p>
               Send your detailed queries or specific requests via email at{" "}
               <a
-                href="mailto:manjit.thakuria@schoolnetindia.com"
+                href="mailto:contactuscoe@gmail.com"
                 style={{ color: "#2484ff", fontWeight: 500 }}
               >
-                manjit.thakuria@schoolnetindia.com
+                contactuscoe@gmail.com
               </a>
             </p>
           </div>

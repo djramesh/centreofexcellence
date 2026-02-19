@@ -11,14 +11,14 @@ import {
 import "./Navbar.css";
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen]       = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isUserOpen, setIsUserOpen]       = useState(false);
-  const [scrolled, setScrolled]           = useState(false);
+  const [isUserOpen, setIsUserOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const { user, isAuthenticated, logout } = useAuth();
-  const { getCartItemCount }              = useCart();
-  const navigate                          = useNavigate();
+  const { getCartItemCount } = useCart();
+  const navigate = useNavigate();
 
   /* scrolled class ──────────────────────────────────── */
   useEffect(() => {
@@ -93,6 +93,10 @@ const Navbar = () => {
               </div>
             </div>
           </div>
+        </li>
+
+        <li>
+          <Link to="/gallery" onClick={closeAll}>Gallery</Link>
         </li>
 
         <li>

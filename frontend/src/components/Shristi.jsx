@@ -92,7 +92,7 @@ function Shristi() {
                 Through training, capacity building, and market linkages facilitated by CoE, Shristi Handicraft enhances rural entrepreneurship while promoting sustainable craft practices. Their work not only provides economic opportunities to local artisans, especially women, but also contributes to environmental conservation by utilizing an otherwise problematic aquatic weed.
               </p>
               <p className="shristi-support">
-                <strong>Shristi Handicraft Co-operative Society is promoted &amp; supported by Oil India Rural Development Society (OIRDS).</strong>
+                <strong>Shristi Handicraft Co-operative Society is promoted &amp; supported under Oil CSR Initaitive.</strong>
               </p>
             </div>
           </div>

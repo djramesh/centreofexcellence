@@ -330,7 +330,7 @@ const SECTIONS = [
     icon: "../assets/water-hyacinth.png", subLabel: "Water Hyacinth Products",
   },
   {
-    id: "bamboo", label: "Bamboo", eyebrow: "Sustainable", fromDB: true, categoryId: 5,
+    id: "bamboo", label: "Bamboo", eyebrow: "Sustainable", fromDB: true, categoryId: 14,
     decorImgs: [], icon: "../assets/bamboo-image.png", subLabel: "Bamboo Products",
   },
   {

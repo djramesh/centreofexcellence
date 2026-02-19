@@ -10,17 +10,17 @@ import { useAuth } from "../context/AuthContext";
 
 /* ─── Static product data ─────────────────────────────────────────────── */
 const waterHyacinthProducts = [
-  { id: 1,  title: "Hand Bag",   price: 1200, imgSrc: "../assets/hand-bag-1.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 2,  title: "Hand Bag",   price: 1100, imgSrc: "../assets/hand-bag-2.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 3,  title: "Hand Bag",   price: 1150, imgSrc: "../assets/hand-bag-3.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 4,  title: "Hand Bag",   price: 1050, imgSrc: "../assets/hand-bag-4.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 5,  title: "Hand Bag",   price: 1300, imgSrc: "../assets/hand-bag-5.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 6,  title: "Hand Bag",   price: 1250, imgSrc: "../assets/hand-bag-6.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 7,  title: "Hat",        price: 650,  imgSrc: "../assets/hat-1.jpg",         description: "Water hyacinth Hats are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 8,  title: "Table Mat",  price: 450,  imgSrc: "../assets/table-mat-1.jpg",   description: "Water hyacinth table mats are a charming and sustainable addition to any dining space." },
-  { id: 9,  title: "Table Mat",  price: 420,  imgSrc: "../assets/table-mat-2.jpg",   description: "Water hyacinth table mats are a charming and sustainable addition to any dining space." },
-  { id: 10, title: "Table Mat",  price: 480,  imgSrc: "../assets/tablemat-3.jpg",    description: "Water hyacinth table mats are a charming and sustainable addition to any dining space." },
-  { id: 11, title: "Basket",     price: 850,  imgSrc: "../assets/basket-1.jpg",      description: "Water hyacinth baskets are a beautiful and sustainable craft." },
+  { id: 1, title: "Hand Bag", price: 1200, imgSrc: "../assets/hand-bag-1.jpg", description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
+  { id: 2, title: "Hand Bag", price: 1100, imgSrc: "../assets/hand-bag-2.jpg", description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
+  { id: 3, title: "Hand Bag", price: 1150, imgSrc: "../assets/hand-bag-3.jpg", description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
+  { id: 4, title: "Hand Bag", price: 1050, imgSrc: "../assets/hand-bag-4.jpg", description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
+  { id: 5, title: "Hand Bag", price: 1300, imgSrc: "../assets/hand-bag-5.jpg", description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
+  { id: 6, title: "Hand Bag", price: 1250, imgSrc: "../assets/hand-bag-6.jpg", description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
+  { id: 7, title: "Hat", price: 650, imgSrc: "../assets/hat-1.jpg", description: "Water hyacinth Hats are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
+  { id: 8, title: "Table Mat", price: 450, imgSrc: "../assets/table-mat-1.jpg", description: "Water hyacinth table mats are a charming and sustainable addition to any dining space." },
+  { id: 9, title: "Table Mat", price: 420, imgSrc: "../assets/table-mat-2.jpg", description: "Water hyacinth table mats are a charming and sustainable addition to any dining space." },
+  { id: 10, title: "Table Mat", price: 480, imgSrc: "../assets/tablemat-3.jpg", description: "Water hyacinth table mats are a charming and sustainable addition to any dining space." },
+  { id: 11, title: "Basket", price: 850, imgSrc: "../assets/basket-1.jpg", description: "Water hyacinth baskets are a beautiful and sustainable craft." },
 ];
 
 const bambooProducts = [
@@ -29,15 +29,15 @@ const bambooProducts = [
 ];
 
 const handloomProducts = [
-  { id: 14, title: "Stole",      price: 1400, imgSrc: "../assets/handloom1.jpg",   description: "Crafted from natural fibers, uniquely colored using plant-based dyes lending it a soft, earthy palette." },
-  { id: 15, title: "Stole",      price: 1350, imgSrc: "../assets/handloom2.jpg",   description: "Crafted from natural fibers, uniquely colored using plant-based dyes lending it a soft, earthy palette." },
-  { id: 16, title: "Stole",      price: 1500, imgSrc: "../assets/glry-6.jpg",      description: "Crafted from natural fibers, uniquely colored using plant-based dyes lending it a soft, earthy palette." },
-  { id: 17, title: "Runner Set", price: 1800, imgSrc: "../assets/handloom4.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 18, title: "Runner Set", price: 1750, imgSrc: "../assets/handloom5.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 19, title: "Runner Set", price: 1700, imgSrc: "../assets/handloom6.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 20, title: "Runner Set", price: 1850, imgSrc: "../assets/handloom7.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 21, title: "Runner Set", price: 1800, imgSrc: "../assets/handloom8.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 22, title: "Runner Set", price: 1900, imgSrc: "../assets/handloom10.jpg",  description: "Exquisite textile pieces that bring warmth to any dining or living space." },
+  { id: 14, title: "Stole", price: 1400, imgSrc: "../assets/handloom1.jpg", description: "Crafted from natural fibers, uniquely colored using plant-based dyes lending it a soft, earthy palette." },
+  { id: 15, title: "Stole", price: 1350, imgSrc: "../assets/handloom2.jpg", description: "Crafted from natural fibers, uniquely colored using plant-based dyes lending it a soft, earthy palette." },
+  { id: 16, title: "Stole", price: 1500, imgSrc: "../assets/glry-6.jpg", description: "Crafted from natural fibers, uniquely colored using plant-based dyes lending it a soft, earthy palette." },
+  { id: 17, title: "Runner Set", price: 1800, imgSrc: "../assets/handloom4.jpg", description: "Exquisite textile pieces that bring warmth to any dining or living space." },
+  { id: 18, title: "Runner Set", price: 1750, imgSrc: "../assets/handloom5.jpg", description: "Exquisite textile pieces that bring warmth to any dining or living space." },
+  { id: 19, title: "Runner Set", price: 1700, imgSrc: "../assets/handloom6.jpg", description: "Exquisite textile pieces that bring warmth to any dining or living space." },
+  { id: 20, title: "Runner Set", price: 1850, imgSrc: "../assets/handloom7.jpg", description: "Exquisite textile pieces that bring warmth to any dining or living space." },
+  { id: 21, title: "Runner Set", price: 1800, imgSrc: "../assets/handloom8.jpg", description: "Exquisite textile pieces that bring warmth to any dining or living space." },
+  { id: 22, title: "Runner Set", price: 1900, imgSrc: "../assets/handloom10.jpg", description: "Exquisite textile pieces that bring warmth to any dining or living space." },
 ];
 
 /* ─── Helpers ─────────────────────────────────────────────────────────── */
@@ -146,9 +146,9 @@ function CategoryFilter({ categories, active, onChange }) {
 
 /* ─── ProductCard ─────────────────────────────────────────────────────── */
 function ProductCard({ product, onAddToCart, onOrderNow, index }) {
-  const price  = product.price || 800;
-  const title  = product.title || product.name;
-  const desc   = product.description || "";
+  const price = product.price || 800;
+  const title = product.title || product.name;
+  const desc = product.description || "";
   const imgSrc = encodeImagePath(product.imgSrc || product.thumbnail_url || "");
   const [imgError, setImgError] = useState(false);
 
@@ -262,9 +262,9 @@ function StaticSection({ section, si, onAddToCart, onOrderNow }) {
 
 /* ─── DBSection — fetches Prerana / Shristi from API ─────────────────── */
 function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
-  const [products, setProducts]         = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [error, setError]               = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
   const sectionRef = useRef(null);
 
@@ -341,12 +341,11 @@ const SECTIONS = [
   {
     id: "hyacinth", label: "Water Hyacinth", eyebrow: "Eco Crafts", fromDB: false,
     products: waterHyacinthProducts,
-    decorImgs: ["../assets/water-hyacinth-products2.png","../assets/water-hyacinth-products1.png","../assets/water-hyacinth-products.png"],
+    decorImgs: ["../assets/water-hyacinth-products2.png", "../assets/water-hyacinth-products1.png", "../assets/water-hyacinth-products.png"],
     icon: "../assets/water-hyacinth.png", subLabel: "Water Hyacinth Products",
   },
   {
-    id: "bamboo", label: "Bamboo", eyebrow: "Sustainable", fromDB: false,
-    products: bambooProducts,
+    id: "bamboo", label: "Bamboo", eyebrow: "Sustainable", fromDB: true, categoryId: 5,
     decorImgs: [], icon: "../assets/bamboo-image.png", subLabel: "Bamboo Products",
   },
   {
@@ -360,16 +359,16 @@ const SECTIONS = [
   {
     id: "handloom", label: "Handloom", eyebrow: "Traditional Weave", fromDB: false,
     products: handloomProducts,
-    decorImgs: ["../assets/handloom-img.png","../assets/handloom-img-1.png","../assets/handloom-img-3.png"],
+    decorImgs: ["../assets/handloom-img.png", "../assets/handloom-img-1.png", "../assets/handloom-img-3.png"],
     subLabel: "Handloom Products",
   },
 ];
 
 /* ─── Products (main component) ──────────────────────────────────────── */
 function Products() {
-  const { addToCart }       = useCart();
+  const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
-  const navigate            = useNavigate();
+  const navigate = useNavigate();
 
   const handleAddToCart = useCallback((e, product) => {
     e.preventDefault(); e.stopPropagation();

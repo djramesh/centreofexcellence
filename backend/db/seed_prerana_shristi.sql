@@ -6,6 +6,7 @@ USE coe_ecommerce;
 INSERT INTO categories (name, slug, description) VALUES
   ('Prerana',             'prerana',             'Beautiful handcrafted products from Prerana community'),
   ('Shristi',             'shristi',             'Exquisite handcrafted products from Shristi community'),
+  ('Bamboo',              'bamboo',              'Eco-friendly bamboo products'),
   ('Cotton Cushion Cover','cotton-cushion-cover', 'Handwoven cotton cushion covers'),
   ('Mekhela Sador',       'mekhela-sador',        'Traditional Assamese attire'),
   ('Cotton Stole',        'cotton-stole',         'Handwoven cotton stoles'),
@@ -81,6 +82,36 @@ INSERT INTO products (name, slug, description, price, stock, category_id, thumbn
 ('Handcrafted Product',                  'shristi-handcrafted-2',                'Handcrafted product from the Shristi women\'s collective.',                                                700.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/IMG_3876.jpeg',                          1),
 ('Handcrafted Product',                  'shristi-handcrafted-3',                'Handcrafted product from the Shristi women\'s collective.',                                                700.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/IMG_3877.jpeg',                          1),
 ('Handcrafted Product',                  'shristi-handcrafted-4',                'Handcrafted product from the Shristi women\'s collective.',                                                700.00,  8, (SELECT id FROM categories WHERE slug = 'shristi' LIMIT 1), '/assets/shristi/IMG_4401.jpeg',                          1)
+ON DUPLICATE KEY UPDATE
+  description   = VALUES(description),
+  price         = VALUES(price),
+  stock         = VALUES(stock),
+  thumbnail_url = VALUES(thumbnail_url),
+  is_active     = VALUES(is_active);
+
+-- ============================================================
+-- BAMBOO PRODUCTS (kebab-case filenames, no spaces)
+-- ============================================================
+INSERT INTO products (name, slug, description, price, stock, category_id, thumbnail_url, is_active) VALUES
+('Bamboo Bag',          'bamboo-bag',           'Eco-friendly bamboo bag crafted by artisans — stylish, durable and sustainably made.',                    950.00, 10, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-bag.jpg',           1),
+('Bamboo Bag',          'bamboo-bag-2',         'Eco-friendly bamboo bag — a unique sustainable fashion accessory handcrafted with care.',                  900.00, 10, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-bag-2.jpg',         1),
+('Bamboo Box',          'bamboo-box',           'Handcrafted bamboo box — perfect for storage or gifting, beautifully finished.',                           750.00, 12, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-box.jpg',           1),
+('Bamboo File Cover',   'bamboo-file-cover',    'Elegant bamboo file cover — eco-friendly and professionally crafted for everyday use.',                    850.00,  8, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-file-cover.png',    1),
+('Bamboo Lamp Stand',   'bamboo-lamp-stand',    'Handcrafted bamboo lamp stand — adds a natural, warm aesthetic to any room.',                            1200.00,  6, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-lamp-stand.jpg',    1),
+('Bamboo Mat Purse',    'bamboo-mat-purse',     'Stylish bamboo mat purse — a unique eco-friendly accessory for everyday carry.',                           800.00, 10, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-mat-purse.jpg',     1),
+('Bamboo Mat Tray',     'bamboo-mat-tray',      'Handwoven bamboo mat tray — lightweight and perfect for serving or display.',                              650.00, 12, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-mat-tray.jpg',      1),
+('Bamboo Pen Stand',    'bamboo-pen-stand',     'Handcrafted bamboo pen stand — a sustainable and stylish addition to any desk.',                           450.00, 15, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-pen-stand.jpg',     1),
+('Bamboo Tray',         'bamboo-tray',          'Elegant handcrafted bamboo tray — versatile for serving, storage or home decor.',                          700.00, 12, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-tray.png',          1),
+('Bamboo Tray',         'bamboo-tray-3',        'Beautifully crafted bamboo tray with natural finish — a sustainable home essential.',                      680.00, 12, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-tray-3.png',        1),
+('Bamboo Yoga Mat',     'bamboo-yoga-mat',      'Natural bamboo yoga mat — eco-friendly, non-slip and perfect for your practice.',                         1500.00,  8, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/bamboo-yoga-mat.jpg',      1),
+('Jewellery Box',       'bamboo-jewellary-box', 'Handcrafted bamboo jewellery box — beautifully finished and perfect for gifting.',                         950.00,  8, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/jewellary-box.png',        1),
+('Laundry Basket',      'bamboo-laundry-basket','Sturdy handwoven bamboo laundry basket — eco-friendly and spacious.',                                     1100.00,  6, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/laundry-basket.jpg',       1),
+('Laundry Basket',      'bamboo-laundry-basket-1','Handcrafted bamboo laundry basket — natural, durable and beautifully woven.',                          1050.00,  6, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/laundry-basket-1.jpg',     1),
+('Napkin Holder',       'bamboo-napkin-holder', 'Handcrafted bamboo napkin holder — a practical and stylish dining accessory.',                             400.00, 15, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/napkin-holder.jpg',        1),
+('Napkin Holder',       'bamboo-napkin-holder-2','Bamboo napkin holder with elegant natural finish — adds charm to any dining table.',                      420.00, 15, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/napkin-holder2.jpg',       1),
+('Storage Basket',      'bamboo-storage-basket-2','Handwoven bamboo storage basket — strong, eco-friendly and beautifully crafted.',                        850.00, 10, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/storage-basket-2.jpg',     1),
+('Storage Basket',      'bamboo-storage-basket-4','Large handwoven bamboo storage basket — perfect for organizing any space sustainably.',                  900.00, 10, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/storage-basket-4.jpg',     1),
+('Yoga Mat',            'bamboo-yoga-mat-natural','Natural fiber yoga mat — eco-conscious and comfortable for all types of practice.',                     1400.00,  8, (SELECT id FROM categories WHERE slug = 'bamboo' LIMIT 1), '/assets/bamboo/yoga-mat.jpg',             1)
 ON DUPLICATE KEY UPDATE
   description   = VALUES(description),
   price         = VALUES(price),

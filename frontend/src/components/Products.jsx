@@ -8,10 +8,7 @@ import { faShoppingBag, faShoppingCart } from "@fortawesome/free-solid-svg-icons
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
-// All products now served from DB — no hardcoded arrays
-
 /* ─── Helpers ─────────────────────────────────────────────────────────── */
-
 function encodeImagePath(path = "") {
   if (!path) return path;
   if (path.includes("%") || path.startsWith("http")) return path;
@@ -35,25 +32,19 @@ function buildCategories(products, nameKey = "title") {
   return cats;
 }
 
-/* ─── Custom hook: observe + reveal elements in a container ───────────── */
+/* ─── Reveal hook ─────────────────────────────────────────────────────── */
 function useReveal(containerRef, deps = []) {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-
     const els = Array.from(container.querySelectorAll(".reveal:not(.revealed)"));
     if (!els.length) return;
-
-    const fallback = setTimeout(() => {
-      els.forEach((el) => el.classList.add("revealed"));
-    }, 600);
-
+    const fallback = setTimeout(() => els.forEach((el) => el.classList.add("revealed")), 600);
     if (!("IntersectionObserver" in window)) {
       els.forEach((el) => el.classList.add("revealed"));
       clearTimeout(fallback);
       return;
     }
-
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -65,24 +56,17 @@ function useReveal(containerRef, deps = []) {
       },
       { threshold: 0, rootMargin: "0px 0px -40px 0px" }
     );
-
     els.forEach((el) => io.observe(el));
-
-    return () => {
-      clearTimeout(fallback);
-      io.disconnect();
-    };
+    return () => { clearTimeout(fallback); io.disconnect(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }
 
-/* ─── API helper ──────────────────────────────────────────────────────── */
+/* ─── API ─────────────────────────────────────────────────────────────── */
 const API_BASE = import.meta.env.VITE_API_URL || "";
 
 async function fetchCategoryProducts(categoryId, page = 1, limit = 100) {
-  const res = await fetch(
-    `${API_BASE}/api/products/category/${categoryId}?page=${page}&limit=${limit}`
-  );
+  const res = await fetch(`${API_BASE}/api/products/category/${categoryId}?page=${page}&limit=${limit}`);
   if (!res.ok) throw new Error(`Server returned ${res.status}`);
   return res.json();
 }
@@ -130,23 +114,17 @@ function ProductCard({ product, onAddToCart, onOrderNow, index }) {
             <span className="pc-img-placeholder-text">Handcrafted</span>
           </div>
         ) : (
-          <img
-            src={imgSrc}
-            alt={title}
-            className="pc-img"
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
+          <img src={imgSrc} alt={title} className="pc-img" loading="lazy" onError={() => setImgError(true)} />
         )}
         <div className="pc-img-overlay" />
         <div className="pc-hover-actions">
-          <button className="pc-action-btn pc-cart-btn" onClick={(e) => { e.stopPropagation(); onAddToCart(e, product); }} aria-label="Add to cart">
-            <FontAwesomeIcon icon={faShoppingCart} />
-            <span>Add to Cart</span>
+          <button className="pc-action-btn pc-cart-btn"
+            onClick={(e) => { e.stopPropagation(); onAddToCart(e, product); }} aria-label="Add to cart">
+            <FontAwesomeIcon icon={faShoppingCart} /><span>Add to Cart</span>
           </button>
-          <button className="pc-action-btn pc-order-btn" onClick={(e) => { e.stopPropagation(); onOrderNow(e, product); }} aria-label="Order now">
-            <FontAwesomeIcon icon={faShoppingBag} />
-            <span>Order Now</span>
+          <button className="pc-action-btn pc-order-btn"
+            onClick={(e) => { e.stopPropagation(); onOrderNow(e, product); }} aria-label="Order now">
+            <FontAwesomeIcon icon={faShoppingBag} /><span>Order Now</span>
           </button>
         </div>
         <div className="pc-badge">Handcrafted</div>
@@ -157,10 +135,12 @@ function ProductCard({ product, onAddToCart, onOrderNow, index }) {
         <div className="pc-footer">
           <span className="pc-price">₹{Number(price).toLocaleString("en-IN")}</span>
           <div className="pc-footer-btns">
-            <button className="pc-btn-ghost" onClick={(e) => { e.stopPropagation(); onAddToCart(e, product); }}>
+            <button className="pc-btn-ghost"
+              onClick={(e) => { e.stopPropagation(); onAddToCart(e, product); }}>
               <FontAwesomeIcon icon={faShoppingCart} />
             </button>
-            <button className="pc-btn-primary" onClick={(e) => { e.stopPropagation(); onOrderNow(e, product); }}>
+            <button className="pc-btn-primary"
+              onClick={(e) => { e.stopPropagation(); onOrderNow(e, product); }}>
               Order Now
             </button>
           </div>
@@ -191,7 +171,27 @@ function SectionHeader({ section, gradient }) {
   );
 }
 
-/* ─── DBSection — fetches products from API by categoryId ────────────── */
+/* ─── Society Banner ──────────────────────────────────────────────────── */
+function SocietyBanner({ society }) {
+  return (
+    <div className={`society-banner society-banner--${society.theme}`} id={society.id}>
+      <div className="society-banner-inner">
+        <div className="society-banner-left">
+          <span className="society-banner-pill">{society.pill}</span>
+          <h2 className="society-banner-title">{society.name}</h2>
+          <p className="society-banner-desc">{society.desc}</p>
+        </div>
+        <div className="society-banner-tags">
+          {society.tags.map(t => (
+            <span key={t} className="society-tag">{t}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── DBSection ───────────────────────────────────────────────────────── */
 function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
   const [products, setProducts]         = useState([]);
   const [loading, setLoading]           = useState(true);
@@ -200,9 +200,7 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    setActiveFilter("all");
+    setLoading(true); setError(null); setActiveFilter("all");
     fetchCategoryProducts(categoryId)
       .then((data) => setProducts(data.products || []))
       .catch((err) => setError(err.message))
@@ -210,8 +208,7 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
   }, [categoryId]);
 
   const categories = useMemo(() => buildCategories(products, "name"), [products]);
-
-  const filtered = useMemo(() =>
+  const filtered   = useMemo(() =>
     activeFilter === "all"
       ? products
       : products.filter((p) => getProductType(p.name) === activeFilter),
@@ -225,23 +222,13 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
       <div className="reveal">
         <SectionHeader section={section} gradient={si % 2 === 0 ? "a" : "b"} />
       </div>
-
-      {loading && (
-        <div className="products-loading">Loading {section.label} products…</div>
-      )}
-      {error && (
-        <div className="products-error">Could not load products: {error}</div>
-      )}
-
+      {loading && <div className="products-loading">Loading {section.label} products…</div>}
+      {error   && <div className="products-error">Could not load products: {error}</div>}
       {!loading && !error && products.length > 0 && (
         <>
           {categories.length > 2 && (
             <div className="reveal">
-              <CategoryFilter
-                categories={categories}
-                active={activeFilter}
-                onChange={setActiveFilter}
-              />
+              <CategoryFilter categories={categories} active={activeFilter} onChange={setActiveFilter} />
             </div>
           )}
           <div className="pc-grid">
@@ -258,7 +245,6 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
           </div>
         </>
       )}
-
       {!loading && !error && products.length === 0 && (
         <div className="products-empty">No products available yet.</div>
       )}
@@ -266,26 +252,44 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
   );
 }
 
-/* ─── Section config ──────────────────────────────────────────────────── */
-const SECTIONS = [
+/* ─── Society + Section config ────────────────────────────────────────── */
+const SOCIETIES = [
   {
-    // Water Hyacinth products live under Shristi category in DB (id: 4)
-    id: "hyacinth", label: "Water Hyacinth", eyebrow: "Eco Crafts",
-    fromDB: true, categoryId: 4,
-    decorImgs: ["../assets/water-hyacinth-products2.png","../assets/water-hyacinth-products1.png","../assets/water-hyacinth-products.png"],
-    icon: "../assets/water-hyacinth.png", subLabel: "Water Hyacinth Products",
+    id: "shristi",
+    name: "Shristi Handicraft Co-operative Society",
+    pill: "Handicrafts",
+    desc: "Empowering rural women through sustainable craft traditions — weaving natural materials into beautiful, eco-friendly products.",
+    theme: "teal",
+    tags: ["Water Hyacinth", "Bamboo Craft", "Eco-Friendly", "Women-Led"],
+    sections: [
+      {
+        id: "hyacinth", label: "Water Hyacinth", eyebrow: "Natural Craft",
+        categoryId: 4,
+        decorImgs: ["../assets/water-hyacinth-products2.png","../assets/water-hyacinth-products1.png","../assets/water-hyacinth-products.png"],
+        icon: "../assets/water-hyacinth.png", subLabel: "Water Hyacinth Products",
+      },
+      {
+        id: "bamboo", label: "Bamboo", eyebrow: "Sustainable",
+        categoryId: 14,
+        decorImgs: [], icon: "../assets/bamboo-image.png", subLabel: "Bamboo Products",
+      },
+    ],
   },
   {
-    id: "bamboo", label: "Bamboo", eyebrow: "Sustainable",
-    fromDB: true, categoryId: 14,
-    decorImgs: [], icon: "../assets/bamboo-image.png", subLabel: "Bamboo Products",
-  },
-  {
-    // Handloom products live under Prerana category in DB (id: 3)
-    id: "handloom", label: "Handloom", eyebrow: "Traditional Weave",
-    fromDB: true, categoryId: 3,
-    decorImgs: ["../assets/handloom-img.png","../assets/handloom-img-1.png","../assets/handloom-img-3.png"],
-    subLabel: "Handloom Products",
+    id: "prerana",
+    name: "Prerana Handloom Co-operative Society",
+    pill: "Handloom",
+    desc: "Preserving the rich textile heritage of Assam — each thread tells a story of artistry, culture, and timeless community craft.",
+    theme: "amber",
+    tags: ["Handloom Weave", "Natural Dyes", "Traditional Craft", "Assam Heritage"],
+    sections: [
+      {
+        id: "handloom", label: "Handloom", eyebrow: "Traditional Weave",
+        categoryId: 3,
+        decorImgs: ["../assets/handloom-img.png","../assets/handloom-img-1.png","../assets/handloom-img-3.png"],
+        subLabel: "Handloom & Textile Products",
+      },
+    ],
   },
 ];
 
@@ -309,29 +313,41 @@ function Products() {
 
   return (
     <div id="products" className="products-wrap">
+
+      {/* ── Hero ── */}
       <div className="products-page-hero">
         <span className="products-page-eyebrow">Our Collection</span>
         <h1 className="products-page-title">Products</h1>
         <p className="products-page-sub">Handcrafted with tradition. Designed for today.</p>
-
         <nav className="section-nav" aria-label="Jump to section">
-          {SECTIONS.map((s) => (
-            <a key={s.id} href={`#${s.id}`} className="section-nav-link">
-              {s.label}
+          {SOCIETIES.map((s) => (
+            <a key={s.id} href={`#${s.id}`} className={`section-nav-link section-nav-link--${s.theme}`}>
+              {s.pill}
+            </a>
+          ))}
+          {SOCIETIES.flatMap(s => s.sections).map((sec) => (
+            <a key={sec.id} href={`#${sec.id}`} className="section-nav-link section-nav-link--sub">
+              {sec.label}
             </a>
           ))}
         </nav>
       </div>
 
-      {SECTIONS.map((section, si) => (
-        <DBSection
-          key={section.id}
-          section={section}
-          si={si}
-          categoryId={section.categoryId}
-          onAddToCart={handleAddToCart}
-          onOrderNow={handleOrderNow}
-        />
+      {/* ── Society groups ── */}
+      {SOCIETIES.map((society, si) => (
+        <div key={society.id} className="society-group">
+          <SocietyBanner society={society} />
+          {society.sections.map((section, idx) => (
+            <DBSection
+              key={section.id}
+              section={section}
+              si={si * 10 + idx}
+              categoryId={section.categoryId}
+              onAddToCart={handleAddToCart}
+              onOrderNow={handleOrderNow}
+            />
+          ))}
+        </div>
       ))}
     </div>
   );

@@ -565,3 +565,137 @@
 @media (max-width: 380px) {
   .pc-grid { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   SOCIETY BANNERS — append to bottom of Products.css
+═══════════════════════════════════════════════════════ */
+
+.society-group {
+  margin-bottom: 1rem;
+}
+
+.society-banner {
+  position: relative;
+  margin: 3.5rem 4vw 0;
+  border-radius: 24px;
+  padding: 2.2rem 2.8rem;
+  overflow: hidden;
+  border: 1px solid transparent;
+}
+
+.society-banner--teal {
+  background: linear-gradient(135deg, rgba(0,180,160,0.10) 0%, rgba(0,212,255,0.05) 100%);
+  border-color: rgba(0,212,255,0.18);
+}
+.society-banner--teal::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #00b4a0, #00d4ff);
+}
+
+.society-banner--amber {
+  background: linear-gradient(135deg, rgba(255,160,0,0.09) 0%, rgba(255,86,168,0.05) 100%);
+  border-color: rgba(255,160,0,0.22);
+}
+.society-banner--amber::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #ffa000, #ff56a8);
+}
+
+.society-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.society-banner-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.society-banner-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 13px;
+  border-radius: 999px;
+  width: fit-content;
+  font-family: 'Poppins', sans-serif;
+}
+.society-banner--teal .society-banner-pill {
+  background: rgba(0,212,255,0.13);
+  color: #00d4ff;
+  border: 1px solid rgba(0,212,255,0.28);
+}
+.society-banner--amber .society-banner-pill {
+  background: rgba(255,160,0,0.13);
+  color: #ffa000;
+  border: 1px solid rgba(255,160,0,0.32);
+}
+
+.society-banner-title {
+  font-size: clamp(1.15rem, 2.4vw, 1.65rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.02em;
+  font-family: 'Poppins', sans-serif;
+}
+
+.society-banner-desc {
+  font-size: 0.83rem;
+  color: rgba(255,255,255,0.48);
+  margin: 0;
+  max-width: 500px;
+  line-height: 1.65;
+  font-family: 'Poppins', sans-serif;
+}
+
+.society-banner-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+.society-tag {
+  font-size: 0.71rem;
+  font-weight: 500;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
+}
+
+.section-nav-link--teal {
+  background: rgba(0,212,255,0.1) !important;
+  border-color: rgba(0,212,255,0.25) !important;
+  color: #00d4ff !important;
+}
+.section-nav-link--amber {
+  background: rgba(255,160,0,0.1) !important;
+  border-color: rgba(255,160,0,0.25) !important;
+  color: #ffa000 !important;
+}
+.section-nav-link--sub {
+  font-size: 0.74rem !important;
+  opacity: 0.65;
+  padding: 5px 11px !important;
+}
+
+@media (max-width: 700px) {
+  .society-banner { margin: 2rem 3vw 0; padding: 1.5rem 1.3rem; }
+  .society-banner-inner { flex-direction: column; align-items: flex-start; }
+  .society-banner-tags  { justify-content: flex-start; }
+}

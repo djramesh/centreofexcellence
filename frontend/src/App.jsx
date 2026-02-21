@@ -55,7 +55,8 @@ const App = () => {
           <Route path="/" element={<StoreLayout />}>
             <Route index element={<Home />} />
             <Route path="products" element={<Products />} />
-            <Route path="product-details/:productId" element={<ProductDetails />} />
+            {/* ✅ FIXED: was product-details/:productId — navigation uses state, no param needed */}
+            <Route path="product-details" element={<ProductDetails />} />
             <Route path="shristi-handicraft" element={<Shristi />} />
             <Route path="prerana-handloom" element={<Prerana />} />
             <Route path="gallery" element={<Gallery />} />

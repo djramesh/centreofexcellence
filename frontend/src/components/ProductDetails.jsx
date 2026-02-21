@@ -6,57 +6,77 @@ import { faShoppingBag, faShoppingCart, faArrowLeft, faRuler, faWeight, faLeaf, 
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
-/* ─── derive extra details from product name ──────────────────────────── */
-function getProductDetails(name = "") {
+/* ─── Fallback dimensions from product name ───────────────────────────── */
+function getFallbackDimensions(name = "") {
+  const n = name.toLowerCase();
+  if (n.includes("hand bag") || n.includes("handbag") || n.includes("bag"))
+    return { length: "30 cm", breadth: "20 cm", height: "10 cm" };
+  if (n.includes("hat"))
+    return { length: "58 cm", breadth: "58 cm", height: "12 cm" };
+  if (n.includes("table mat") || n.includes("mat"))
+    return { length: "45 cm", breadth: "30 cm", height: null };
+  if (n.includes("basket"))
+    return { length: "25 cm", breadth: "25 cm", height: "15 cm" };
+  if (n.includes("runner"))
+    return { length: "140 cm", breadth: "36 cm", height: null };
+  if (n.includes("stole"))
+    return { length: "200 cm", breadth: "70 cm", height: null };
+  if (n.includes("cushion"))
+    return { length: "45 cm", breadth: "45 cm", height: null };
+  if (n.includes("tote"))
+    return { length: "38 cm", breadth: "32 cm", height: "10 cm" };
+  if (n.includes("pen stand"))
+    return { length: "10 cm", breadth: "10 cm", height: "12 cm" };
+  if (n.includes("tray"))
+    return { length: "30 cm", breadth: "20 cm", height: "4 cm" };
+  if (n.includes("napkin"))
+    return { length: "20 cm", breadth: "10 cm", height: "8 cm" };
+  if (n.includes("laundry"))
+    return { length: "40 cm", breadth: "40 cm", height: "50 cm" };
+  if (n.includes("storage"))
+    return { length: "35 cm", breadth: "35 cm", height: "30 cm" };
+  if (n.includes("lamp"))
+    return { length: "20 cm", breadth: "20 cm", height: "45 cm" };
+  if (n.includes("yoga mat"))
+    return { length: "183 cm", breadth: "61 cm", height: null };
+  if (n.includes("mekhela") || n.includes("saree") || n.includes("sador"))
+    return { length: "500 cm", breadth: "120 cm", height: null };
+  if (n.includes("kurta"))
+    return { length: "70 cm", breadth: "50 cm", height: null };
+  return { length: null, breadth: null, height: null };
+}
+
+/* ─── Resolve dimensions: DB first, fallback second ──────────────────── */
+function resolveDimensions(product) {
+  const hasDB =
+    product.length_cm != null ||
+    product.breadth_cm != null;
+
+  if (hasDB) {
+    return {
+      length:  product.length_cm  ? `${product.length_cm} cm`  : null,
+      breadth: product.breadth_cm ? `${product.breadth_cm} cm` : null,
+      height:  product.height_cm  ? `${product.height_cm} cm`  : null,
+      source: "admin",
+    };
+  }
+
+  const fb = getFallbackDimensions(product.title || product.name || "");
+  return { ...fb, source: "estimated" };
+}
+
+/* ─── Other product metadata ──────────────────────────────────────────── */
+function getProductMeta(name = "") {
   const n = name.toLowerCase();
 
-  // Dimensions
-  let dimensions = { length: "—", breadth: "—", height: null };
-  if (n.includes("hand bag") || n.includes("handbag") || n.includes("bag"))
-    dimensions = { length: "30 cm", breadth: "20 cm", height: "10 cm" };
-  else if (n.includes("hat"))
-    dimensions = { length: "58 cm", breadth: "58 cm", height: "12 cm" };
-  else if (n.includes("table mat") || n.includes("mat"))
-    dimensions = { length: "45 cm", breadth: "30 cm", height: null };
-  else if (n.includes("basket"))
-    dimensions = { length: "25 cm", breadth: "25 cm", height: "15 cm" };
-  else if (n.includes("runner"))
-    dimensions = { length: "140 cm", breadth: "36 cm", height: null };
-  else if (n.includes("stole"))
-    dimensions = { length: "200 cm", breadth: "70 cm", height: null };
-  else if (n.includes("cushion"))
-    dimensions = { length: "45 cm", breadth: "45 cm", height: null };
-  else if (n.includes("tote"))
-    dimensions = { length: "38 cm", breadth: "32 cm", height: "10 cm" };
-  else if (n.includes("pen stand"))
-    dimensions = { length: "10 cm", breadth: "10 cm", height: "12 cm" };
-  else if (n.includes("tray"))
-    dimensions = { length: "30 cm", breadth: "20 cm", height: "4 cm" };
-  else if (n.includes("napkin"))
-    dimensions = { length: "20 cm", breadth: "10 cm", height: "8 cm" };
-  else if (n.includes("laundry"))
-    dimensions = { length: "40 cm", breadth: "40 cm", height: "50 cm" };
-  else if (n.includes("storage"))
-    dimensions = { length: "35 cm", breadth: "35 cm", height: "30 cm" };
-  else if (n.includes("lamp"))
-    dimensions = { length: "20 cm", breadth: "20 cm", height: "45 cm" };
-  else if (n.includes("yoga mat"))
-    dimensions = { length: "183 cm", breadth: "61 cm", height: null };
-  else if (n.includes("mekhela") || n.includes("saree") || n.includes("sador"))
-    dimensions = { length: "500 cm", breadth: "120 cm", height: null };
-  else if (n.includes("kurta"))
-    dimensions = { length: "70 cm", breadth: "50 cm", height: null };
-
-  // Material
   let material = "Natural Handcrafted Fibers";
   if (n.includes("bamboo"))          material = "100% Natural Bamboo";
-  else if (n.includes("stole") || n.includes("runner") || n.includes("handloom") || n.includes("mekhela") || n.includes("sador") || n.includes("kurta"))
+  else if (n.includes("stole") || n.includes("runner") || n.includes("mekhela") || n.includes("sador") || n.includes("kurta"))
                                      material = "Natural Cotton / Eri Silk Fibers";
   else if (n.includes("cushion"))    material = "Cotton Fabric";
-  else if (n.includes("hyacinth") || n.includes("basket") || n.includes("bag") || n.includes("hat") || n.includes("mat"))
+  else if (n.includes("bag") || n.includes("hat") || n.includes("basket") || n.includes("mat"))
                                      material = "Dried Water Hyacinth";
 
-  // Weight
   let weight = "250g";
   if (n.includes("bag"))             weight = "400g";
   else if (n.includes("hat"))        weight = "150g";
@@ -67,22 +87,20 @@ function getProductDetails(name = "") {
   else if (n.includes("laundry"))    weight = "600g";
   else if (n.includes("yoga mat"))   weight = "1.2 kg";
 
-  // Origin
   let origin = "Prerana Handloom Co-operative Society";
-  if (
-    n.includes("bag") || n.includes("hat") || n.includes("basket") ||
-    n.includes("tray") || n.includes("bamboo") || n.includes("pen stand") ||
-    n.includes("napkin") || n.includes("storage") || n.includes("laundry") ||
-    n.includes("tote") || n.includes("yoga mat") || n.includes("lamp")
-  ) origin = "Shristi Handicrafts Co-operative Society";
+  if (n.includes("bag") || n.includes("hat") || n.includes("basket") ||
+      n.includes("tray") || n.includes("bamboo") || n.includes("pen stand") ||
+      n.includes("napkin") || n.includes("storage") || n.includes("laundry") ||
+      n.includes("tote") || n.includes("yoga mat") || n.includes("lamp"))
+    origin = "Shristi Handicrafts Co-operative Society";
 
-  // Care
   let care = "Hand wash gently with mild soap. Air dry in shade.";
-  if (n.includes("bamboo"))          care = "Wipe with a dry cloth. Avoid prolonged water exposure.";
+  if (n.includes("bamboo"))
+    care = "Wipe with a dry cloth. Avoid prolonged water exposure.";
   else if (n.includes("bag") || n.includes("basket") || n.includes("mat") || n.includes("hat"))
-                                     care = "Wipe with a damp cloth. Do not submerge in water.";
+    care = "Wipe with a damp cloth. Do not submerge in water.";
 
-  return { dimensions, material, weight, origin, care };
+  return { material, weight, origin, care };
 }
 
 function encodeImagePath(path = "") {
@@ -99,9 +117,9 @@ export default function ProductDetails() {
   const { isAuthenticated } = useAuth();
 
   const { product } = location.state || {};
-  const [imgError, setImgError]   = useState(false);
-  const [added, setAdded]         = useState(false);
-  const [visible, setVisible]     = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const [added, setAdded]       = useState(false);
+  const [visible, setVisible]   = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -115,19 +133,19 @@ export default function ProductDetails() {
           <span className="pd-empty-icon">🧺</span>
           <h2>No Product Selected</h2>
           <p>Please select a product from the products page.</p>
-          <button className="pd-btn pd-btn-primary" onClick={() => navigate("/products")}>
-            Browse Products
-          </button>
+          <button className="pd-btn pd-btn-primary" onClick={() => navigate("/products")}>Browse Products</button>
         </div>
       </div>
     );
   }
 
-  const title   = product.title || product.name || "Product";
-  const imgSrc  = encodeImagePath(product.imgSrc || product.thumbnail_url || "");
-  const desc    = product.description || "A beautifully handcrafted product made by skilled artisans.";
-  const price   = product.price || 800;
-  const details = getProductDetails(title);
+  const title      = product.title || product.name || "Product";
+  const imgSrc     = encodeImagePath(product.imgSrc || product.thumbnail_url || "");
+  const desc       = product.description || "A beautifully handcrafted product made by skilled artisans.";
+  const price      = product.price || 800;
+  const dims       = resolveDimensions(product);
+  const meta       = getProductMeta(title);
+  const hasDims    = dims.length || dims.breadth;
 
   const handleAddToCart = () => {
     addToCart({ ...product, price }, 1);
@@ -143,61 +161,46 @@ export default function ProductDetails() {
 
   return (
     <div className={`pd-page${visible ? " pd-visible" : ""}`}>
-
-      {/* ── decorative bg ── */}
       <div className="pd-bg-grid"    aria-hidden="true" />
       <div className="pd-bg-orb pd-bg-orb--1" aria-hidden="true" />
       <div className="pd-bg-orb pd-bg-orb--2" aria-hidden="true" />
 
       <div className="pd-inner">
 
-        {/* ── Breadcrumb ── */}
+        {/* Breadcrumb */}
         <nav className="pd-breadcrumb">
           <button onClick={() => navigate("/products")} className="pd-back-link">
-            <FontAwesomeIcon icon={faArrowLeft} />
-            <span>Back to Products</span>
+            <FontAwesomeIcon icon={faArrowLeft} /><span>Back to Products</span>
           </button>
           <span className="pd-breadcrumb-sep">›</span>
           <span className="pd-breadcrumb-current">{title}</span>
         </nav>
 
-        {/* ── Main card ── */}
+        {/* Main card */}
         <div className="pd-card">
 
-          {/* LEFT — image panel */}
+          {/* LEFT — image */}
           <div className="pd-img-panel">
             <div className="pd-img-wrap">
               {imgError || !imgSrc ? (
-                <div className="pd-img-placeholder">
-                  <span>🧺</span>
-                  <p>Handcrafted</p>
-                </div>
+                <div className="pd-img-placeholder"><span>🧺</span><p>Handcrafted</p></div>
               ) : (
-                <img
-                  src={imgSrc}
-                  alt={title}
-                  className="pd-img"
-                  onError={() => setImgError(true)}
-                />
+                <img src={imgSrc} alt={title} className="pd-img" onError={() => setImgError(true)} />
               )}
-              {/* floating badge */}
               <div className="pd-handcrafted-badge">
-                <FontAwesomeIcon icon={faLeaf} />
-                Handcrafted
+                <FontAwesomeIcon icon={faLeaf} /> Handcrafted
               </div>
             </div>
-
-            {/* origin pill */}
             <div className="pd-origin-pill">
               <FontAwesomeIcon icon={faMapMarkerAlt} />
-              <span>{details.origin}</span>
+              <span>{meta.origin}</span>
             </div>
           </div>
 
-          {/* RIGHT — info panel */}
+          {/* RIGHT — info */}
           <div className="pd-info-panel">
 
-            {/* title + price */}
+            {/* Title + price */}
             <div className="pd-title-row">
               <h1 className="pd-title">{title}</h1>
               <div className="pd-price-tag">
@@ -206,73 +209,82 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            {/* description */}
+            {/* Description */}
             <p className="pd-desc">{desc}</p>
 
-            {/* ── Dimensions — HERO section ── */}
-            <div className="pd-dimensions-block">
-              <div className="pd-dimensions-title">
-                <FontAwesomeIcon icon={faRuler} />
-                Dimensions
-              </div>
-              <div className="pd-dimensions-grid">
-                <div className="pd-dim-card">
-                  <span className="pd-dim-axis">L</span>
-                  <span className="pd-dim-value">{details.dimensions.length}</span>
-                  <span className="pd-dim-label">Length</span>
+            {/* Dimensions */}
+            {hasDims && (
+              <div className="pd-dimensions-block">
+                <div className="pd-dimensions-title">
+                  <FontAwesomeIcon icon={faRuler} />
+                  Dimensions
+                  {dims.source === "estimated" && (
+                    <span className="pd-dim-estimated">Approximate</span>
+                  )}
                 </div>
-                <div className="pd-dim-divider">×</div>
-                <div className="pd-dim-card">
-                  <span className="pd-dim-axis">B</span>
-                  <span className="pd-dim-value">{details.dimensions.breadth}</span>
-                  <span className="pd-dim-label">Breadth</span>
-                </div>
-                {details.dimensions.height && (
-                  <>
-                    <div className="pd-dim-divider">×</div>
+                <div className="pd-dimensions-grid">
+                  {dims.length && (
                     <div className="pd-dim-card">
-                      <span className="pd-dim-axis">H</span>
-                      <span className="pd-dim-value">{details.dimensions.height}</span>
-                      <span className="pd-dim-label">Height</span>
+                      <span className="pd-dim-axis">L</span>
+                      <span className="pd-dim-value">{dims.length}</span>
+                      <span className="pd-dim-label">Length</span>
                     </div>
-                  </>
-                )}
+                  )}
+                  {dims.length && dims.breadth && <div className="pd-dim-divider">×</div>}
+                  {dims.breadth && (
+                    <div className="pd-dim-card">
+                      <span className="pd-dim-axis">B</span>
+                      <span className="pd-dim-value">{dims.breadth}</span>
+                      <span className="pd-dim-label">Breadth</span>
+                    </div>
+                  )}
+                  {dims.height && (
+                    <>
+                      <div className="pd-dim-divider">×</div>
+                      <div className="pd-dim-card">
+                        <span className="pd-dim-axis">H</span>
+                        <span className="pd-dim-value">{dims.height}</span>
+                        <span className="pd-dim-label">Height</span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* ── Specs grid ── */}
+            {/* Specs */}
             <div className="pd-specs">
               <div className="pd-spec-row">
                 <div className="pd-spec-icon"><FontAwesomeIcon icon={faLeaf} /></div>
                 <div className="pd-spec-content">
                   <span className="pd-spec-label">Material</span>
-                  <span className="pd-spec-value">{details.material}</span>
+                  <span className="pd-spec-value">{meta.material}</span>
                 </div>
               </div>
               <div className="pd-spec-row">
                 <div className="pd-spec-icon"><FontAwesomeIcon icon={faWeight} /></div>
                 <div className="pd-spec-content">
                   <span className="pd-spec-label">Weight</span>
-                  <span className="pd-spec-value">{details.weight}</span>
+                  <span className="pd-spec-value">{meta.weight}</span>
                 </div>
               </div>
               <div className="pd-spec-row">
                 <div className="pd-spec-icon"><FontAwesomeIcon icon={faBroom} /></div>
                 <div className="pd-spec-content">
                   <span className="pd-spec-label">Care Instructions</span>
-                  <span className="pd-spec-value">{details.care}</span>
+                  <span className="pd-spec-value">{meta.care}</span>
                 </div>
               </div>
               <div className="pd-spec-row">
                 <div className="pd-spec-icon"><FontAwesomeIcon icon={faMapMarkerAlt} /></div>
                 <div className="pd-spec-content">
                   <span className="pd-spec-label">Made by</span>
-                  <span className="pd-spec-value">{details.origin}</span>
+                  <span className="pd-spec-value">{meta.origin}</span>
                 </div>
               </div>
             </div>
 
-            {/* ── Features pills ── */}
+            {/* Feature pills */}
             <div className="pd-features">
               {["Eco-Friendly", "Handmade", "Sustainable", "Natural Materials", "Supports Artisans"].map(f => (
                 <span key={f} className="pd-feature-pill">
@@ -281,20 +293,16 @@ export default function ProductDetails() {
               ))}
             </div>
 
-            {/* ── Action buttons ── */}
+            {/* Actions */}
             <div className="pd-actions">
-              <button
-                className={`pd-btn pd-btn-cart${added ? " pd-btn-added" : ""}`}
-                onClick={handleAddToCart}
-              >
+              <button className={`pd-btn pd-btn-cart${added ? " pd-btn-added" : ""}`} onClick={handleAddToCart}>
                 {added
                   ? <><FontAwesomeIcon icon={faCheck} /> Added!</>
                   : <><FontAwesomeIcon icon={faShoppingCart} /> Add to Cart</>
                 }
               </button>
               <button className="pd-btn pd-btn-primary" onClick={handleOrderNow}>
-                <FontAwesomeIcon icon={faShoppingBag} />
-                Order Now
+                <FontAwesomeIcon icon={faShoppingBag} /> Order Now
               </button>
             </div>
 

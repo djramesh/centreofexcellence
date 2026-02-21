@@ -8,34 +8,7 @@ import { faShoppingBag, faShoppingCart } from "@fortawesome/free-solid-svg-icons
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
-/* ─── Static product data ─────────────────────────────────────────────── */
-const waterHyacinthProducts = [
-  { id: 1,  title: "Hand Bag",   price: 1200, imgSrc: "../assets/hand-bag-1.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 2,  title: "Hand Bag",   price: 1100, imgSrc: "../assets/hand-bag-2.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 3,  title: "Hand Bag",   price: 1150, imgSrc: "../assets/hand-bag-3.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 4,  title: "Hand Bag",   price: 1050, imgSrc: "../assets/hand-bag-4.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 5,  title: "Hand Bag",   price: 1300, imgSrc: "../assets/hand-bag-5.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 6,  title: "Hand Bag",   price: 1250, imgSrc: "../assets/hand-bag-6.jpg",   description: "Water hyacinth bags are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 7,  title: "Hat",        price: 650,  imgSrc: "../assets/hat-1.jpg",        description: "Water hyacinth Hats are a stylish and eco-conscious accessory, crafted from the fast-growing aquatic plant." },
-  { id: 8,  title: "Table Mat",  price: 450,  imgSrc: "../assets/table-mat-1.jpg",  description: "Water hyacinth table mats are a charming and sustainable addition to any dining space." },
-  { id: 9,  title: "Table Mat",  price: 420,  imgSrc: "../assets/table-mat-2.jpg",  description: "Water hyacinth table mats are a charming and sustainable addition to any dining space." },
-  { id: 10, title: "Table Mat",  price: 480,  imgSrc: "../assets/tablemat-3.jpg",   description: "Water hyacinth table mats are a charming and sustainable addition to any dining space." },
-  { id: 11, title: "Basket",     price: 850,  imgSrc: "../assets/basket-1.jpg",     description: "Water hyacinth baskets are a beautiful and sustainable craft." },
-];
-
-// bambooProducts removed — bamboo section now loads from DB (categoryId: 5)
-
-const handloomProducts = [
-  { id: 14, title: "Stole",      price: 1400, imgSrc: "../assets/handloom1.jpg",   description: "Crafted from natural fibers, uniquely colored using plant-based dyes lending it a soft, earthy palette." },
-  { id: 15, title: "Stole",      price: 1350, imgSrc: "../assets/handloom2.jpg",   description: "Crafted from natural fibers, uniquely colored using plant-based dyes lending it a soft, earthy palette." },
-  { id: 16, title: "Stole",      price: 1500, imgSrc: "../assets/glry-6.jpg",      description: "Crafted from natural fibers, uniquely colored using plant-based dyes lending it a soft, earthy palette." },
-  { id: 17, title: "Runner Set", price: 1800, imgSrc: "../assets/handloom4.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 18, title: "Runner Set", price: 1750, imgSrc: "../assets/handloom5.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 19, title: "Runner Set", price: 1700, imgSrc: "../assets/handloom6.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 20, title: "Runner Set", price: 1850, imgSrc: "../assets/handloom7.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 21, title: "Runner Set", price: 1800, imgSrc: "../assets/handloom8.jpg",   description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-  { id: 22, title: "Runner Set", price: 1900, imgSrc: "../assets/handloom10.jpg",  description: "Exquisite textile pieces that bring warmth to any dining or living space." },
-];
+// All products now served from DB — no hardcoded arrays
 
 /* ─── Helpers ─────────────────────────────────────────────────────────── */
 
@@ -106,7 +79,7 @@ function useReveal(containerRef, deps = []) {
 /* ─── API helper ──────────────────────────────────────────────────────── */
 const API_BASE = import.meta.env.VITE_API_URL || "";
 
-async function fetchCategoryProducts(categoryId, page = 1, limit = 50) {
+async function fetchCategoryProducts(categoryId, page = 1, limit = 100) {
   const res = await fetch(
     `${API_BASE}/api/products/category/${categoryId}?page=${page}&limit=${limit}`
   );
@@ -133,14 +106,23 @@ function CategoryFilter({ categories, active, onChange }) {
 
 /* ─── ProductCard ─────────────────────────────────────────────────────── */
 function ProductCard({ product, onAddToCart, onOrderNow, index }) {
-  const price  = product.price || 800;
-  const title  = product.title || product.name;
-  const desc   = product.description || "";
-  const imgSrc = encodeImagePath(product.imgSrc || product.thumbnail_url || "");
+  const price    = product.price || 800;
+  const title    = product.title || product.name;
+  const desc     = product.description || "";
+  const imgSrc   = encodeImagePath(product.imgSrc || product.thumbnail_url || "");
+  const navigate = useNavigate();
   const [imgError, setImgError] = useState(false);
 
+  const goToDetails = () => {
+    navigate("/product-details", { state: { product: { ...product, title } } });
+  };
+
   return (
-    <div className="pc-card" style={{ animationDelay: `${(index % 4) * 0.07}s` }}>
+    <div
+      className="pc-card"
+      style={{ animationDelay: `${(index % 4) * 0.07}s`, cursor: "pointer" }}
+      onClick={goToDetails}
+    >
       <div className="pc-img-wrap">
         {imgError || !imgSrc ? (
           <div className="pc-img-placeholder">
@@ -158,11 +140,11 @@ function ProductCard({ product, onAddToCart, onOrderNow, index }) {
         )}
         <div className="pc-img-overlay" />
         <div className="pc-hover-actions">
-          <button className="pc-action-btn pc-cart-btn" onClick={(e) => onAddToCart(e, product)} aria-label="Add to cart">
+          <button className="pc-action-btn pc-cart-btn" onClick={(e) => { e.stopPropagation(); onAddToCart(e, product); }} aria-label="Add to cart">
             <FontAwesomeIcon icon={faShoppingCart} />
             <span>Add to Cart</span>
           </button>
-          <button className="pc-action-btn pc-order-btn" onClick={(e) => onOrderNow(e, product)} aria-label="Order now">
+          <button className="pc-action-btn pc-order-btn" onClick={(e) => { e.stopPropagation(); onOrderNow(e, product); }} aria-label="Order now">
             <FontAwesomeIcon icon={faShoppingBag} />
             <span>Order Now</span>
           </button>
@@ -175,10 +157,10 @@ function ProductCard({ product, onAddToCart, onOrderNow, index }) {
         <div className="pc-footer">
           <span className="pc-price">₹{Number(price).toLocaleString("en-IN")}</span>
           <div className="pc-footer-btns">
-            <button className="pc-btn-ghost" onClick={(e) => onAddToCart(e, product)}>
+            <button className="pc-btn-ghost" onClick={(e) => { e.stopPropagation(); onAddToCart(e, product); }}>
               <FontAwesomeIcon icon={faShoppingCart} />
             </button>
-            <button className="pc-btn-primary" onClick={(e) => onOrderNow(e, product)}>
+            <button className="pc-btn-primary" onClick={(e) => { e.stopPropagation(); onOrderNow(e, product); }}>
               Order Now
             </button>
           </div>
@@ -206,43 +188,6 @@ function SectionHeader({ section, gradient }) {
         <img key={i} src={src} alt="" className={`section-decor section-decor--${i}`} aria-hidden="true" />
       ))}
     </div>
-  );
-}
-
-/* ─── StaticSection ───────────────────────────────────────────────────── */
-function StaticSection({ section, si, onAddToCart, onOrderNow }) {
-  const [activeFilter, setActiveFilter] = useState("all");
-  const sectionRef = useRef(null);
-
-  const categories = useMemo(() => buildCategories(section.products, "title"), [section.products]);
-
-  const filtered = useMemo(() =>
-    activeFilter === "all"
-      ? section.products
-      : section.products.filter((p) => getProductType(p.title) === activeFilter),
-    [activeFilter, section.products]
-  );
-
-  useReveal(sectionRef, [filtered]);
-
-  return (
-    <section id={section.id} className="product-section" ref={sectionRef}>
-      <div className="reveal">
-        <SectionHeader section={section} gradient={si % 2 === 0 ? "a" : "b"} />
-      </div>
-      {categories.length > 2 && (
-        <div className="reveal">
-          <CategoryFilter categories={categories} active={activeFilter} onChange={setActiveFilter} />
-        </div>
-      )}
-      <div className="pc-grid">
-        {filtered.map((product, idx) => (
-          <div className="reveal" key={product.id} style={{ animationDelay: `${(idx % 4) * 0.06}s` }}>
-            <ProductCard product={product} onAddToCart={onAddToCart} onOrderNow={onOrderNow} index={idx} />
-          </div>
-        ))}
-      </div>
-    </section>
   );
 }
 
@@ -324,26 +269,21 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
 /* ─── Section config ──────────────────────────────────────────────────── */
 const SECTIONS = [
   {
-    id: "hyacinth", label: "Water Hyacinth", eyebrow: "Eco Crafts", fromDB: false,
-    products: waterHyacinthProducts,
+    // Water Hyacinth products live under Shristi category in DB (id: 4)
+    id: "hyacinth", label: "Water Hyacinth", eyebrow: "Eco Crafts",
+    fromDB: true, categoryId: 4,
     decorImgs: ["../assets/water-hyacinth-products2.png","../assets/water-hyacinth-products1.png","../assets/water-hyacinth-products.png"],
     icon: "../assets/water-hyacinth.png", subLabel: "Water Hyacinth Products",
   },
   {
-    id: "bamboo", label: "Bamboo", eyebrow: "Sustainable", fromDB: true, categoryId: 14,
+    id: "bamboo", label: "Bamboo", eyebrow: "Sustainable",
+    fromDB: true, categoryId: 14,
     decorImgs: [], icon: "../assets/bamboo-image.png", subLabel: "Bamboo Products",
   },
   {
-    id: "prerana", label: "Prerana", eyebrow: "Community Crafts", fromDB: true, categoryId: 3,
-    decorImgs: [], subLabel: "Prerana Community Crafts",
-  },
-  {
-    id: "shristi", label: "Shristi", eyebrow: "Women's Collective", fromDB: true, categoryId: 4,
-    decorImgs: [], subLabel: "Shristi Community Crafts",
-  },
-  {
-    id: "handloom", label: "Handloom", eyebrow: "Traditional Weave", fromDB: false,
-    products: handloomProducts,
+    // Handloom products live under Prerana category in DB (id: 3)
+    id: "handloom", label: "Handloom", eyebrow: "Traditional Weave",
+    fromDB: true, categoryId: 3,
     decorImgs: ["../assets/handloom-img.png","../assets/handloom-img-1.png","../assets/handloom-img-3.png"],
     subLabel: "Handloom Products",
   },
@@ -383,26 +323,16 @@ function Products() {
         </nav>
       </div>
 
-      {SECTIONS.map((section, si) =>
-        section.fromDB ? (
-          <DBSection
-            key={section.id}
-            section={section}
-            si={si}
-            categoryId={section.categoryId}
-            onAddToCart={handleAddToCart}
-            onOrderNow={handleOrderNow}
-          />
-        ) : (
-          <StaticSection
-            key={section.id}
-            section={section}
-            si={si}
-            onAddToCart={handleAddToCart}
-            onOrderNow={handleOrderNow}
-          />
-        )
-      )}
+      {SECTIONS.map((section, si) => (
+        <DBSection
+          key={section.id}
+          section={section}
+          si={si}
+          categoryId={section.categoryId}
+          onAddToCart={handleAddToCart}
+          onOrderNow={handleOrderNow}
+        />
+      ))}
     </div>
   );
 }

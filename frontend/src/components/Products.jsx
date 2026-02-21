@@ -334,7 +334,7 @@ function Products() {
       </div>
 
       {/* ── Society groups ── */}
-      {SOCIETIES.map((society, si) => (
+      {/* {SOCIETIES.map((society, si) => (
         <div key={society.id} className="society-group">
           <SocietyBanner society={society} />
           {society.sections.map((section, idx) => (
@@ -348,7 +348,7 @@ function Products() {
             />
           ))}
         </div>
-      ))}
+      ))} */}
     </div>
   );
 }

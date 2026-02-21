@@ -325,16 +325,16 @@ function Products() {
               {s.pill}
             </a>
           ))}
-          {SOCIETIES.flatMap(s => s.sections).map((sec) => (
+          {/* {SOCIETIES.flatMap(s => s.sections).map((sec) => (
             <a key={sec.id} href={`#${sec.id}`} className="section-nav-link section-nav-link--sub">
               {sec.label}
             </a>
-          ))}
+          ))} */}
         </nav>
       </div>
 
       {/* ── Society groups ── */}
-      {/* {SOCIETIES.map((society, si) => (
+      {SOCIETIES.map((society, si) => (
         <div key={society.id} className="society-group">
           <SocietyBanner society={society} />
           {society.sections.map((section, idx) => (
@@ -348,7 +348,7 @@ function Products() {
             />
           ))}
         </div>
-      ))} */}
+      ))}
     </div>
   );
 }

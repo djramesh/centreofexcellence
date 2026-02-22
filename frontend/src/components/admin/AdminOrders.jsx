@@ -142,17 +142,8 @@ export default function AdminOrders() {
               <tbody>
                 {orders.map((o) => (
                   <tr key={o.id}>
-                    <td><Link to={"/admin/orders/" + o.id} className="admin-link">#{o.id}</Link></td>
-                    <td className="admin-product-ids">
-                      {/* product_ids should be a comma-separated string or array returned by your API */}
-                      {Array.isArray(o.product_ids)
-                        ? o.product_ids.map((pid) => (
-                            <span key={pid} className="admin-pid-pill">{pid}</span>
-                          ))
-                        : o.product_id
-                          ? <span className="admin-pid-pill">{o.product_id}</span>
-                          : <span className="admin-muted">—</span>
-                      }
+                    <td>
+                      <Link to={"/admin/orders/" + o.id} className="admin-link">#{o.id}</Link>
                     </td>
                     <td>
                       <div>{o.customer_name}</div>
@@ -193,7 +184,7 @@ export function AdminOrderDetail() {
   const [error, setError]             = useState("");
   const [updating, setUpdating]       = useState(false);
   const [newStatus, setNewStatus]     = useState("");
-  const [lightbox, setLightbox]       = useState(null); // { src, alt }
+  const [lightbox, setLightbox]       = useState(null);
 
   const openLightbox  = useCallback((src, alt) => setLightbox({ src, alt }), []);
   const closeLightbox = useCallback(() => setLightbox(null), []);
@@ -223,7 +214,9 @@ export function AdminOrderDetail() {
     const token = localStorage.getItem("authToken");
     if (!order || !token) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/orders/${order.id}/invoice`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/api/orders/${order.id}/invoice`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!res.ok) return;
       const blob = await res.blob();
       const url  = window.URL.createObjectURL(blob);
@@ -236,7 +229,7 @@ export function AdminOrderDetail() {
 
   return (
     <div className="admin-page admin-order-detail">
-      {/* Lightbox */}
+
       {lightbox && <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} />}
 
       <header className="admin-page-header">
@@ -272,7 +265,12 @@ export function AdminOrderDetail() {
             <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} className="admin-select">
               {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
-            <button type="button" className="admin-btn admin-btn-primary" disabled={newStatus === order.status || updating} onClick={handleUpdateStatus}>
+            <button
+              type="button"
+              className="admin-btn admin-btn-primary"
+              disabled={newStatus === order.status || updating}
+              onClick={handleUpdateStatus}
+            >
               {updating ? "Updating…" : "Update"}
             </button>
           </div>
@@ -285,25 +283,25 @@ export function AdminOrderDetail() {
         <h3>Items</h3>
         <div className="admin-items-list">
           {items.map((row, i) => (
-            <div key={row.id} className="admin-item-row" style={{ borderBottom: i < items.length - 1 ? "1px solid #e2e8f0" : "none" }}>
-
-              {/* Thumbnail */}
+            <div
+              key={row.id}
+              className="admin-item-row"
+              style={{ borderBottom: i < items.length - 1 ? "1px solid #e2e8f0" : "none" }}
+            >
               <ProductThumb
                 url={row.thumbnail_url || row.product_thumbnail || null}
                 name={row.product_name}
                 onExpand={openLightbox}
               />
-
-              {/* Name + product ID */}
               <div className="admin-item-info">
                 <p className="admin-item-name">{row.product_name}</p>
                 <p className="admin-item-meta">
-                  {row.product_id && <span className="admin-pid-pill" style={{ marginRight: 6 }}>ID: {row.product_id}</span>}
+                  {row.product_id && (
+                    <span className="admin-pid-pill" style={{ marginRight: 6 }}>ID: {row.product_id}</span>
+                  )}
                   Qty: {row.quantity}
                 </p>
               </div>
-
-              {/* Pricing */}
               <div className="admin-item-pricing">
                 <p className="admin-item-unit">₹{Number(row.unit_price).toLocaleString("en-IN")} each</p>
                 <p className="admin-item-total">₹{Number(row.line_total).toLocaleString("en-IN")}</p>
@@ -311,7 +309,9 @@ export function AdminOrderDetail() {
             </div>
           ))}
         </div>
-        <p className="admin-order-total"><strong>Total: ₹{Number(order.total_amount).toLocaleString("en-IN")}</strong></p>
+        <p className="admin-order-total">
+          <strong>Total: ₹{Number(order.total_amount).toLocaleString("en-IN")}</strong>
+        </p>
       </div>
 
       <OrderShippingSection

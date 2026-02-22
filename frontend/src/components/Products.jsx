@@ -4,7 +4,7 @@ import "./Common.css";
 import "./Order.jsx";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingBag, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingBag, faShoppingCart, faSearch, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -252,6 +252,98 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
   );
 }
 
+/* ─── ProductSearch ───────────────────────────────────────────────────── */
+function ProductSearch({ onAddToCart, onOrderNow }) {
+  const [query, setQuery]       = useState("");
+  const [results, setResults]   = useState([]);
+  const [loading, setLoading]   = useState(false);
+  const [searched, setSearched] = useState(false);
+  const inputRef = useRef(null);
+
+  // Collect all products from all category IDs on mount
+  const ALL_CATEGORY_IDS = SOCIETIES.flatMap(s => s.sections.map(sec => sec.categoryId));
+  const allProductsRef = useRef(null);
+
+  useEffect(() => {
+    // Pre-fetch all products for instant client-side search
+    Promise.all(ALL_CATEGORY_IDS.map(id => fetchCategoryProducts(id)))
+      .then(responses => {
+        allProductsRef.current = responses.flatMap(r => r.products || []);
+      })
+      .catch(() => { allProductsRef.current = []; });
+  }, []);
+
+  const handleSearch = useCallback((value) => {
+    const q = value.trim().toLowerCase();
+    setQuery(value);
+    if (!q) { setResults([]); setSearched(false); return; }
+    setLoading(true);
+    setSearched(true);
+    // Small debounce feel
+    setTimeout(() => {
+      const pool = allProductsRef.current || [];
+      const found = pool.filter(p =>
+        (p.name || "").toLowerCase().includes(q) ||
+        (p.description || "").toLowerCase().includes(q)
+      );
+      setResults(found);
+      setLoading(false);
+    }, 150);
+  }, []);
+
+  const clearSearch = () => { setQuery(""); setResults([]); setSearched(false); inputRef.current?.focus(); };
+
+  return (
+    <div className="ps-wrap">
+      <div className="ps-inner">
+        {/* Search bar */}
+        <div className="ps-bar">
+          <span className="ps-icon"><FontAwesomeIcon icon={faSearch} /></span>
+          <input
+            ref={inputRef}
+            className="ps-input"
+            type="text"
+            placeholder="Search products — e.g. hand bag, bamboo tray, stole…"
+            value={query}
+            onChange={e => handleSearch(e.target.value)}
+            autoComplete="off"
+            spellCheck={false}
+          />
+          {query && (
+            <button className="ps-clear" onClick={clearSearch} aria-label="Clear search">
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
+          )}
+        </div>
+
+        {/* Results */}
+        {loading && (
+          <div className="ps-status">Searching…</div>
+        )}
+        {!loading && searched && results.length === 0 && (
+          <div className="ps-status">No products found for "<strong>{query}</strong>"</div>
+        )}
+        {!loading && results.length > 0 && (
+          <>
+            <p className="ps-count">{results.length} product{results.length !== 1 ? "s" : ""} found</p>
+            <div className="pc-grid ps-grid">
+              {results.map((product, idx) => (
+                <ProductCard
+                  key={product.id}
+                  product={{ ...product, title: product.name, imgSrc: product.thumbnail_url }}
+                  onAddToCart={onAddToCart}
+                  onOrderNow={onOrderNow}
+                  index={idx}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ─── Society + Section config ────────────────────────────────────────── */
 const SOCIETIES = [
   {
@@ -325,13 +417,11 @@ function Products() {
               {s.pill}
             </a>
           ))}
-          {/* {SOCIETIES.flatMap(s => s.sections).map((sec) => (
-            <a key={sec.id} href={`#${sec.id}`} className="section-nav-link section-nav-link--sub">
-              {sec.label}
-            </a>
-          ))} */}
         </nav>
       </div>
+
+      {/* ── Search ── */}
+      <ProductSearch onAddToCart={handleAddToCart} onOrderNow={handleOrderNow} />
 
       {/* ── Society groups ── */}
       {SOCIETIES.map((society, si) => (

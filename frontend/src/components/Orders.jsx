@@ -77,7 +77,6 @@ function ImageLightbox({ src, alt, onClose }) {
         padding: "1.5rem",
       }}
     >
-      {/* Close button */}
       <button
         onClick={onClose}
         style={{
@@ -97,8 +96,6 @@ function ImageLightbox({ src, alt, onClose }) {
       >
         ✕
       </button>
-
-      {/* Image */}
       <img
         src={src}
         alt={alt || "Product"}
@@ -203,19 +200,6 @@ function ProductThumb({ url, name, onExpand }) {
         onError={() => setErr(true)}
         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", userSelect: "none" }}
       />
-      {/* Zoom hint overlay */}
-      <div style={{
-        position: "absolute", inset: 0,
-        background: "rgba(36,132,255,0.0)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: "1rem", color: "#fff", opacity: 0,
-        transition: "opacity 0.18s, background 0.18s",
-        pointerEvents: "none",
-      }}
-        className="thumb-hover-overlay"
-      >
-        🔍
-      </div>
     </div>
   );
 }
@@ -238,21 +222,11 @@ const css = `
   }
   .ol-wrap { max-width: 960px; margin: 0 auto; }
 
-  .ol-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;
-  }
-  .ol-eyebrow {
-    display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em;
-    text-transform: uppercase; color: ${t.blue}; margin-bottom: 0.3rem;
-  }
+  .ol-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .ol-eyebrow { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: ${t.blue}; margin-bottom: 0.3rem; }
   .ol-title { font-size: clamp(1.6rem,4vw,2.2rem); font-weight: 700; line-height: 1.15; color: ${t.text1}; }
   .ol-sub   { color: ${t.text2}; font-size: 0.875rem; margin-top: 0.3rem; }
-  .ol-count-pill {
-    background: ${t.blueSoft}; color: ${t.blue};
-    padding: 0.35rem 0.9rem; border-radius: 999px;
-    font-size: 0.78rem; font-weight: 600; white-space: nowrap; align-self: flex-start; margin-top: 0.4rem;
-  }
+  .ol-count-pill { background: ${t.blueSoft}; color: ${t.blue}; padding: 0.35rem 0.9rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; align-self: flex-start; margin-top: 0.4rem; }
 
   .ol-error { background: ${t.redSoft}; color: ${t.red}; border-radius: ${t.radiusSm}; padding: 0.8rem 1.1rem; font-size: 0.875rem; margin-bottom: 1.25rem; }
   .ol-empty { text-align: center; padding: 4rem 2rem; }
@@ -265,12 +239,7 @@ const css = `
 
   .dt-table-wrap { overflow-x: auto; }
   .dt-table { width: 100%; border-collapse: collapse; font-family: ${t.font}; }
-  .dt-table thead th {
-    padding: 0.8rem 1.4rem; text-align: left;
-    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-    color: ${t.text3}; border-bottom: 1px solid ${t.border}; white-space: nowrap;
-    background: ${t.surfaceHover};
-  }
+  .dt-table thead th { padding: 0.8rem 1.4rem; text-align: left; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: ${t.text3}; border-bottom: 1px solid ${t.border}; white-space: nowrap; background: ${t.surfaceHover}; }
   .dt-row { transition: background 0.15s; }
   .dt-row:hover { background: ${t.surfaceHover}; }
   .dt-table tbody td { padding: 0.95rem 1.4rem; font-size: 0.875rem; vertical-align: middle; }
@@ -288,86 +257,47 @@ const css = `
   .mb-meta   { font-size: 0.78rem; color: ${t.text2}; }
   .mb-amount { font-size: 1rem; font-weight: 700; color: ${t.text1}; margin-bottom: 0.3rem; }
 
-  .pg-footer {
-    padding: 1rem 1.4rem; border-top: 1px solid ${t.border}; background: ${t.surfaceHover};
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
-  }
+  .pg-footer { padding: 1rem 1.4rem; border-top: 1px solid ${t.border}; background: ${t.surfaceHover}; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
   .pg-info    { font-size: 0.78rem; color: ${t.text2}; }
   .pg-btns    { display: flex; align-items: center; gap: 0.35rem; }
   .pg-current { padding: 0 0.4rem; font-size: 0.8rem; color: ${t.text2}; }
 
-  .button {
-    font-family: "Poppins", serif; display: inline-flex; align-items: center; justify-content: center;
-    padding: 10px 25px; border: 0; border-radius: 10rem; transition: all 0.02s;
-    font-size: 16px; font-weight: 450; cursor: pointer;
-    background: linear-gradient(90deg, rgba(187,210,255,1) 0%, rgba(36,132,255,1) 100%);
-    color: #fff; box-shadow: 0 0px 7px -5px rgba(0,0,0,0.5);
-  }
+  .button { font-family: "Poppins", sans-serif; display: inline-flex; align-items: center; justify-content: center; padding: 10px 25px; border: 0; border-radius: 10rem; transition: all 0.15s; font-size: 16px; font-weight: 500; cursor: pointer; background: linear-gradient(90deg, rgba(187,210,255,1) 0%, rgba(36,132,255,1) 100%); color: #fff; box-shadow: 0 0px 7px -5px rgba(0,0,0,0.5); }
   .button:disabled { opacity: 0.55; cursor: not-allowed; }
   .button:hover:not(:disabled) { box-shadow: 0 4px 18px rgba(36,132,255,0.3); transform: translateY(-1px); }
 
-  .button-1 {
-    font-family: "Poppins", serif; display: inline-flex; align-items: center; justify-content: center;
-    padding: 10px 25px; border: 1px solid ${t.border}; border-radius: 10rem; transition: all 0.02s;
-    font-size: 16px; font-weight: 450; cursor: pointer;
-    background: ${t.surface}; color: ${t.text2}; box-shadow: 0 0px 7px -5px rgba(0,0,0,0.5);
-  }
+  .button-1 { font-family: "Poppins", sans-serif; display: inline-flex; align-items: center; justify-content: center; padding: 10px 25px; border: 1px solid ${t.border}; border-radius: 10rem; transition: all 0.15s; font-size: 16px; font-weight: 500; cursor: pointer; background: ${t.surface}; color: ${t.text2}; box-shadow: 0 0px 7px -5px rgba(0,0,0,0.5); }
   .button-1:hover:not(:disabled) { border-color: ${t.blue}; color: ${t.blue}; background: ${t.blueSoft}; }
   .button-1:disabled { opacity: 0.38; cursor: not-allowed; }
   .pg-btn { font-size: 0.82rem !important; padding: 6px 14px !important; }
 
-  .back-link {
-    display: inline-flex; align-items: center; gap: 5px; color: ${t.text2};
-    text-decoration: none; font-size: 0.82rem; font-weight: 500;
-    transition: color 0.15s; margin-bottom: 1.5rem;
-  }
+  .back-link { display: inline-flex; align-items: center; gap: 5px; color: ${t.text2}; text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.15s; margin-bottom: 1.5rem; }
   .back-link:hover { color: ${t.blue}; }
-  .od-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    gap: 1rem; flex-wrap: wrap; margin-bottom: 1.75rem;
-  }
+  .od-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
   .od-title { font-size: clamp(1.4rem,4vw,2.1rem); font-weight: 700; line-height: 1.15; }
   .od-id    { color: ${t.blue}; }
   .od-grid  { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 1rem; margin-bottom: 1.25rem; }
-
-  .section-label {
-    font-size: 0.67rem; font-weight: 700; letter-spacing: 0.12em;
-    text-transform: uppercase; color: ${t.text3}; margin-bottom: 0.55rem;
-  }
+  .section-label { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: ${t.text3}; margin-bottom: 0.55rem; }
 
   .track-row    { display: flex; align-items: center; overflow-x: auto; padding: 0.6rem 0 0.3rem; }
   .track-node   { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; min-width: 64px; }
-  .track-circle {
-    width: 44px; height: 44px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.05rem; font-weight: 700; transition: all 0.3s; flex-shrink: 0;
-  }
+  .track-circle { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: 700; transition: all 0.3s; flex-shrink: 0; }
   .track-active { background: linear-gradient(90deg, #bbd2ff 0%, #2484ff 100%); color: #fff; box-shadow: 0 4px 16px rgba(36,132,255,0.35); animation: stepPop 0.35s ease both; }
   .track-done   { background: ${t.blueSoft}; color: ${t.blue}; border: 2px solid ${t.borderHover}; animation: stepPop 0.3s ease both; }
   .track-idle   { background: #f1f5f9; color: ${t.text3}; border: 2px solid ${t.border}; }
   .track-label  { font-size: 0.7rem; font-weight: 500; text-align: center; white-space: nowrap; }
-  .tl-done   { color: ${t.text1}; font-weight: 600; }
-  .tl-idle   { color: ${t.text3}; }
+  .tl-done { color: ${t.text1}; font-weight: 600; }
+  .tl-idle { color: ${t.text3}; }
   .track-line { flex: 1; min-width: 28px; max-width: 72px; height: 3px; margin: 0 0.25rem; margin-bottom: 1.4rem; border-radius: 2px; }
-  .tl-filled  { background: linear-gradient(90deg, #bbd2ff 0%, #2484ff 100%); }
-  .tl-empty   { background: ${t.border}; }
+  .tl-filled { background: linear-gradient(90deg, #bbd2ff 0%, #2484ff 100%); }
+  .tl-empty  { background: ${t.border}; }
 
-  .items-head {
-    padding: 1.1rem 1.4rem; border-bottom: 1px solid ${t.border}; background: ${t.surfaceHover};
-    display: flex; align-items: center; gap: 0.75rem;
-  }
+  .items-head { padding: 1.1rem 1.4rem; border-bottom: 1px solid ${t.border}; background: ${t.surfaceHover}; display: flex; align-items: center; gap: 0.75rem; }
   .items-count { background: ${t.blueSoft}; color: ${t.blue}; font-size: 0.72rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; }
-  .total-bar {
-    padding: 1rem 1.4rem; border-top: 1px solid ${t.border}; background: ${t.surfaceHover};
-    display: flex; justify-content: flex-end; align-items: center; gap: 1.5rem;
-  }
+  .total-bar { padding: 1rem 1.4rem; border-top: 1px solid ${t.border}; background: ${t.surfaceHover}; display: flex; justify-content: flex-end; align-items: center; gap: 1.5rem; }
   .total-amount { font-size: 1.2rem; font-weight: 700; color: ${t.blue}; }
 
-  /* ── Item rows ── */
-  .item-row {
-    display: flex; align-items: center; gap: 1.1rem;
-    padding: 1.1rem 1.4rem; transition: background 0.15s;
-  }
+  .item-row { display: flex; align-items: center; gap: 1.1rem; padding: 1.1rem 1.4rem; transition: background 0.15s; }
   .item-row:hover { background: ${t.surfaceHover}; }
   .item-info  { flex: 1; min-width: 0; }
   .item-name  { font-weight: 500; font-size: 0.9rem; color: ${t.text1}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -376,13 +306,7 @@ const css = `
   .item-unit  { font-size: 0.75rem; color: ${t.text3}; }
   .item-total { font-weight: 600; font-size: 0.95rem; color: ${t.text1}; }
 
-  /* Thumbnail hover overlay effect */
-  .thumb-wrap:hover .thumb-hover-overlay {
-    opacity: 1 !important;
-    background: rgba(36,132,255,0.35) !important;
-  }
-
-  /* -- Pending payment warning -- */
+  /* Pending payment warning */
   .pending-warning {
     display: flex; align-items: flex-start; gap: 0.85rem;
     background: linear-gradient(135deg, #fffbeb, #fef3c7);
@@ -390,19 +314,20 @@ const css = `
     padding: 1.1rem 1.3rem; margin-bottom: 1.25rem;
     animation: fadeUp 0.35s ease both;
   }
-  .pending-warning-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 1px; }
-  .pending-warning-body { flex: 1; min-width: 0; }
+  .pending-warning-icon  { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+  .pending-warning-body  { flex: 1; min-width: 0; }
   .pending-warning-title { font-size: 0.88rem; font-weight: 700; color: #92400e; margin-bottom: 0.2rem; }
   .pending-warning-text  { font-size: 0.8rem; color: #a16207; line-height: 1.55; }
+
   .pay-now-btn {
     font-family: "Poppins", sans-serif; display: inline-flex; align-items: center;
-    justify-content: center; gap: 0.45rem; padding: 11px 28px; border: 0;
-    border-radius: 10rem; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+    justify-content: center; gap: 0.45rem; padding: 10px 25px; border: 0;
+    border-radius: 10rem; font-size: 16px; font-weight: 500; cursor: pointer;
     background: linear-gradient(90deg, #f59e0b 0%, #f97316 100%); color: #fff;
-    box-shadow: 0 4px 18px rgba(245,158,11,0.38);
+    box-shadow: 0 4px 18px rgba(245,158,11,0.35);
     transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s; white-space: nowrap;
   }
-  .pay-now-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,158,11,0.48); }
+  .pay-now-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(245,158,11,0.45); }
   .pay-now-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   @media (max-width: 680px) {
@@ -412,6 +337,7 @@ const css = `
     .hide-sm { display: none !important; }
     .od-header { flex-direction: column; }
     .button { width: 100%; font-size: 14px; padding: 10px 18px; }
+    .pay-now-btn { width: 100%; font-size: 14px; }
     .track-node { min-width: 54px; }
     .track-circle { width: 38px; height: 38px; font-size: 0.9rem; }
     .item-row { gap: 0.75rem; padding: 0.9rem 1rem; }
@@ -494,7 +420,7 @@ export function OrdersList() {
                         <td className="dt-muted nowrap">{new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</td>
                         <td className="dt-muted">{o.city ? `${o.city}${o.state ? ", " + o.state : ""}` : "—"}</td>
                         <td><Badge status={o.status} /></td>
-                        <td className="dt-amount nowrap">₹{Number(o.total_amount).toLocaleString("en-IN")}</td>
+                        <td className="dt-amount nowrap">Rs.{Number(o.total_amount).toLocaleString("en-IN")}</td>
                         <td><Link to={`/orders/${o.id}`} className="dt-link">View details →</Link></td>
                       </tr>
                     ))}
@@ -512,7 +438,7 @@ export function OrdersList() {
                       </p>
                     </div>
                     <div style={{ textAlign: "right", flexShrink: 0 }}>
-                      <p className="mb-amount">₹{Number(o.total_amount).toLocaleString("en-IN")}</p>
+                      <p className="mb-amount">Rs.{Number(o.total_amount).toLocaleString("en-IN")}</p>
                       <Link to={`/orders/${o.id}`} className="dt-link">View →</Link>
                     </div>
                   </div>
@@ -548,7 +474,8 @@ export function OrderDetail() {
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState("");
   const [dlLoading, setDlLoading]     = useState(false);
-  const [lightbox, setLightbox]       = useState(null); // { src, alt }
+  const [payLoading, setPayLoading]   = useState(false);   // ← fixed: was missing
+  const [lightbox, setLightbox]       = useState(null);
 
   const openLightbox  = useCallback((src, alt) => setLightbox({ src, alt }), []);
   const closeLightbox = useCallback(() => setLightbox(null), []);
@@ -590,12 +517,12 @@ export function OrderDetail() {
       if (!res.ok) throw new Error("Failed to initiate payment");
       const data = await res.json();
       const options = {
-        key: data.key_id,
-        amount: data.amount,
-        currency: data.currency || "INR",
-        name: "COE Handicrafts",
+        key:         data.key_id,
+        amount:      data.amount,
+        currency:    data.currency || "INR",
+        name:        "COE Handicrafts",
         description: `Order #${order.id}`,
-        order_id: data.razorpay_order_id,
+        order_id:    data.razorpay_order_id,
         handler: async (response) => {
           await fetch(`${API_BASE_URL}/api/orders/${order.id}/verify-payment`, {
             method: "POST",
@@ -610,7 +537,11 @@ export function OrderDetail() {
           setOrder(updated.order);
           setItems(updated.items || []);
         },
-        prefill: { name: order.customer_name || "", email: order.customer_email || "", contact: order.phone || "" },
+        prefill: {
+          name:    order.customer_name  || "",
+          email:   order.customer_email || "",
+          contact: order.phone          || "",
+        },
         theme: { color: "#2484ff" },
       };
       const rzp = new window.Razorpay(options);
@@ -654,7 +585,6 @@ export function OrderDetail() {
       <Fonts />
       <style>{css}</style>
 
-      {/* Lightbox portal */}
       {lightbox && <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} />}
 
       <div className="ol-page">
@@ -664,12 +594,12 @@ export function OrderDetail() {
           {/* Pending payment warning */}
           {order.status === "PENDING" && (
             <div className="pending-warning">
-              <span className="pending-warning-icon">&#9888;&#65039;</span>
+              <span className="pending-warning-icon">⚠️</span>
               <div className="pending-warning-body">
-                <p className="pending-warning-title">Payment Pending &mdash; Action Required</p>
+                <p className="pending-warning-title">Payment Pending — Action Required</p>
                 <p className="pending-warning-text">
                   This order has not been paid yet. Please complete your payment within{" "}
-                  <strong>2 days</strong> of placing the order &mdash; unpaid orders are
+                  <strong>2 days</strong> of placing the order — unpaid orders are
                   automatically cancelled after that.
                 </p>
               </div>
@@ -686,11 +616,11 @@ export function OrderDetail() {
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               {order.status === "PENDING" && (
                 <button className="pay-now-btn" onClick={handlePayNow} disabled={payLoading}>
-                  {payLoading ? "Opening..." : "Pay Now"}
+                  {payLoading ? "Opening..." : "💳 Pay Now"}
                 </button>
               )}
               <button className="button" onClick={handleDownloadInvoice} disabled={dlLoading}>
-                {dlLoading ? "Preparing..." : "Download Invoice"}
+                {dlLoading ? "Preparing..." : "⬇ Download Invoice"}
               </button>
             </div>
           </div>
@@ -747,7 +677,7 @@ export function OrderDetail() {
                 Payment: <strong style={{ color: t.text1, fontWeight: 500 }}>{order.payment_status}</strong>
               </p>
               <p style={{ fontSize: "1.15rem", fontWeight: 700, color: t.blue, marginTop: "0.5rem" }}>
-                ₹{Number(order.total_amount).toLocaleString("en-IN")}
+                Rs.{Number(order.total_amount).toLocaleString("en-IN")}
               </p>
             </Card>
           </div>
@@ -758,7 +688,6 @@ export function OrderDetail() {
               <p className="section-label" style={{ margin: 0 }}>Order Items</p>
               <span className="items-count">{items.length} item{items.length !== 1 ? "s" : ""}</span>
             </div>
-
             {items.map((row, i) => (
               <div key={row.id} className="item-row" style={{ borderBottom: i < items.length - 1 ? `1px solid ${t.border}` : "none" }}>
                 <ProductThumb
@@ -771,15 +700,14 @@ export function OrderDetail() {
                   <p className="item-meta">Qty: {row.quantity}</p>
                 </div>
                 <div className="item-price">
-                  <p className="item-unit">₹{Number(row.unit_price).toLocaleString("en-IN")} each</p>
-                  <p className="item-total">₹{Number(row.line_total).toLocaleString("en-IN")}</p>
+                  <p className="item-unit">Rs.{Number(row.unit_price).toLocaleString("en-IN")} each</p>
+                  <p className="item-total">Rs.{Number(row.line_total).toLocaleString("en-IN")}</p>
                 </div>
               </div>
             ))}
-
             <div className="total-bar">
               <span style={{ color: t.text2, fontSize: "0.85rem" }}>Order Total</span>
-              <span className="total-amount">₹{Number(order.total_amount).toLocaleString("en-IN")}</span>
+              <span className="total-amount">Rs.{Number(order.total_amount).toLocaleString("en-IN")}</span>
             </div>
           </Card>
 

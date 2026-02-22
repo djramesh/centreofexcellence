@@ -66,7 +66,7 @@ function resolveDimensions(product) {
 }
 
 /* ─── Other product metadata ──────────────────────────────────────────── */
-function getProductMeta(name = "") {
+function getProductMeta(name = "", product = {}) {
   const n = name.toLowerCase();
 
   let material = "Natural Handcrafted Fibers";
@@ -77,12 +77,29 @@ function getProductMeta(name = "") {
   else if (n.includes("bag") || n.includes("hat") || n.includes("basket") || n.includes("mat"))
                                      material = "Dried Water Hyacinth";
 
-  let origin = "Prerana Handloom Co-operative Society";
-  if (n.includes("bag") || n.includes("hat") || n.includes("basket") ||
-      n.includes("tray") || n.includes("bamboo") || n.includes("pen stand") ||
-      n.includes("napkin") || n.includes("storage") || n.includes("laundry") ||
-      n.includes("tote") || n.includes("yoga mat") || n.includes("lamp"))
+  /* ── Origin: use category_id from DB (most reliable) ──────────────────
+     category_id 3  = Prerana Handloom  (handloom category)
+     category_id 4  = Shristi           (shristi/handicrafts category)
+     category_id 14 = Bamboo (sub-category under Shristi)
+     Falls back to category name string, then keyword guessing.
+  ──────────────────────────────────────────────────────────────────────── */
+  const catId   = Number(product.category_id);
+  const catName = (product.category_name || product.category || "").toLowerCase();
+
+  let origin;
+  if (catId === 4 || catId === 14 || catName.includes("shristi") || catName.includes("handicraft")) {
     origin = "Shristi Handicrafts Co-operative Society";
+  } else if (catId === 3 || catName.includes("prerana") || catName.includes("handloom")) {
+    origin = "Prerana Handloom Co-operative Society";
+  } else {
+    // Last resort: keyword guess (only reached when category data is missing)
+    const shristiKeywords = ["bag", "hat", "basket", "tray", "bamboo", "pen stand",
+                             "napkin", "storage", "laundry", "tote", "yoga mat",
+                             "lamp", "cushion", "water hyacinth", "mat"];
+    origin = shristiKeywords.some(kw => n.includes(kw))
+      ? "Shristi Handicrafts Co-operative Society"
+      : "Prerana Handloom Co-operative Society";
+  }
 
   let care = "Hand wash gently with mild soap. Air dry in shade.";
   if (n.includes("bamboo"))
@@ -134,7 +151,7 @@ export default function ProductDetails() {
   const desc       = product.description || "A beautifully handcrafted product made by skilled artisans.";
   const price      = product.price || 800;
   const dims       = resolveDimensions(product);
-  const meta       = getProductMeta(title);
+  const meta       = getProductMeta(title, product);
   const hasDims    = dims.length || dims.breadth;
 
   const handleAddToCart = () => {

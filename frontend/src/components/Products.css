@@ -31,10 +31,6 @@
 
 /* ══════════════════════════════════════════════════════════════════════
    SCROLL REVEAL
-   - .reveal starts hidden
-   - .revealed makes it visible
-   - Each section re-observes its own .reveal elements after data loads
-   - A 600ms fallback also ensures nothing stays hidden
 ══════════════════════════════════════════════════════════════════════ */
 .reveal {
   opacity: 0;
@@ -76,7 +72,6 @@
   background: linear-gradient(180deg, var(--bg) 0%, #fff 100%);
   position: relative;
   overflow: hidden;
-  /* Hero is always visible — no reveal class needed here */
   opacity: 1;
   transform: none;
 }
@@ -229,7 +224,7 @@
 
 
 /* ══════════════════════════════════════════════════════════════════════
-   CATEGORY FILTER  (matches blue theme)
+   CATEGORY FILTER
 ══════════════════════════════════════════════════════════════════════ */
 .category-filter {
   display: flex;
@@ -302,7 +297,6 @@
   border-color: rgba(36,132,255,0.18);
 }
 
-/* Image wrapper */
 .pc-img-wrap {
   position: relative;
   width: 100%;
@@ -320,7 +314,6 @@
 }
 .pc-card:hover .pc-img { transform: scale(1.07); }
 
-/* Broken-image placeholder */
 .pc-img-placeholder {
   width: 100%;
   height: 100%;
@@ -331,10 +324,7 @@
   gap: 0.5rem;
   background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
 }
-.pc-img-placeholder-icon {
-  font-size: 2.5rem;
-  line-height: 1;
-}
+.pc-img-placeholder-icon { font-size: 2.5rem; line-height: 1; }
 .pc-img-placeholder-text {
   font-size: 0.7rem;
   font-weight: 600;
@@ -343,7 +333,6 @@
   color: var(--text3);
 }
 
-/* Dark overlay on hover */
 .pc-img-overlay {
   position: absolute;
   inset: 0;
@@ -354,7 +343,6 @@
 }
 .pc-card:hover .pc-img-overlay { opacity: 1; }
 
-/* Eco badge */
 .pc-badge {
   position: absolute;
   top: 12px; left: 12px;
@@ -371,7 +359,6 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Hover action buttons */
 .pc-hover-actions {
   position: absolute;
   bottom: 12px; left: 12px; right: 12px;
@@ -382,10 +369,7 @@
   transition: opacity 0.25s ease, transform 0.25s ease;
   z-index: 2;
 }
-.pc-card:hover .pc-hover-actions {
-  opacity: 1;
-  transform: translateY(0);
-}
+.pc-card:hover .pc-hover-actions { opacity: 1; transform: translateY(0); }
 
 .pc-action-btn {
   flex: 1;
@@ -417,7 +401,6 @@
   box-shadow: 0 2px 10px rgba(36,132,255,0.35);
 }
 
-/* Card body */
 .pc-body {
   flex: 1;
   padding: 1.1rem 1.25rem 1.25rem;
@@ -444,7 +427,6 @@
   overflow: hidden;
 }
 
-/* Footer row */
 .pc-footer {
   display: flex;
   align-items: center;
@@ -504,7 +486,6 @@
   box-shadow: 0 5px 18px rgba(36,132,255,0.35);
 }
 
-/* ── Button overrides ──────────────────────────────────────────────── */
 .button-secondary {
   background: #fff;
   border: 2px solid var(--blue);
@@ -566,9 +547,10 @@
   .pc-grid { grid-template-columns: 1fr; }
 }
 
-/* ═══════════════════════════════════════════════════════
-   SOCIETY BANNERS — append to bottom of Products.css
-═══════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════════════
+   SOCIETY BANNERS
+══════════════════════════════════════════════════════════════════════ */
 
 .society-group {
   margin-bottom: 1rem;
@@ -605,17 +587,20 @@
   background: linear-gradient(90deg, #ffa000, #ff56a8);
 }
 
+/* ── CENTERED banner layout ── */
 .society-banner-inner {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.2rem;
+  text-align: center;
 }
 
 .society-banner-left {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.45rem;
 }
 
@@ -633,19 +618,20 @@
 }
 .society-banner--teal .society-banner-pill {
   background: rgba(0,212,255,0.13);
-  color: #00d4ff;
+  color: #00b4cc;
   border: 1px solid rgba(0,212,255,0.28);
 }
 .society-banner--amber .society-banner-pill {
   background: rgba(255,160,0,0.13);
-  color: #ffa000;
+  color: #cc8200;
   border: 1px solid rgba(255,160,0,0.32);
 }
 
 .society-banner-title {
   font-size: clamp(1.15rem, 2.4vw, 1.65rem);
   font-weight: 800;
-  color: #0F172A;
+  /* slightly less dark than pure #0F172A */
+  color: #1e293b;
   margin: 0;
   letter-spacing: -0.02em;
   font-family: 'Poppins', sans-serif;
@@ -653,9 +639,10 @@
 
 .society-banner-desc {
   font-size: 0.83rem;
-  color: rgba(126, 126, 126, 0.48);
+  /* readable but not too heavy — was near-invisible rgba(126,126,126,0.48) */
+  color: #64748b;
   margin: 0;
-  max-width: 500px;
+  max-width: 560px;
   line-height: 1.65;
   font-family: 'Poppins', sans-serif;
 }
@@ -664,18 +651,26 @@
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
-  justify-content: flex-end;
+  justify-content: center;
 }
+
 .society-tag {
   font-size: 0.71rem;
   font-weight: 500;
   padding: 4px 11px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.5);
   font-family: 'Poppins', sans-serif;
   white-space: nowrap;
+}
+.society-banner--teal .society-tag {
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.2);
+  color: #0e7490;
+}
+.society-banner--amber .society-tag {
+  background: rgba(255,160,0,0.08);
+  border: 1px solid rgba(255,160,0,0.22);
+  color: #92400e;
 }
 
 .section-nav-link--teal {
@@ -696,6 +691,6 @@
 
 @media (max-width: 700px) {
   .society-banner { margin: 2rem 3vw 0; padding: 1.5rem 1.3rem; }
-  .society-banner-inner { flex-direction: column; align-items: flex-start; }
-  .society-banner-tags  { justify-content: flex-start; }
+  .society-banner-inner { flex-direction: column; align-items: center; }
+  .society-banner-tags  { justify-content: center; }
 }

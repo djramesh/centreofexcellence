@@ -228,16 +228,7 @@ export default function ProductDetails() {
                       <span className="pd-dim-label">Breadth</span>
                     </div>
                   )}
-                  {dims.height && (
-                    <>
-                      <div className="pd-dim-divider">×</div>
-                      <div className="pd-dim-card">
-                        <span className="pd-dim-axis">H</span>
-                        <span className="pd-dim-value">{dims.height}</span>
-                        <span className="pd-dim-label">Height</span>
-                      </div>
-                    </>
-                  )}
+
                 </div>
               </div>
             )}

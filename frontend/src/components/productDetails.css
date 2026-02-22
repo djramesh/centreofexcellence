@@ -286,7 +286,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 .pd-dim-card {
   display: flex;
@@ -298,6 +298,7 @@
   border-radius: 14px;
   padding: 14px 22px;
   min-width: 90px;
+  flex: 1;
 }
 .pd-dim-axis {
   font-size: 0.65rem;

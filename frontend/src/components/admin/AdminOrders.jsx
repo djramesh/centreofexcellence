@@ -131,7 +131,6 @@ export default function AdminOrders() {
               <thead>
                 <tr>
                   <th>Order #</th>
-                  <th>Product ID</th>
                   <th>Customer</th>
                   <th>Location</th>
                   <th>Amount</th>
@@ -143,18 +142,10 @@ export default function AdminOrders() {
               <tbody>
                 {orders.map((o) => (
                   <tr key={o.id}>
-                    <td>
-                      <Link to={"/admin/orders/" + o.id} className="admin-link">#{o.id}</Link>
-                    </td>
-
-                    {/* ── Product ID column ─────────────────────────────────
-                        Supports three shapes the API might return:
-                        1. o.product_ids  → array  e.g. [3, 7]
-                        2. o.product_id   → single number  e.g. 3
-                        3. Neither        → show dash
-                    ──────────────────────────────────────────────────────── */}
+                    <td><Link to={"/admin/orders/" + o.id} className="admin-link">#{o.id}</Link></td>
                     <td className="admin-product-ids">
-                      {Array.isArray(o.product_ids) && o.product_ids.length > 0
+                      {/* product_ids should be a comma-separated string or array returned by your API */}
+                      {Array.isArray(o.product_ids)
                         ? o.product_ids.map((pid) => (
                             <span key={pid} className="admin-pid-pill">{pid}</span>
                           ))
@@ -163,7 +154,6 @@ export default function AdminOrders() {
                           : <span className="admin-muted">—</span>
                       }
                     </td>
-
                     <td>
                       <div>{o.customer_name}</div>
                       <div className="admin-muted">{o.customer_email}</div>
@@ -181,21 +171,9 @@ export default function AdminOrders() {
 
           {pagination.total > pagination.limit && (
             <div className="admin-pagination">
-              <button
-                type="button"
-                className="admin-btn admin-btn-secondary"
-                disabled={pagination.page <= 1}
-                onClick={() => setPage(pagination.page - 1)}
-              >Previous</button>
-              <span className="admin-pagination-info">
-                Page {pagination.page} of {Math.ceil(pagination.total / pagination.limit)}
-              </span>
-              <button
-                type="button"
-                className="admin-btn admin-btn-secondary"
-                disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit)}
-                onClick={() => setPage(pagination.page + 1)}
-              >Next</button>
+              <button type="button" className="admin-btn admin-btn-secondary" disabled={pagination.page <= 1} onClick={() => setPage(pagination.page - 1)}>Previous</button>
+              <span className="admin-pagination-info">Page {pagination.page} of {Math.ceil(pagination.total / pagination.limit)}</span>
+              <button type="button" className="admin-btn admin-btn-secondary" disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit)} onClick={() => setPage(pagination.page + 1)}>Next</button>
             </div>
           )}
         </>
@@ -208,14 +186,14 @@ export default function AdminOrders() {
    ADMIN ORDER DETAIL
 ═══════════════════════════════════════════════════════════════════════════ */
 export function AdminOrderDetail() {
-  const { id }                    = useParams();
-  const [order, setOrder]         = useState(null);
-  const [items, setItems]         = useState([]);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState("");
-  const [updating, setUpdating]   = useState(false);
-  const [newStatus, setNewStatus] = useState("");
-  const [lightbox, setLightbox]   = useState(null); // { src, alt }
+  const { id }                        = useParams();
+  const [order, setOrder]             = useState(null);
+  const [items, setItems]             = useState([]);
+  const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState("");
+  const [updating, setUpdating]       = useState(false);
+  const [newStatus, setNewStatus]     = useState("");
+  const [lightbox, setLightbox]       = useState(null); // { src, alt }
 
   const openLightbox  = useCallback((src, alt) => setLightbox({ src, alt }), []);
   const closeLightbox = useCallback(() => setLightbox(null), []);
@@ -223,11 +201,7 @@ export function AdminOrderDetail() {
   useEffect(() => {
     if (!id) return;
     adminApi.getOrder(id)
-      .then((res) => {
-        setOrder(res.order);
-        setItems(res.items || []);
-        setNewStatus(res.order?.status || "");
-      })
+      .then((res) => { setOrder(res.order); setItems(res.items || []); setNewStatus(res.order?.status || ""); })
       .catch((err) => setError(err?.data?.message || err?.message || "Failed to load order"))
       .finally(() => setLoading(false));
   }, [id]);
@@ -241,13 +215,15 @@ export function AdminOrderDetail() {
       .finally(() => setUpdating(false));
   };
 
+  if (loading) return <div className="admin-loading">Loading order…</div>;
+  if (error && !order) return <div className="admin-error">{error}</div>;
+  if (!order) return null;
+
   const handleDownloadInvoice = async () => {
     const token = localStorage.getItem("authToken");
     if (!order || !token) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/orders/${order.id}/invoice`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(`${API_BASE_URL}/api/orders/${order.id}/invoice`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) return;
       const blob = await res.blob();
       const url  = window.URL.createObjectURL(blob);
@@ -258,17 +234,10 @@ export function AdminOrderDetail() {
     } catch { /* ignore */ }
   };
 
-  if (loading) return <div className="admin-loading">Loading order…</div>;
-  if (error && !order) return <div className="admin-error">{error}</div>;
-  if (!order) return null;
-
   return (
     <div className="admin-page admin-order-detail">
-
       {/* Lightbox */}
-      {lightbox && (
-        <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} />
-      )}
+      {lightbox && <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} />}
 
       <header className="admin-page-header">
         <div>
@@ -290,7 +259,6 @@ export function AdminOrderDetail() {
           <p className="admin-muted">{order.customer_email}</p>
           {order.phone && <p className="admin-muted">{order.phone}</p>}
         </div>
-
         <div className="admin-order-card">
           <h3>Shipping address</h3>
           <p>{order.line1}</p>
@@ -298,19 +266,13 @@ export function AdminOrderDetail() {
           <p>{order.city}, {order.state} {order.pincode}</p>
           <p>{order.country}</p>
         </div>
-
         <div className="admin-order-card">
           <h3>Status</h3>
           <div className="admin-order-status-row">
             <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} className="admin-select">
               {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
-            <button
-              type="button"
-              className="admin-btn admin-btn-primary"
-              disabled={newStatus === order.status || updating}
-              onClick={handleUpdateStatus}
-            >
+            <button type="button" className="admin-btn admin-btn-primary" disabled={newStatus === order.status || updating} onClick={handleUpdateStatus}>
               {updating ? "Updating…" : "Update"}
             </button>
           </div>
@@ -318,34 +280,30 @@ export function AdminOrderDetail() {
         </div>
       </div>
 
-      {/* Items — clickable product images + product ID badge */}
+      {/* Items — with clickable product images */}
       <div className="admin-order-card admin-order-items">
         <h3>Items</h3>
         <div className="admin-items-list">
           {items.map((row, i) => (
-            <div
-              key={row.id}
-              className="admin-item-row"
-              style={{ borderBottom: i < items.length - 1 ? "1px solid #e2e8f0" : "none" }}
-            >
+            <div key={row.id} className="admin-item-row" style={{ borderBottom: i < items.length - 1 ? "1px solid #e2e8f0" : "none" }}>
+
+              {/* Thumbnail */}
               <ProductThumb
                 url={row.thumbnail_url || row.product_thumbnail || null}
                 name={row.product_name}
                 onExpand={openLightbox}
               />
 
+              {/* Name + product ID */}
               <div className="admin-item-info">
                 <p className="admin-item-name">{row.product_name}</p>
                 <p className="admin-item-meta">
-                  {row.product_id && (
-                    <span className="admin-pid-pill" style={{ marginRight: 6 }}>
-                      ID: {row.product_id}
-                    </span>
-                  )}
+                  {row.product_id && <span className="admin-pid-pill" style={{ marginRight: 6 }}>ID: {row.product_id}</span>}
                   Qty: {row.quantity}
                 </p>
               </div>
 
+              {/* Pricing */}
               <div className="admin-item-pricing">
                 <p className="admin-item-unit">₹{Number(row.unit_price).toLocaleString("en-IN")} each</p>
                 <p className="admin-item-total">₹{Number(row.line_total).toLocaleString("en-IN")}</p>
@@ -353,9 +311,7 @@ export function AdminOrderDetail() {
             </div>
           ))}
         </div>
-        <p className="admin-order-total">
-          <strong>Total: ₹{Number(order.total_amount).toLocaleString("en-IN")}</strong>
-        </p>
+        <p className="admin-order-total"><strong>Total: ₹{Number(order.total_amount).toLocaleString("en-IN")}</strong></p>
       </div>
 
       <OrderShippingSection

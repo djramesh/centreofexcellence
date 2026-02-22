@@ -399,9 +399,9 @@ function Products() {
   const handleOrderNow = useCallback((e, product) => {
     e.preventDefault(); e.stopPropagation();
     if (!isAuthenticated) { navigate("/login"); return; }
-    // Navigate to checkout with product in state — does NOT add to cart
-    navigate("/checkout", { state: { directProduct: { ...product, price: product.price || 800 }, quantity: 1 } });
-  }, [isAuthenticated, navigate]);
+    addToCart({ ...product, price: product.price || 500 }, 1);
+    navigate("/checkout");
+  }, [isAuthenticated, addToCart, navigate]);
 
   return (
     <div id="products" className="products-wrap">

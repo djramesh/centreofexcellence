@@ -42,6 +42,18 @@ const statusConfig = {
   CANCELLED: { color: t.red,     bg: t.redSoft,     dot: t.red,     label: "Cancelled" },
 };
 
+/* ─── Resolve image URL (local assets OR Cloudinary) ─────────────────────── */
+function resolveImgUrl(url) {
+  if (!url) return null;
+  // Already an absolute URL (Cloudinary, https, http)
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  // Local asset path — encode each segment but keep slashes
+  if (url.startsWith("/assets/") || url.startsWith("assets/")) {
+    return url.split("/").map((seg) => encodeURIComponent(seg)).join("/");
+  }
+  return url;
+}
+
 /* ─── Google Font loader ────────────────────────────────────────────────── */
 function Fonts() {
   return (
@@ -91,7 +103,38 @@ function Sk({ w = "100%", h = 14, r = 6, style = {} }) {
   );
 }
 
-/* ─── Stylesheet (single source of truth) ───────────────────────────────── */
+/* ─── Product thumbnail with fallback ───────────────────────────────────── */
+function ProductThumb({ url, name }) {
+  const [err, setErr] = useState(false);
+  const src = resolveImgUrl(url);
+  if (!src || err) {
+    return (
+      <div style={{
+        width: 56, height: 56, borderRadius: 10, flexShrink: 0,
+        background: "linear-gradient(135deg,#e8f0ff,#f0f4ff)",
+        border: `1px solid ${t.border}`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: "1.3rem",
+      }}>
+        🧺
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={name || "Product"}
+      onError={() => setErr(true)}
+      style={{
+        width: 56, height: 56, borderRadius: 10, flexShrink: 0,
+        objectFit: "cover", border: `1px solid ${t.border}`,
+        background: t.bg,
+      }}
+    />
+  );
+}
+
+/* ─── Stylesheet ────────────────────────────────────────────────────────── */
 const css = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -174,7 +217,7 @@ const css = `
   .pg-btns    { display: flex; align-items: center; gap: 0.35rem; }
   .pg-current { padding: 0 0.4rem; font-size: 0.8rem; color: ${t.text2}; }
 
-  /* ── Your button system (exact) ── */
+  /* ── Your button system ── */
   .button {
     font-family: "Poppins", serif; display: inline-flex; align-items: center; justify-content: center;
     padding: 10px 25px; border: 0; position: relative; overflow: hidden;
@@ -252,6 +295,20 @@ const css = `
   }
   .total-amount { font-size: 1.2rem; font-weight: 700; color: ${t.blue}; }
 
+  /* ── Product item row ── */
+  .item-row {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.4rem;
+    transition: background 0.15s;
+  }
+  .item-row:hover { background: ${t.surfaceHover}; }
+  .item-info { flex: 1; min-width: 0; }
+  .item-name { font-weight: 500; font-size: 0.9rem; color: ${t.text1}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-meta { font-size: 0.78rem; color: ${t.text2}; margin-top: 2px; }
+  .item-price { text-align: right; flex-shrink: 0; }
+  .item-unit  { font-size: 0.75rem; color: ${t.text3}; }
+  .item-total { font-weight: 600; font-size: 0.95rem; color: ${t.text1}; }
+
   /* ── Responsive ── */
   @media (max-width: 680px) {
     .ol-page { padding: 1.5rem 0.875rem 4rem; }
@@ -262,6 +319,7 @@ const css = `
     .button { width: 100%; font-size: 14px; padding: 10px 18px; }
     .track-node { min-width: 54px; }
     .track-circle { width: 38px; height: 38px; font-size: 0.9rem; }
+    .item-row { gap: 0.75rem; padding: 0.85rem 1rem; }
   }
 `;
 
@@ -315,7 +373,6 @@ export function OrdersList() {
 
           {error && <div className="ol-error">⚠ {error}</div>}
 
-          {/* Loading skeletons */}
           {loading ? (
             <Card>
               {[...Array(5)].map((_, i) => (
@@ -588,37 +645,39 @@ export function OrderDetail() {
             </Card>
           </div>
 
-          {/* Items table */}
+          {/* Items — now with product images */}
           <Card>
             <div className="items-head">
               <p className="section-label" style={{ margin: 0 }}>Order Items</p>
               <span className="items-count">{items.length} item{items.length !== 1 ? "s" : ""}</span>
             </div>
-            <table className="dt-table">
-              <thead>
-                <tr>
-                  <th style={{ textAlign: "left" }}>Product</th>
-                  <th style={{ textAlign: "right" }}>Qty</th>
-                  <th style={{ textAlign: "right" }} className="hide-sm">Unit Price</th>
-                  <th style={{ textAlign: "right" }}>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((row, i) => (
-                  <tr key={row.id} className="dt-row"
-                    style={{ borderBottom: i < items.length - 1 ? `1px solid ${t.border}` : "none" }}>
-                    <td style={{ fontWeight: 500 }}>{row.product_name}</td>
-                    <td style={{ textAlign: "right", color: t.text2 }}>{row.quantity}</td>
-                    <td style={{ textAlign: "right", color: t.text2 }} className="hide-sm">
-                      ₹{Number(row.unit_price).toLocaleString("en-IN")}
-                    </td>
-                    <td style={{ textAlign: "right", fontWeight: 600 }}>
-                      ₹{Number(row.line_total).toLocaleString("en-IN")}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+            {items.map((row, i) => (
+              <div
+                key={row.id}
+                className="item-row"
+                style={{ borderBottom: i < items.length - 1 ? `1px solid ${t.border}` : "none" }}
+              >
+                {/* Product thumbnail — works for both /assets/... and Cloudinary URLs */}
+                <ProductThumb
+                  url={row.thumbnail_url || row.product_thumbnail || null}
+                  name={row.product_name}
+                />
+
+                {/* Name + meta */}
+                <div className="item-info">
+                  <p className="item-name">{row.product_name}</p>
+                  <p className="item-meta">Qty: {row.quantity}</p>
+                </div>
+
+                {/* Pricing */}
+                <div className="item-price">
+                  <p className="item-unit">₹{Number(row.unit_price).toLocaleString("en-IN")} each</p>
+                  <p className="item-total">₹{Number(row.line_total).toLocaleString("en-IN")}</p>
+                </div>
+              </div>
+            ))}
+
             <div className="total-bar">
               <span style={{ color: t.text2, fontSize: "0.85rem" }}>Order Total</span>
               <span className="total-amount">₹{Number(order.total_amount).toLocaleString("en-IN")}</span>

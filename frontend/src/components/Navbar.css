@@ -159,6 +159,36 @@
   color: #fff !important;
 }
 
+/* ── Logout pill (standalone, right of account) ────────────────── */
+.nav-logout-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 18px 7px 12px;
+  background: linear-gradient(90deg, #ef4444, #f97316);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(239, 68, 68, 0.30);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.nav-logout-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.42);
+  background: linear-gradient(90deg, #dc2626, #ea580c);
+}
+.nav-logout-pill-icon {
+  font-size: 15px;
+}
+.nav-logout-pill-label {
+  line-height: 1;
+}
+
 /* ── Dropdown ──────────────────────────────────────────────────── */
 .dropdown { position: relative; }
 
@@ -452,6 +482,16 @@
     display: block !important;
     text-align: center !important;
     margin-top: 8px;
+  }
+
+  /* logout pill full width on mobile */
+  .nav-logout-pill {
+    width: 100%;
+    justify-content: center;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 1rem;
+    margin-top: 4px;
   }
 
   /* user button full width */

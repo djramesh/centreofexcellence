@@ -138,35 +138,50 @@ const Navbar = () => {
 
         {/* User menu */}
         {isAuthenticated ? (
-          <li className={`nav-user-menu${isUserOpen ? " open" : ""}`}>
-            <div className={`nav-user-dropdown${isUserOpen ? " open" : ""}`}>
-              <button
-                className="nav-user-button"
-                onClick={() => setIsUserOpen((p) => !p)}
-                aria-expanded={isUserOpen}
-              >
-                <FaUserCircle className="nav-user-icon" />
-                <span className="nav-user-name">
-                  {user?.name?.split(" ")[0] || "Account"}
-                </span>
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transition: "transform 0.2s", transform: isUserOpen ? "rotate(180deg)" : "rotate(0)", marginLeft: "2px" }}>
-                  <path d="M1 3l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-
-              <div className="nav-user-dropdown-content">
-                <Link to="/account" onClick={closeAll}>
-                  <FaUserCircle /> Profile
-                </Link>
+          <>
+            {/* Account pill */}
+            <li className={`nav-user-menu${isUserOpen ? " open" : ""}`}>
+              <div className={`nav-user-dropdown${isUserOpen ? " open" : ""}`}>
                 <button
-                  className="nav-logout-button"
-                  onClick={() => { logout(); closeAll(); }}
+                  className="nav-user-button"
+                  onClick={() => setIsUserOpen((p) => !p)}
+                  aria-expanded={isUserOpen}
                 >
-                  <FaSignOutAlt /> Logout
+                  <FaUserCircle className="nav-user-icon" />
+                  <span className="nav-user-name">
+                    {user?.name?.split(" ")[0] || "Account"}
+                  </span>
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transition: "transform 0.2s", transform: isUserOpen ? "rotate(180deg)" : "rotate(0)", marginLeft: "2px" }}>
+                    <path d="M1 3l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </button>
+
+                <div className="nav-user-dropdown-content">
+                  <Link to="/account" onClick={closeAll}>
+                    <FaUserCircle /> Profile
+                  </Link>
+                  <button
+                    className="nav-logout-button"
+                    onClick={() => { logout(); closeAll(); }}
+                  >
+                    <FaSignOutAlt /> Logout
+                  </button>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
+
+            {/* Standalone Logout pill */}
+            <li>
+              <button
+                className="nav-logout-pill"
+                onClick={() => { logout(); closeAll(); }}
+                aria-label="Logout"
+              >
+                <FaSignOutAlt className="nav-logout-pill-icon" />
+                <span className="nav-logout-pill-label">Logout</span>
+              </button>
+            </li>
+          </>
         ) : (
           <li>
             <Link to="/login" onClick={closeAll} className="nav-login-link">

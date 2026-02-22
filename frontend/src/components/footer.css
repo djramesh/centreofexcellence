@@ -219,7 +219,39 @@
 .footer-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.1) 70%, transparent);
-  margin: 3rem 0 1.8rem;
+  margin: 3rem 0 1.5rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   POLICY LINKS ROW  (new)
+══════════════════════════════════════════════════════════════ */
+.footer-policy-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.7rem;
+  margin-bottom: 1.25rem;
+}
+
+.footer-policy-link {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.38);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.footer-policy-link:hover {
+  color: #00d4ff;
+}
+
+.footer-policy-sep {
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 0.85rem;
+  line-height: 1;
+  user-select: none;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -235,7 +267,7 @@
 
 .footer-copy {
   font-size: 0.78rem;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.28);
   margin: 0;
 }
 
@@ -275,5 +307,7 @@
     align-items: flex-start;
     gap: 0.4rem;
   }
-  .footer-divider { margin: 2rem 0 1.5rem; }
+  .footer-divider { margin: 2rem 0 1.25rem; }
+  .footer-policy-sep { display: none; }
+  .footer-policy-row { gap: 0.5rem 0; flex-direction: column; align-items: flex-start; }
 }

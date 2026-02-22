@@ -25,6 +25,10 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import AdminOrders, { AdminOrderDetail } from "./components/admin/AdminOrders";
 import AdminProducts from "./components/admin/AdminProducts";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import TermsAndConditions from "./components/TermsAndConditions";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+// import ShippingPolicy     from "./components/ShippingPolicy";
+import FAQ from "./components/FAQ";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 
@@ -100,6 +104,10 @@ const App = () => {
               }
             />
             <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            {/* <Route path="/shipping-policy" element={<ShippingPolicy />} /> */}
+            <Route path="/faq" element={<FAQ />} />
           </Route>
         </Routes>
       </Router>

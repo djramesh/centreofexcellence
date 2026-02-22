@@ -59,6 +59,7 @@ const Footer = () => {
               <li><Link to="/gallery">Gallery</Link></li>
               <li><Link to="/contact">Contact Us</Link></li>
               <li><Link to="/order">Order</Link></li>
+              <li><Link to="/faq">FAQ</Link></li>
             </ul>
           </div>
 
@@ -100,17 +101,22 @@ const Footer = () => {
         {/* ── DIVIDER ── */}
         <div className="footer-divider" />
 
+        {/* ── POLICY LINKS ── */}
+        <div className="footer-policy-row">
+          <Link to="/terms-and-conditions" className="footer-policy-link">Terms &amp; Conditions</Link>
+          <span className="footer-policy-sep" aria-hidden="true">·</span>
+          <Link to="/privacy-policy" className="footer-policy-link">Privacy Policy</Link>
+          <span className="footer-policy-sep" aria-hidden="true">·</span>
+          <Link to="/shipping-policy" className="footer-policy-link">Shipping Policy</Link>
+          <span className="footer-policy-sep" aria-hidden="true">·</span>
+          <Link to="/faq" className="footer-policy-link">FAQ</Link>
+        </div>
+
         {/* ── BOTTOM ── */}
         <div className="footer-bottom">
           <p className="footer-copy">
-            © {new Date().getFullYear()} Shristi & Prerana Co-operative Societies. All rights reserved.
+            © {new Date().getFullYear()} Shristi &amp; Prerana Co-operative Societies. All rights reserved.
           </p>
-          {/* <p className="footer-made">
-            Supported by{" "}
-            <a href="https://www.schoolnetindia.com" target="_blank" rel="noopener noreferrer">
-              Schoolnet India
-            </a>
-          </p> */}
         </div>
 
       </div>

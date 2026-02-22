@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./productDetails.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingBag, faShoppingCart, faArrowLeft, faRuler, faWeight, faLeaf, faMapMarkerAlt, faBroom, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingBag, faShoppingCart, faArrowLeft, faRuler, faLeaf, faMapMarkerAlt, faBroom, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -77,16 +77,6 @@ function getProductMeta(name = "") {
   else if (n.includes("bag") || n.includes("hat") || n.includes("basket") || n.includes("mat"))
                                      material = "Dried Water Hyacinth";
 
-  let weight = "250g";
-  if (n.includes("bag"))             weight = "400g";
-  else if (n.includes("hat"))        weight = "150g";
-  else if (n.includes("mat"))        weight = "200g";
-  else if (n.includes("basket"))     weight = "350g";
-  else if (n.includes("runner"))     weight = "300g";
-  else if (n.includes("stole"))      weight = "180g";
-  else if (n.includes("laundry"))    weight = "600g";
-  else if (n.includes("yoga mat"))   weight = "1.2 kg";
-
   let origin = "Prerana Handloom Co-operative Society";
   if (n.includes("bag") || n.includes("hat") || n.includes("basket") ||
       n.includes("tray") || n.includes("bamboo") || n.includes("pen stand") ||
@@ -100,7 +90,7 @@ function getProductMeta(name = "") {
   else if (n.includes("bag") || n.includes("basket") || n.includes("mat") || n.includes("hat"))
     care = "Wipe with a damp cloth. Do not submerge in water.";
 
-  return { material, weight, origin, care };
+  return { material, origin, care };
 }
 
 function encodeImagePath(path = "") {
@@ -252,20 +242,13 @@ export default function ProductDetails() {
               </div>
             )}
 
-            {/* Specs */}
+            {/* Specs — Weight removed */}
             <div className="pd-specs">
               <div className="pd-spec-row">
                 <div className="pd-spec-icon"><FontAwesomeIcon icon={faLeaf} /></div>
                 <div className="pd-spec-content">
                   <span className="pd-spec-label">Material</span>
                   <span className="pd-spec-value">{meta.material}</span>
-                </div>
-              </div>
-              <div className="pd-spec-row">
-                <div className="pd-spec-icon"><FontAwesomeIcon icon={faWeight} /></div>
-                <div className="pd-spec-content">
-                  <span className="pd-spec-label">Weight</span>
-                  <span className="pd-spec-value">{meta.weight}</span>
                 </div>
               </div>
               <div className="pd-spec-row">

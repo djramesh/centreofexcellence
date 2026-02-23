@@ -91,11 +91,15 @@ const SocietyTooltip = ({ active, payload, label }) => {
         boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
       }}>
         <p style={{ margin: "0 0 6px", color: "#94a3b8", fontSize: "0.72rem" }}>{label}</p>
-        {payload.map((p, i) => (
-          <p key={i} style={{ margin: "2px 0", fontWeight: 600, color: p.color }}>
-            {p.name}: ₹{Number(p.value).toLocaleString("en-IN")}
-          </p>
-        ))}
+        {payload.map((p, i) => {
+          const dotColor = p.name === "Shristi" ? SHRISTI_COLOR : PRERANA_COLOR;
+          return (
+            <p key={i} style={{ margin: "3px 0", fontWeight: 600, color: "#fff", display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: dotColor, flexShrink: 0, display: "inline-block" }} />
+              {p.name}: ₹{Number(p.value).toLocaleString("en-IN")}
+            </p>
+          );
+        })}
       </div>
     );
   }
@@ -158,7 +162,12 @@ export default function AdminDashboard() {
           If your backend doesn't have this endpoint yet, see the note below
           about how to add it. The frontend will show an empty state gracefully.
         */
-        setSocietyRevenue(res.data || res || []);
+        const raw = res.data || res || [];
+        setSocietyRevenue(raw.map(row => ({
+          ...row,
+          shristi: Number(row.shristi) || 0,
+          prerana: Number(row.prerana) || 0,
+        })));
       })
       .catch(() => setSocietyRevenue([]))
       .finally(() => setSocietyLoading(false));

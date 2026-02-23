@@ -474,7 +474,7 @@ export function OrderDetail() {
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState("");
   const [dlLoading, setDlLoading]     = useState(false);
-  const [payLoading, setPayLoading]   = useState(false);   // ← fixed: was missing
+  const [payLoading, setPayLoading]   = useState(false);  
   const [lightbox, setLightbox]       = useState(null);
 
   const openLightbox  = useCallback((src, alt) => setLightbox({ src, alt }), []);

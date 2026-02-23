@@ -232,13 +232,13 @@ router.get("/:id/invoice"
           align: "right",
         })
         .text(
-          `₹${Number(item.unit_price).toLocaleString("en-IN")}`,
+          `Rs.${Number(item.unit_price).toLocaleString("en-IN")}`,
           colPrice,
           position,
           { width: 80, align: "right" }
         )
         .text(
-          `₹${Number(item.line_total).toLocaleString("en-IN")}`,
+          `Rs.${Number(item.line_total).toLocaleString("en-IN")}`,
           colTotal,
           position,
           { width: 80, align: "right" }
@@ -260,7 +260,7 @@ router.get("/:id/invoice"
       .fillColor("#374151")
       .text("Subtotal", colPrice, position, { width: 80, align: "right" })
       .text(
-        `₹${Number(order.total_amount).toLocaleString("en-IN")}`,
+        `Rs.${Number(order.total_amount).toLocaleString("en-IN")}`,
         colTotal,
         position,
         { width: 80, align: "right" }
@@ -273,7 +273,7 @@ router.get("/:id/invoice"
       .fillColor("#111827")
       .text("Total", colPrice, position, { width: 80, align: "right" })
       .text(
-        `₹${Number(order.total_amount).toLocaleString("en-IN")}`,
+        `Rs.${Number(order.total_amount).toLocaleString("en-IN")}`,
         colTotal,
         position,
         { width: 80, align: "right" }

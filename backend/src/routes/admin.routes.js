@@ -397,4 +397,27 @@ router.get("/categories", adminGuard, async (req, res) => {
   }
 });
 
+router.get("/revenue/by-society", adminGuard, async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT
+         DATE_FORMAT(o.created_at, '%b %y') AS month,
+         SUM(CASE WHEN p.category_id IN (4, 14) THEN oi.line_total ELSE 0 END) AS shristi,
+         SUM(CASE WHEN p.category_id = 3        THEN oi.line_total ELSE 0 END) AS prerana
+       FROM orders o
+       JOIN order_items oi ON oi.order_id = o.id
+       JOIN products p     ON p.id = oi.product_id
+       WHERE o.payment_status = 'PAID'
+         AND o.created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+       GROUP BY DATE_FORMAT(o.created_at, '%b %y'), DATE_FORMAT(o.created_at, '%Y-%m')
+       ORDER BY MIN(o.created_at)`
+    );
+
+    res.json({ data: rows });
+  } catch (err) {
+    console.error("Society revenue error", err);
+    res.status(500).json({ message: "Failed to load society revenue", error: err.message });
+  }
+});
+
 export default router;

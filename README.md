@@ -60,7 +60,7 @@ coe-project/
 ## Admin portal
 
 - **URL:** `/admin` (e.g. `http://localhost:5173/admin`)
-- **Login:** `admin@coe.com` / `admin123` (create admin via seed; change after first login)
+- **Login:** `` (create admin via seed; change after first login)
 - **Features:** Dashboard (stats, pie/bar/area charts), Orders (list, filter, detail, status update), Products (add, edit, delete, stock, active/inactive), low-stock alerts, revenue by month, orders by status.
 
 **First-time admin:** Run the DB seed so the admin user exists:

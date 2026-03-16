@@ -1,13 +1,26 @@
 import express from "express";
 import PDFDocument from "pdfkit";
 import QRCode from "qrcode";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { getDbPool } from "../config/db.js";
 import { authRequired } from "../middleware/auth.js";
 
 const router = express.Router();
 const pool = getDbPool();
 
-// Helper: fetch order + items with ownership / admin check
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// ─── Color palette ────────────────────────────────────────────────────────────
+const DARK   = "#1a1a2e";   // deep navy
+const ACCENT = "#c8a951";   // gold
+const LIGHT  = "#f5f5f5";   // light grey row
+const MID    = "#9ca3af";   // muted text
+const TEXT   = "#111827";   // primary text
+const TMID   = "#374151";   // secondary text
+
+// ─── Helper: fetch order + items ──────────────────────────────────────────────
 async function loadOrderWithItems(orderId, user) {
   const connection = await pool.getConnection();
   try {
@@ -28,7 +41,6 @@ async function loadOrderWithItems(orderId, user) {
 
     const order = orderRows[0];
 
-    // Only admin or owner can access
     if (user.role !== "admin" && order.user_id !== user.id) {
       connection.release();
       return { error: { status: 403, message: "Forbidden" } };
@@ -50,11 +62,11 @@ async function loadOrderWithItems(orderId, user) {
   }
 }
 
-// List current user's orders
+// ─── List current user's orders ───────────────────────────────────────────────
 router.get("/", authRequired, async (req, res) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
+    const page   = Math.max(1, parseInt(req.query.page)  || 1);
+    const limit  = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
     const offset = (page - 1) * limit;
 
     const [rows] = await pool.query(
@@ -73,23 +85,18 @@ router.get("/", authRequired, async (req, res) => {
       [req.user.id]
     );
 
-    res.json({
-      orders: rows,
-      pagination: { page, limit, total: countResult.total },
-    });
+    res.json({ orders: rows, pagination: { page, limit, total: countResult.total } });
   } catch (err) {
     console.error("User orders list error", err);
     res.status(500).json({ message: "Failed to load orders", error: err.message });
   }
 });
 
-// Get single order for current user
+// ─── Get single order ─────────────────────────────────────────────────────────
 router.get("/:id", authRequired, async (req, res) => {
   try {
     const { order, items, error } = await loadOrderWithItems(req.params.id, req.user);
-    if (error) {
-      return res.status(error.status).json({ message: error.message });
-    }
+    if (error) return res.status(error.status).json({ message: error.message });
     res.json({ order, items });
   } catch (err) {
     console.error("User order detail error", err);
@@ -97,201 +104,223 @@ router.get("/:id", authRequired, async (req, res) => {
   }
 });
 
-// Generate PDF invoice (for user + admin)
-router.get("/:id/invoice"
-  , authRequired, async (req, res) => {
+// ─── PDF Invoice ──────────────────────────────────────────────────────────────
+router.get("/:id/invoice", authRequired, async (req, res) => {
   try {
     const { order, items, error } = await loadOrderWithItems(req.params.id, req.user);
-    if (error) {
-      return res.status(error.status).json({ message: error.message });
-    }
+    if (error) return res.status(error.status).json({ message: error.message });
 
-    const doc = new PDFDocument({ size: "A4", margin: 50 });
+    const doc = new PDFDocument({ size: "A4", margin: 0 });
 
-    // Set headers for download
-    const filename = `invoice-${order.id}.pdf`;
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename=\"${filename}\"`);
-
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="invoice-${order.id}.pdf"`
+    );
     doc.pipe(res);
 
-    // Header
-    doc
-      .fontSize(20)
-      .text("COE E‑Commerce", { align: "left" })
-      .moveDown(0.2);
-    doc
-      .fontSize(10)
-      .fillColor("#555555")
-      .text("Shristi & Prerana Co‑operative Society", { align: "left" })
-      .text("Assam, India")
-      .moveDown(1);
+    const W = 595.28;
+    const H = 841.89;
 
-    doc
-      .fontSize(18)
-      .fillColor("#000000")
-      .text("Invoice", { align: "right" });
+    // ── HEADER BANNER (dark navy) ──────────────────────────────────────────
+    doc.rect(0, 0, W, 100).fill(DARK);
 
-    doc
-      .fontSize(10)
-      .fillColor("#555555")
-      .text(`Invoice #: ${order.id}`, { align: "right" })
-      .text(`Order ID: ${order.id}`, { align: "right" })
-      .text(`Date: ${new Date(order.created_at).toLocaleString("en-IN")}`, { align: "right" })
-      .moveDown(1.2);
-
-    // Customer & shipping
-    const top = doc.y;
-    doc
-      .fontSize(11)
-      .fillColor("#000000")
-      .text("Bill to:", 50, top)
-      .moveDown(0.3)
-      .fontSize(10)
-      .fillColor("#333333")
-      .text(order.customer_name || "", { continued: false })
-      .text(order.customer_email || "")
-      .text(order.phone || "");
-
-    doc
-      .fontSize(11)
-      .fillColor("#000000")
-      .text("Ship to:", 320, top)
-      .moveDown(0.3)
-      .fontSize(10)
-      .fillColor("#333333")
-      .text(order.line1 || "")
-      .text(order.line2 || "")
-      .text(
-        [order.city, order.state, order.pincode].filter(Boolean).join(", ") ||
-          ""
-      )
-      .text(order.country || "India");
-
-    doc.moveDown(1.5);
-
-    // QR code with order summary URL/data
-    const qrData = JSON.stringify({
-      orderId: order.id,
-      amount: Number(order.total_amount),
-      status: order.status,
-      payment_status: order.payment_status,
-    });
-
-    const qrX = 430;
-    const qrY = top;
-
-    try {
-      const qrUrl = await QRCode.toDataURL(qrData, { margin: 1, scale: 4 });
-      const qrBase64 = qrUrl.replace(/^data:image\/png;base64,/, "");
-      const qrBuffer = Buffer.from(qrBase64, "base64");
-      doc.image(qrBuffer, qrX, qrY, { width: 100 });
-      doc
-        .fontSize(8)
-        .fillColor("#6b7280")
-        .text("Scan for quick order lookup", qrX, qrY + 105, {
-          width: 110,
-          align: "center",
-        });
-    } catch (e) {
-      // If QR fails, just skip it
+    // PH logo – left
+    const phLogoPath = path.join(__dirname, "../assets/ph-logo.png");
+    if (fs.existsSync(phLogoPath)) {
+      doc.image(phLogoPath, 20, 15, { width: 70, height: 70 });
     }
 
-    doc.moveDown(2);
+    // SH logo – right
+    const shLogoPath = path.join(__dirname, "../assets/sh-logo.png");
+    if (fs.existsSync(shLogoPath)) {
+      doc.image(shLogoPath, W - 95, 10, { width: 80, height: 80 });
+    }
 
-    // Items table header
-    const tableTop = doc.y + 10;
-    const colProduct = 50;
-    const colQty = 260;
-    const colPrice = 320;
-    const colTotal = 410;
+    // Company name
+    doc
+      .fillColor("#ffffff")
+      .font("Helvetica-Bold")
+      .fontSize(18)
+      .text("COE E-COMMERCE", 0, 30, { align: "center", width: W });
 
     doc
-      .fontSize(10)
-      .fillColor("#6b7280")
-      .text("Product", colProduct, tableTop)
-      .text("Qty", colQty, tableTop, { width: 40, align: "right" })
-      .text("Unit price", colPrice, tableTop, { width: 80, align: "right" })
-      .text("Total", colTotal, tableTop, { width: 80, align: "right" });
+      .fillColor(ACCENT)
+      .font("Helvetica")
+      .fontSize(9)
+      .text("Shristi & Prerana Co-operative Society", 0, 54, {
+        align: "center",
+        width: W,
+      });
 
     doc
-      .moveTo(50, tableTop + 14)
-      .lineTo(545, tableTop + 14)
-      .strokeColor("#e5e7eb")
-      .stroke();
+      .fillColor(MID)
+      .fontSize(8)
+      .text("Assam, India  |  GST Inclusive", 0, 67, {
+        align: "center",
+        width: W,
+      });
 
-    // Items rows
-    let position = tableTop + 20;
-    doc.fontSize(10).fillColor("#111827");
+    // Gold accent bar below header
+    doc.rect(0, 100, W, 5).fill(ACCENT);
 
-    items.forEach((item) => {
-      doc
-        .text(item.product_name || "", colProduct, position, { width: 200 })
-        .text(String(item.quantity), colQty, position, {
-          width: 40,
-          align: "right",
-        })
-        .text(
-          `Rs.${Number(item.unit_price).toLocaleString("en-IN")}`,
-          colPrice,
-          position,
-          { width: 80, align: "right" }
-        )
-        .text(
-          `Rs.${Number(item.line_total).toLocaleString("en-IN")}`,
-          colTotal,
-          position,
-          { width: 80, align: "right" }
-        );
-      position += 18;
+    // ── INVOICE TITLE + META ───────────────────────────────────────────────
+    // "INVOICE" word – large, gold, right-aligned
+    doc
+      .fillColor(ACCENT)
+      .font("Helvetica-Bold")
+      .fontSize(28)
+      .text("INVOICE", W - 220, 118, { width: 180, align: "right" });
+
+    // GST badge
+    doc.roundedRect(40, 120, 130, 22, 4).fill(ACCENT);
+    doc
+      .fillColor(DARK)
+      .font("Helvetica-Bold")
+      .fontSize(9)
+      .text("✓  GST INCLUSIVE", 46, 127, { width: 120 });
+
+    // Meta fields
+    const metaRows = [
+      ["Invoice No.",  `#${order.id}`],
+      ["Order ID",     `#${order.id}`],
+      ["Date",         new Date(order.created_at).toLocaleString("en-IN")],
+      ["Status",       (order.payment_status || "").toUpperCase()],
+    ];
+    let metaY = 160;
+    for (const [label, val] of metaRows) {
+      doc.fillColor(MID).font("Helvetica").fontSize(8).text(label, W - 220, metaY, { width: 80, align: "right" });
+      doc.fillColor(TEXT).font("Helvetica-Bold").fontSize(8).text(val, W - 130, metaY, { width: 90, align: "right" });
+      metaY += 15;
+    }
+
+    // Divider
+    doc.moveTo(40, 190).lineTo(W - 40, 190).lineWidth(0.8).strokeColor(ACCENT).stroke();
+
+    // ── BILL TO / SHIP TO ─────────────────────────────────────────────────
+    const secY = 202;
+
+    // Section header chips
+    doc.rect(40, secY, 120, 16).fill(DARK);
+    doc.fillColor(ACCENT).font("Helvetica-Bold").fontSize(8).text("BILL TO", 46, secY + 4);
+
+    doc.rect(280, secY, 120, 16).fill(DARK);
+    doc.fillColor(ACCENT).font("Helvetica-Bold").fontSize(8).text("SHIP TO", 286, secY + 4);
+
+    const infoY = secY + 22;
+
+    doc.fillColor(TEXT).font("Helvetica-Bold").fontSize(10)
+      .text(order.customer_name || "", 40, infoY)
+      .text(order.customer_name || "", 280, infoY);
+
+    const billLines = [
+      order.customer_email,
+      order.phone,
+    ].filter(Boolean);
+
+    const shipLines = [
+      order.line1,
+      order.line2,
+      [order.city, order.state, order.pincode].filter(Boolean).join(", "),
+      order.country || "India",
+    ].filter(Boolean);
+
+    doc.font("Helvetica").fontSize(9).fillColor(TMID);
+    billLines.forEach((line, i) => doc.text(line, 40, infoY + 14 * (i + 1)));
+    shipLines.forEach((line, i) => doc.text(line, 280, infoY + 14 * (i + 1)));
+
+    // ── QR CODE ───────────────────────────────────────────────────────────
+    const qrData = JSON.stringify({
+      orderId: order.id,
+      amount:  Number(order.total_amount),
+      status:  order.status,
+      payment: order.payment_status,
     });
 
-    // Totals
-    doc
-      .moveTo(50, position + 4)
-      .lineTo(545, position + 4)
-      .strokeColor("#e5e7eb")
-      .stroke();
+    try {
+      const qrUrl    = await QRCode.toDataURL(qrData, { margin: 1, scale: 4 });
+      const qrBuffer = Buffer.from(qrUrl.replace(/^data:image\/png;base64,/, ""), "base64");
+      doc.image(qrBuffer, W - 140, secY, { width: 100 });
+      doc
+        .fillColor(MID)
+        .font("Helvetica")
+        .fontSize(7)
+        .text("Scan for order lookup", W - 140, secY + 104, { width: 100, align: "center" });
+    } catch (_) { /* skip QR on error */ }
 
-    position += 12;
+    // ── ITEMS TABLE ───────────────────────────────────────────────────────
+    const tableTop = 330;
 
-    doc
-      .fontSize(10)
-      .fillColor("#374151")
-      .text("Subtotal", colPrice, position, { width: 80, align: "right" })
-      .text(
-        `Rs.${Number(order.total_amount).toLocaleString("en-IN")}`,
-        colTotal,
-        position,
-        { width: 80, align: "right" }
-      );
+    // Header row
+    doc.rect(40, tableTop, W - 80, 22).fill(DARK);
 
-    position += 18;
+    doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(9);
+    doc.text("PRODUCT / DESCRIPTION", 50,  tableTop + 7);
+    doc.text("QTY",        330, tableTop + 7, { width: 40,  align: "right" });
+    doc.text("UNIT PRICE", 380, tableTop + 7, { width: 80,  align: "right" });
+    doc.text("TOTAL",      470, tableTop + 7, { width: 85,  align: "right" });
 
-    doc
-      .fontSize(11)
-      .fillColor("#111827")
-      .text("Total", colPrice, position, { width: 80, align: "right" })
-      .text(
-        `Rs.${Number(order.total_amount).toLocaleString("en-IN")}`,
-        colTotal,
-        position,
-        { width: 80, align: "right" }
-      );
+    let rowY = tableTop + 22;
+    items.forEach((item, i) => {
+      const bg = i % 2 === 0 ? LIGHT : "#ffffff";
+      doc.rect(40, rowY, W - 80, 22).fill(bg);
 
-    position += 24;
+      doc.fillColor(TEXT).font("Helvetica").fontSize(9);
+      doc.text(item.product_name || "", 50, rowY + 7, { width: 270 });
+      doc.text(String(item.quantity), 330, rowY + 7, { width: 40,  align: "right" });
+      doc.text(`Rs.${Number(item.unit_price).toLocaleString("en-IN")}`, 380, rowY + 7, { width: 80,  align: "right" });
+      doc.font("Helvetica-Bold")
+         .text(`Rs.${Number(item.line_total).toLocaleString("en-IN")}`, 470, rowY + 7, { width: 85,  align: "right" });
 
-    doc
-      .fontSize(9)
-      .fillColor("#6b7280")
-      .text(`Payment status: ${order.payment_status}`, 50, position)
-      .moveDown(2)
-      .text(
-        "This is a computer generated invoice. No signature required.",
-        50,
-        doc.y,
-        { width: 495 }
-      );
+      rowY += 22;
+    });
+
+    // ── TOTALS ────────────────────────────────────────────────────────────
+    let totY = rowY + 10;
+    doc.moveTo(340, totY).lineTo(W - 40, totY).lineWidth(0.5).strokeColor(ACCENT).stroke();
+
+    const subtotal = Number(order.total_amount);
+
+    // Subtotal row
+    totY += 12;
+    doc.fillColor(TMID).font("Helvetica").fontSize(9)
+       .text("Subtotal",      380, totY, { width: 80, align: "right" })
+       .text(`Rs.${subtotal.toLocaleString("en-IN")}`, 470, totY, { width: 85, align: "right" });
+
+    // GST row
+    totY += 16;
+    doc.fillColor(TMID).font("Helvetica").fontSize(9)
+       .text("GST",           380, totY, { width: 80, align: "right" })
+       .text("Inclusive",     470, totY, { width: 85, align: "right" });
+
+    // Grand total highlight box
+    totY += 16;
+    doc.roundedRect(330, totY - 4, W - 370, 24, 4).fill(DARK);
+    doc.fillColor(ACCENT).font("Helvetica-Bold").fontSize(10)
+       .text("GRAND TOTAL",   338, totY + 3, { width: 120 })
+       .text(`Rs.${subtotal.toLocaleString("en-IN")}`, 470, totY + 3, { width: 85, align: "right" });
+
+    // Payment status badge
+    const isPaid = (order.payment_status || "").toLowerCase() === "paid";
+    doc.roundedRect(40, totY - 4, 70, 24, 4).fill(isPaid ? "#16a34a" : "#dc2626");
+    doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(9)
+       .text((order.payment_status || "").toUpperCase(), 40, totY + 3, { width: 70, align: "center" });
+
+    // ── FOOTER ────────────────────────────────────────────────────────────
+    doc.rect(0, H - 50, W, 3).fill(ACCENT);
+    doc.rect(0, H - 47, W, 47).fill(DARK);
+
+    doc.fillColor(ACCENT).font("Helvetica-Bold").fontSize(8)
+       .text(
+         "COE E-Commerce  |  Shristi & Prerana Co-operative Society",
+         0, H - 35, { align: "center", width: W }
+       );
+
+    doc.fillColor(MID).font("Helvetica").fontSize(7.5)
+       .text(
+         "This is a computer-generated invoice. No signature required.  |  All prices are GST inclusive.",
+         0, H - 20, { align: "center", width: W }
+       );
 
     doc.end();
   } catch (err) {
@@ -301,4 +330,3 @@ router.get("/:id/invoice"
 });
 
 export default router;
-

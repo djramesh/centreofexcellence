@@ -52,6 +52,19 @@ function Fonts() {
   return <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');`}</style>;
 }
 
+/* ─── Load Razorpay SDK (safe to call multiple times) ────────────────────── */
+function loadRazorpayScript() {
+  return new Promise((resolve) => {
+    // Already loaded — skip re-injection
+    if (window.Razorpay) return resolve(true);
+    const script = document.createElement("script");
+    script.src     = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload  = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
+
 /* ─── Image Lightbox ─────────────────────────────────────────────────────── */
 function ImageLightbox({ src, alt, onClose }) {
   useEffect(() => {
@@ -474,7 +487,7 @@ export function OrderDetail() {
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState("");
   const [dlLoading, setDlLoading]     = useState(false);
-  const [payLoading, setPayLoading]   = useState(false);  
+  const [payLoading, setPayLoading]   = useState(false);
   const [lightbox, setLightbox]       = useState(null);
 
   const openLightbox  = useCallback((src, alt) => setLightbox({ src, alt }), []);
@@ -505,17 +518,30 @@ export function OrderDetail() {
     finally { setDlLoading(false); }
   };
 
+  // ── NEW: fixed handlePayNow with Razorpay script loader ─────────────────
   const handlePayNow = async () => {
     const token = localStorage.getItem("authToken");
     if (!order || !token) return;
     setPayLoading(true);
+
     try {
+      // 1. Ensure Razorpay SDK is loaded before doing anything else
+      const loaded = await loadRazorpayScript();
+      if (!loaded) {
+        console.error("Failed to load Razorpay SDK");
+        setPayLoading(false);
+        return;
+      }
+
+      // 2. Get a fresh Razorpay order from the backend
       const res = await fetch(`${API_BASE_URL}/api/orders/${order.id}/initiate-payment`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       });
       if (!res.ok) throw new Error("Failed to initiate payment");
       const data = await res.json();
+
+      // 3. Open Razorpay checkout modal
       const options = {
         key:         data.key_id,
         amount:      data.amount,
@@ -524,18 +550,25 @@ export function OrderDetail() {
         description: `Order #${order.id}`,
         order_id:    data.razorpay_order_id,
         handler: async (response) => {
-          await fetch(`${API_BASE_URL}/api/orders/${order.id}/verify-payment`, {
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-            body: JSON.stringify({
-              razorpay_order_id:   response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature:  response.razorpay_signature,
-            }),
-          });
-          const updated = await ordersApi.get(order.id);
-          setOrder(updated.order);
-          setItems(updated.items || []);
+          try {
+            await fetch(`${API_BASE_URL}/api/orders/${order.id}/verify-payment`, {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id:   response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature:  response.razorpay_signature,
+              }),
+            });
+            // Refresh order data to reflect PAID status
+            const updated = await ordersApi.get(order.id);
+            setOrder(updated.order);
+            setItems(updated.items || []);
+          } catch (err) {
+            console.error("Payment verification failed:", err);
+          } finally {
+            setPayLoading(false);
+          }
         },
         prefill: {
           name:    order.customer_name  || "",
@@ -543,12 +576,14 @@ export function OrderDetail() {
           contact: order.phone          || "",
         },
         theme: { color: "#2484ff" },
+        // Reset button if user closes modal without paying
+        modal: { ondismiss: () => setPayLoading(false) },
       };
+
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (err) {
       console.error("Pay now failed:", err);
-    } finally {
       setPayLoading(false);
     }
   };

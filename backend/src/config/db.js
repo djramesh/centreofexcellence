@@ -6,6 +6,11 @@ const {
   DB_USER = "root",
   DB_PASSWORD = "",
   DB_NAME = "coe_ecommerce",
+  // Tune these per deployment. Each Node instance gets its own pool, so the
+  // total connections to MySQL = DB_POOL_LIMIT × number of instances — keep
+  // that under the server's max_connections.
+  DB_POOL_LIMIT = 20,
+  DB_QUEUE_LIMIT = 0,
 } = process.env;
 
 let pool;
@@ -19,8 +24,10 @@ export function getDbPool() {
       password: DB_PASSWORD,
       database: DB_NAME,
       waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
+      connectionLimit: Number(DB_POOL_LIMIT),
+      queueLimit: Number(DB_QUEUE_LIMIT),
+      enableKeepAlive: true,
+      keepAliveInitialDelay: 10000,
     });
   }
 

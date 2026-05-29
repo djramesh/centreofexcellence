@@ -31,6 +31,7 @@ async function setupDatabase() {
       password: config.password,
       multipleStatements: true,
     });
+  
 
     console.log("✅ Connected to MySQL server");
 

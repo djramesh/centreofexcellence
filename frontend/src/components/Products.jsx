@@ -399,9 +399,11 @@ function Products() {
   const handleOrderNow = useCallback((e, product) => {
     e.preventDefault(); e.stopPropagation();
     if (!isAuthenticated) { navigate("/login"); return; }
-    addToCart({ ...product, price: product.price || 500 }, 1);
-    navigate("/checkout");
-  }, [isAuthenticated, addToCart, navigate]);
+    // "Order Now" is a direct Buy-Now flow: it must NOT add to the persistent
+    // cart. The product is passed straight to checkout via router state.
+    const buyNowItem = { ...product, price: product.price || 800, quantity: 1 };
+    navigate("/checkout", { state: { buyNowItem } });
+  }, [isAuthenticated, navigate]);
 
   return (
     <div id="products" className="products-wrap">

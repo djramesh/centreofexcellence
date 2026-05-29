@@ -1,6 +1,5 @@
 USE coe_ecommerce;
 
--- Admin user (email: admin@coe.com, password: admin123) – change after first login
 INSERT INTO users (name, email, password_hash, role) VALUES
   ('Admin', 'admin@coe.com', '$2a$10$tdS5Vy336lV/AJfSinj0Ze3TFcEK9GzRigjONRmu5FHgBYU0C0AWW', 'admin')
 ON DUPLICATE KEY UPDATE role = 'admin', password_hash = VALUES(password_hash), name = VALUES(name);

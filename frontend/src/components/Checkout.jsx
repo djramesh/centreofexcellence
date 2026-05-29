@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { createOrder, verifyPayment } from "../api/checkout";
@@ -7,9 +7,22 @@ import { HiLocationMarker, HiPhone, HiMail, HiShoppingBag, HiCheckCircle, HiCred
 import "./Checkout.css";
 
 const Checkout = () => {
-  const { cartItems, getCartTotal, clearCart } = useCart();
-  const { user, isAuthenticated }              = useAuth();
-  const navigate                               = useNavigate();
+  const { cartItems, clearCart }  = useCart();
+  const { user, isAuthenticated } = useAuth();
+  const navigate                  = useNavigate();
+  const location                  = useLocation();
+
+  // "Buy Now" (Order Now) passes a single product via router state and must
+  // bypass the persistent cart entirely. Fall back to the cart otherwise.
+  const buyNowItem = location.state?.buyNowItem || null;
+  const items = useMemo(
+    () => (buyNowItem ? [buyNowItem] : cartItems),
+    [buyNowItem, cartItems]
+  );
+  const total = useMemo(
+    () => items.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0),
+    [items]
+  );
 
   const [address, setAddress] = useState({
     line1: "", line2: "", city: "", state: "", pincode: "", country: "India",
@@ -20,9 +33,9 @@ const Checkout = () => {
 
   useEffect(() => {
     if (!isAuthenticated) { navigate("/login"); return; }
-    if (cartItems.length === 0) { navigate("/cart"); return; }
+    if (items.length === 0) { navigate("/cart"); return; }
     requestAnimationFrame(() => setMounted(true));
-  }, [isAuthenticated, cartItems, navigate]);
+  }, [isAuthenticated, items, navigate]);
 
   const handleAddressChange = (e) => {
     setAddress({ ...address, [e.target.name]: e.target.value });
@@ -48,9 +61,9 @@ const Checkout = () => {
 
     try {
       const orderResponse = await createOrder({
-        items: cartItems.map(item => ({ productId: item.id, quantity: item.quantity, price: item.price || 0 })),
+        items: items.map(item => ({ productId: item.id, quantity: item.quantity, price: item.price || 0 })),
         address,
-        totalAmount: getCartTotal(),
+        totalAmount: total,
       });
 
       const { razorpayOrderId, orderId } = orderResponse;
@@ -60,7 +73,7 @@ const Checkout = () => {
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: getCartTotal() * 100,
+        amount: total * 100,
         currency: "INR",
         name: "Shristi & Prerana Co-operative",
         description: `Order #${orderId}`,
@@ -73,7 +86,9 @@ const Checkout = () => {
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature,
             });
-            clearCart();
+            // Only clear the persistent cart for a cart-based checkout.
+            // A Buy-Now order never touched the cart, so leave it intact.
+            if (!buyNowItem) clearCart();
             navigate(`/orders/${orderId}`, { state: { success: true, orderId } });
           } catch (err) {
             setError(err?.data?.message || "Payment verification failed. Please contact support.");
@@ -93,7 +108,7 @@ const Checkout = () => {
     }
   };
 
-  if (!isAuthenticated || cartItems.length === 0) return null;
+  if (!isAuthenticated || items.length === 0) return null;
 
   return (
     <div className={`checkout-page${mounted ? " checkout-loaded" : ""}`}>
@@ -103,7 +118,7 @@ const Checkout = () => {
         <div className="checkout-header-inner">
           <span className="checkout-eyebrow">Secure Checkout</span>
           <h1 className="checkout-title">Complete Your Order</h1>
-          <p className="checkout-subtitle">{cartItems.length} item{cartItems.length !== 1 ? "s" : ""} · ₹{getCartTotal().toLocaleString("en-IN")}</p>
+          <p className="checkout-subtitle">{items.length} item{items.length !== 1 ? "s" : ""} · ₹{total.toLocaleString("en-IN")}</p>
         </div>
 
         {/* Progress steps */}
@@ -213,7 +228,7 @@ const Checkout = () => {
               <h2 className="card-title">Order Summary</h2>
             </div>
             <div className="order-items-list">
-              {cartItems.map((item, idx) => (
+              {items.map((item, idx) => (
                 <div key={item.id} className="order-item" style={{ animationDelay: `${0.25 + idx * 0.05}s` }}>
                   <div className="order-item-img-wrap">
                     <img
@@ -246,8 +261,8 @@ const Checkout = () => {
 
             <div className="summary-body">
               <div className="price-row">
-                <span className="price-label">Price ({cartItems.length} item{cartItems.length !== 1 ? "s" : ""})</span>
-                <span className="price-value">₹{getCartTotal().toLocaleString("en-IN")}</span>
+                <span className="price-label">Price ({items.length} item{items.length !== 1 ? "s" : ""})</span>
+                <span className="price-value">₹{total.toLocaleString("en-IN")}</span>
               </div>
               <div className="price-row">
                 <span className="price-label">Delivery Charges</span>
@@ -255,7 +270,7 @@ const Checkout = () => {
               </div>
               <div className="price-row price-row-total">
                 <span className="price-label">Total Amount</span>
-                <span className="price-value price-total">₹{getCartTotal().toLocaleString("en-IN")}</span>
+                <span className="price-value price-total">₹{total.toLocaleString("en-IN")}</span>
               </div>
             </div>
 
@@ -279,7 +294,7 @@ const Checkout = () => {
               ) : (
                 <>
                   <HiCreditCard />
-                  Pay ₹{getCartTotal().toLocaleString("en-IN")}
+                  Pay ₹{total.toLocaleString("en-IN")}
                 </>
               )}
             </button>

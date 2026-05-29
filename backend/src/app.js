@@ -48,8 +48,17 @@ app.use(
   })
 );
 
-// Body parser with size limits
-app.use(express.json({ limit: "1mb" }));
+// Body parser with size limits.
+// Capture the raw body so the Razorpay webhook can verify its HMAC signature
+// (signature is computed over the exact bytes Razorpay sent).
+app.use(
+  express.json({
+    limit: "1mb",
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
 app.use(express.urlencoded({ limit: "1mb", extended: true }));
 
 // ============= LOGGING & TRACKING =============

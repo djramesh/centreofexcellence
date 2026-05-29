@@ -162,8 +162,9 @@ export default function ProductDetails() {
 
   const handleOrderNow = () => {
     if (!isAuthenticated) { navigate("/login"); return; }
-    addToCart({ ...product, price }, 1);
-    navigate("/checkout");
+    // "Order Now" is a direct Buy-Now flow: it must NOT add to the persistent
+    // cart. The product is passed straight to checkout via router state.
+    navigate("/checkout", { state: { buyNowItem: { ...product, price, quantity: 1 } } });
   };
 
   return (

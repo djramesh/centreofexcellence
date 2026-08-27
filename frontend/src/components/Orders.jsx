@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Link, useSearchParams, useParams, useNavigate } from "react-router-dom";
+import { Link, useSearchParams, useParams } from "react-router-dom";
 import ordersApi from "../api/orders.js";
-import { API_BASE_URL } from "../api/client.js";
+import SmartImage from "./common/SmartImage.jsx";
+import ImageLightbox from "./common/ImageLightbox.jsx";
 
 /* ─── Design tokens ──────────────────────────────────────────────────────── */
 const t = {
@@ -39,14 +40,13 @@ const statusConfig = {
 };
 
 /* ─── Helpers ─────────────────────────────────────────────────────────────── */
-function resolveImgUrl(url) {
-  if (!url) return null;
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  if (url.startsWith("/assets/") || url.startsWith("assets/")) {
-    return url.split("/").map((seg) => encodeURIComponent(seg)).join("/");
-  }
-  return url;
-}
+const formatDate = (value, withTime = false) =>
+  new Date(value).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    ...(withTime ? { hour: "2-digit", minute: "2-digit" } : {}),
+  });
 
 function Fonts() {
   return <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');`}</style>;
@@ -63,68 +63,6 @@ function loadRazorpayScript() {
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
   });
-}
-
-/* ─── Image Lightbox ─────────────────────────────────────────────────────── */
-function ImageLightbox({ src, alt, onClose }) {
-  useEffect(() => {
-    const handler = (e) => { if (e.key === "Escape") onClose(); };
-    document.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed", inset: 0, zIndex: 9999,
-        background: "rgba(10, 15, 30, 0.82)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        animation: "lbFadeIn 0.22s ease",
-        padding: "1.5rem",
-      }}
-    >
-      <button
-        onClick={onClose}
-        style={{
-          position: "absolute", top: 18, right: 18,
-          width: 38, height: 38, borderRadius: "50%",
-          border: "none", cursor: "pointer",
-          background: "rgba(255,255,255,0.15)",
-          backdropFilter: "blur(6px)",
-          color: "#fff", fontSize: "1.2rem",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          lineHeight: 1, transition: "background 0.18s",
-          zIndex: 10000,
-        }}
-        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.28)"}
-        onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
-        aria-label="Close"
-      >
-        ✕
-      </button>
-      <img
-        src={src}
-        alt={alt || "Product"}
-        onClick={e => e.stopPropagation()}
-        style={{
-          maxWidth: "90vw", maxHeight: "85vh",
-          borderRadius: 16,
-          boxShadow: "0 32px 80px rgba(0,0,0,0.55)",
-          objectFit: "contain",
-          animation: "lbScaleIn 0.25s cubic-bezier(0.34,1.56,0.64,1)",
-          cursor: "default",
-          userSelect: "none",
-        }}
-      />
-    </div>
-  );
 }
 
 /* ─── Badge ──────────────────────────────────────────────────────────────── */
@@ -167,53 +105,92 @@ function Sk({ w = "100%", h = 14, r = 6, style = {} }) {
   );
 }
 
-/* ─── Product thumbnail — clickable, opens lightbox ─────────────────────── */
+/* ─── Product thumbnail — click to open the shared lightbox ─────────────── */
 function ProductThumb({ url, name, onExpand }) {
-  const [err, setErr] = useState(false);
-  const src = resolveImgUrl(url);
+  return (
+    <button type="button" className="od-thumb" onClick={onExpand} title="Click to enlarge">
+      <SmartImage src={url} alt={name || "Product"} wrapperClassName="od-thumb-placeholder" />
+    </button>
+  );
+}
 
-  if (!src || err) {
-    return (
-      <div style={{
-        width: 72, height: 72, borderRadius: 12, flexShrink: 0,
-        background: "linear-gradient(135deg,#e8f0ff,#f0f4ff)",
-        border: `1px solid ${t.border}`,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: "1.6rem",
-      }}>
-        🧺
-      </div>
-    );
-  }
+/* ─── Shipment tracking ──────────────────────────────────────────────────
+   The API has returned tracking_id / courier_company / tracking_url since
+   shipping was added, but the customer was never shown any of it — the only
+   way to find a consignment number was to ask. This is that missing panel.
+──────────────────────────────────────────────────────────────────────────── */
+function TrackingCard({ tracking }) {
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(tracking.trackingNumber);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard blocked — the number is on screen to copy by hand */
+    }
+  };
 
   return (
-    <div
-      onClick={() => onExpand(src, name)}
-      style={{
-        position: "relative", width: 72, height: 72,
-        borderRadius: 12, flexShrink: 0, cursor: "zoom-in",
-        overflow: "hidden",
-        boxShadow: "0 2px 8px rgba(36,132,255,0.13)",
-        border: `1.5px solid ${t.border}`,
-        transition: "transform 0.18s, box-shadow 0.18s",
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.transform = "scale(1.06)";
-        e.currentTarget.style.boxShadow = "0 6px 20px rgba(36,132,255,0.22)";
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.transform = "scale(1)";
-        e.currentTarget.style.boxShadow = "0 2px 8px rgba(36,132,255,0.13)";
-      }}
-      title="Click to expand"
-    >
-      <img
-        src={src}
-        alt={name || "Product"}
-        onError={() => setErr(true)}
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", userSelect: "none" }}
-      />
-    </div>
+    <Card style={{ marginBottom: "1.25rem" }}>
+      <div className="tk-head">
+        <span className="tk-icon" aria-hidden="true">🚚</span>
+        <div>
+          <p className="section-label" style={{ margin: 0 }}>Shipment</p>
+          <p className="tk-carrier">Shipped with {tracking.carrierName}</p>
+        </div>
+        {tracking.status && <span className="tk-status">{tracking.status}</span>}
+      </div>
+
+      <div className="tk-body">
+        <div className="tk-field">
+          <span className="tk-field-label">Tracking number</span>
+          <div className="tk-number-row">
+            <code className="tk-number">{tracking.trackingNumber}</code>
+            <button type="button" className="tk-copy" onClick={copy}>
+              {copied ? "✓ Copied" : "Copy"}
+            </button>
+          </div>
+        </div>
+
+        {(tracking.shippedAt || tracking.deliveredAt) && (
+          <div className="tk-field">
+            <span className="tk-field-label">
+              {tracking.deliveredAt ? "Delivered" : "Dispatched"}
+            </span>
+            <span className="tk-field-value">
+              {formatDate(tracking.deliveredAt || tracking.shippedAt)}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {tracking.trackingUrl ? (
+        <a
+          className="tk-track-btn"
+          href={tracking.trackingUrl}
+          target="_blank"
+          /* noreferrer matters as much as noopener: it stops the courier's site
+             from seeing which order page the customer came from. */
+          rel="noopener noreferrer"
+        >
+          Track on {tracking.carrierName} ↗
+        </a>
+      ) : (
+        <p className="tk-manual">
+          Copy the tracking number above and enter it on the {tracking.carrierName} website to see
+          the latest status.
+        </p>
+      )}
+
+      {tracking.requiresManualEntry && tracking.trackingUrl && (
+        <p className="tk-manual">
+          {tracking.carrierName} does not support direct links — paste the tracking number into the
+          form on their site.
+        </p>
+      )}
+    </Card>
   );
 }
 
@@ -343,8 +320,75 @@ const css = `
   .pay-now-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(245,158,11,0.45); }
   .pay-now-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+  /* ── Product thumbnail ── */
+  .od-thumb {
+    position: relative; width: 72px; height: 72px; flex-shrink: 0;
+    padding: 0; border: 1.5px solid ${t.border}; border-radius: 12px;
+    overflow: hidden; cursor: zoom-in; background: linear-gradient(135deg,#e8f0ff,#f0f4ff);
+    box-shadow: 0 2px 8px rgba(36,132,255,0.13);
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .od-thumb:hover { transform: scale(1.06); box-shadow: 0 6px 20px rgba(36,132,255,0.22); }
+  .od-thumb:focus-visible { outline: 2px solid ${t.blue}; outline-offset: 2px; }
+  .od-thumb img, .od-thumb-placeholder { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* ── Tracking card ── */
+  .tk-head {
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 1.1rem 1.4rem; border-bottom: 1px solid ${t.border};
+    background: linear-gradient(90deg, ${t.blueSoft}, ${t.surfaceHover});
+  }
+  .tk-icon { font-size: 1.5rem; line-height: 1; }
+  .tk-carrier { font-size: 0.95rem; font-weight: 600; color: ${t.text1}; margin-top: 2px; }
+  .tk-status {
+    margin-left: auto; padding: 4px 12px; border-radius: 999px;
+    background: ${t.purpleSoft}; color: ${t.purple};
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .tk-body {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem; padding: 1.25rem 1.4rem;
+  }
+  .tk-field-label {
+    display: block; font-size: 0.67rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: ${t.text3}; margin-bottom: 0.45rem;
+  }
+  .tk-field-value { font-size: 0.9rem; font-weight: 500; color: ${t.text1}; }
+  .tk-number-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .tk-number {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: 0.95rem; font-weight: 600; letter-spacing: 0.03em;
+    color: ${t.text1}; background: ${t.blueSoft};
+    padding: 6px 12px; border-radius: 8px; word-break: break-all;
+  }
+  .tk-copy {
+    border: 1px solid ${t.border}; background: ${t.surface}; color: ${t.text2};
+    font-family: ${t.font}; font-size: 0.75rem; font-weight: 600;
+    padding: 6px 12px; border-radius: 8px; cursor: pointer; white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .tk-copy:hover { border-color: ${t.blue}; color: ${t.blue}; background: ${t.blueSoft}; }
+  .tk-track-btn {
+    display: block; margin: 0 1.4rem 1.4rem; padding: 12px 20px;
+    border-radius: 10rem; text-align: center; text-decoration: none;
+    font-family: ${t.font}; font-size: 0.9rem; font-weight: 600; color: #fff;
+    background: ${t.blueGrad}; box-shadow: 0 4px 16px rgba(36,132,255,0.28);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .tk-track-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(36,132,255,0.38); }
+  .tk-manual {
+    padding: 0 1.4rem 1.25rem; font-size: 0.78rem; line-height: 1.6; color: ${t.text2};
+  }
+
+  .ol-track-hint {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.72rem; font-weight: 600; color: ${t.purple};
+  }
+
   @media (max-width: 680px) {
     .ol-page { padding: 1.5rem 0.875rem 4rem; }
+    .tk-body { grid-template-columns: 1fr; gap: 1rem; }
     .dt-table-wrap { display: none; }
     .mb-list { display: block; }
     .hide-sm { display: none !important; }
@@ -432,7 +476,14 @@ export function OrdersList() {
                         <td className="dt-id">#{o.id}</td>
                         <td className="dt-muted nowrap">{new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</td>
                         <td className="dt-muted">{o.city ? `${o.city}${o.state ? ", " + o.state : ""}` : "—"}</td>
-                        <td><Badge status={o.status} /></td>
+                        <td>
+                          <Badge status={o.status} />
+                          {o.tracking && (
+                            <div className="ol-track-hint" style={{ marginTop: 4 }}>
+                              🚚 {o.tracking.carrierName}
+                            </div>
+                          )}
+                        </td>
                         <td className="dt-amount nowrap">Rs.{Number(o.total_amount).toLocaleString("en-IN")}</td>
                         <td><Link to={`/orders/${o.id}`} className="dt-link">View details →</Link></td>
                       </tr>
@@ -446,9 +497,12 @@ export function OrdersList() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div className="mb-top"><span className="dt-id">#{o.id}</span><Badge status={o.status} /></div>
                       <p className="mb-meta">
-                        {new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                        {formatDate(o.created_at)}
                         {o.city && <> · {o.city}{o.state ? `, ${o.state}` : ""}</>}
                       </p>
+                      {o.tracking && (
+                        <p className="ol-track-hint">🚚 {o.tracking.carrierName} · {o.tracking.trackingNumber}</p>
+                      )}
                     </div>
                     <div style={{ textAlign: "right", flexShrink: 0 }}>
                       <p className="mb-amount">Rs.{Number(o.total_amount).toLocaleString("en-IN")}</p>
@@ -490,60 +544,54 @@ export function OrderDetail() {
   const [payLoading, setPayLoading]   = useState(false);
   const [lightbox, setLightbox]       = useState(null);
 
-  const openLightbox  = useCallback((src, alt) => setLightbox({ src, alt }), []);
   const closeLightbox = useCallback(() => setLightbox(null), []);
 
   useEffect(() => {
     if (!id) return;
     ordersApi.get(id)
       .then(res => { setOrder(res.order); setItems(res.items || []); })
-      .catch(err => setError(err?.data?.message || err?.message || "Failed to load order"))
+      .catch(err => setError(err.message))
       .finally(() => setLoading(false));
   }, [id]);
 
   const handleDownloadInvoice = async () => {
-    const token = localStorage.getItem("authToken");
-    if (!id || !token) return;
+    if (!id) return;
     setDlLoading(true);
+    setError("");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/orders/${id}/invoice`, { headers: { Authorization: `Bearer ${token}` } });
-      if (!res.ok) return;
-      const blob = await res.blob();
+      const blob = await ordersApi.downloadInvoice(id);
       const url  = window.URL.createObjectURL(blob);
       const a    = document.createElement("a");
       a.href = url; a.download = `invoice-${id}.pdf`;
       document.body.appendChild(a); a.click(); a.remove();
       window.URL.revokeObjectURL(url);
-    } catch { /* ignore */ }
-    finally { setDlLoading(false); }
+    } catch (err) {
+      // Previously a failed download was swallowed and the button just stopped
+      // spinning, leaving the customer with no idea what happened.
+      setError(err.message || "Could not download the invoice.");
+    } finally {
+      setDlLoading(false);
+    }
   };
 
-  // ── NEW: fixed handlePayNow with Razorpay script loader ─────────────────
   const handlePayNow = async () => {
-    const token = localStorage.getItem("authToken");
-    if (!order || !token) return;
+    if (!order) return;
     setPayLoading(true);
+    setError("");
 
     try {
-      // 1. Ensure Razorpay SDK is loaded before doing anything else
       const loaded = await loadRazorpayScript();
       if (!loaded) {
-        console.error("Failed to load Razorpay SDK");
+        setError("Could not load the payment gateway. Please check your connection.");
         setPayLoading(false);
         return;
       }
 
-      // 2. Get a fresh Razorpay order from the backend
-      const res = await fetch(`${API_BASE_URL}/api/orders/${order.id}/initiate-payment`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      });
-      if (!res.ok) throw new Error("Failed to initiate payment");
-      const data = await res.json();
+      const data = await ordersApi.initiatePayment(order.id);
 
-      // 3. Open Razorpay checkout modal
       const options = {
-        key:         data.key_id,
+        // The key now comes from the server, so the SPA needs no copy of it.
+        key:         data.keyId || data.key_id,
         amount:      data.amount,
         currency:    data.currency || "INR",
         name:        "COE Handicrafts",
@@ -551,21 +599,19 @@ export function OrderDetail() {
         order_id:    data.razorpay_order_id,
         handler: async (response) => {
           try {
-            await fetch(`${API_BASE_URL}/api/orders/${order.id}/verify-payment`, {
-              method: "POST",
-              headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-              body: JSON.stringify({
-                razorpay_order_id:   response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature:  response.razorpay_signature,
-              }),
+            await ordersApi.verifyPayment(order.id, {
+              razorpay_order_id:   response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature:  response.razorpay_signature,
             });
-            // Refresh order data to reflect PAID status
             const updated = await ordersApi.get(order.id);
             setOrder(updated.order);
             setItems(updated.items || []);
           } catch (err) {
-            console.error("Payment verification failed:", err);
+            setError(
+              err.message ||
+              "We could not confirm your payment. If money left your account, contact us with your order number."
+            );
           } finally {
             setPayLoading(false);
           }
@@ -583,7 +629,7 @@ export function OrderDetail() {
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (err) {
-      console.error("Pay now failed:", err);
+      setError(err.message || "Could not start the payment. Please try again.");
       setPayLoading(false);
     }
   };
@@ -620,11 +666,21 @@ export function OrderDetail() {
       <Fonts />
       <style>{css}</style>
 
-      {lightbox && <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} />}
+      {lightbox !== null && (
+        <ImageLightbox
+          images={items
+            .filter((row) => row.thumbnail_url)
+            .map((row) => ({ url: row.thumbnail_url, alt: row.product_name }))}
+          startIndex={lightbox}
+          onClose={closeLightbox}
+        />
+      )}
 
       <div className="ol-page">
         <div className="ol-wrap" style={{ maxWidth: 1000 }}>
           <Link to="/orders" className="back-link">← Back to orders</Link>
+
+          {error && <div className="ol-error">⚠ {error}</div>}
 
           {/* Pending payment warning */}
           {order.status === "PENDING" && (
@@ -688,6 +744,9 @@ export function OrderDetail() {
             )}
           </Card>
 
+          {/* Shipment — courier, consignment number and a link to their site */}
+          {order.tracking && <TrackingCard tracking={order.tracking} />}
+
           {/* Info grid */}
           <div className="od-grid">
             <Card style={{ padding: "1.4rem" }}>
@@ -723,15 +782,29 @@ export function OrderDetail() {
               <p className="section-label" style={{ margin: 0 }}>Order Items</p>
               <span className="items-count">{items.length} item{items.length !== 1 ? "s" : ""}</span>
             </div>
-            {items.map((row, i) => (
+            {items.map((row, i) => {
+              // Index within the lightbox gallery, which only holds items that
+              // actually have a picture.
+              const galleryIndex = items
+                .filter((r) => r.thumbnail_url)
+                .findIndex((r) => r.id === row.id);
+              return (
               <div key={row.id} className="item-row" style={{ borderBottom: i < items.length - 1 ? `1px solid ${t.border}` : "none" }}>
                 <ProductThumb
-                  url={row.thumbnail_url || row.product_thumbnail || null}
+                  url={row.thumbnail_url}
                   name={row.product_name}
-                  onExpand={openLightbox}
+                  onExpand={() => galleryIndex >= 0 && setLightbox(galleryIndex)}
                 />
                 <div className="item-info">
-                  <p className="item-name">{row.product_name}</p>
+                  <p className="item-name">
+                    {row.product_slug ? (
+                      <Link to={`/products/${row.product_slug}`} className="dt-link">
+                        {row.product_name}
+                      </Link>
+                    ) : (
+                      row.product_name
+                    )}
+                  </p>
                   <p className="item-meta">Qty: {row.quantity}</p>
                 </div>
                 <div className="item-price">
@@ -739,7 +812,8 @@ export function OrderDetail() {
                   <p className="item-total">Rs.{Number(row.line_total).toLocaleString("en-IN")}</p>
                 </div>
               </div>
-            ))}
+              );
+            })}
             <div className="total-bar">
               <span style={{ color: t.text2, fontSize: "0.85rem" }}>Order Total</span>
               <span className="total-amount">Rs.{Number(order.total_amount).toLocaleString("en-IN")}</span>

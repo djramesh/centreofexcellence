@@ -16,7 +16,6 @@ import {
   Bar,
 } from "recharts";
 import { adminApi } from "../../api/admin.js";
-import { API_BASE_URL } from "../../api/client.js";
 import "./AdminDashboard.css";
 
 const STATUS_COLORS = {
@@ -137,31 +136,17 @@ export default function AdminDashboard() {
     adminApi
       .getDashboard()
       .then(setData)
-      .catch((err) => setError(err?.data?.message || err?.message || "Failed to load dashboard"))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
   /* ── Fetch society revenue breakdown ──────────────────────── */
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (!token) { setSocietyLoading(false); return; }
-
-    fetch(`${API_BASE_URL}/api/admin/revenue/by-society`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(r => r.ok ? r.json() : Promise.reject(r))
+    /* Goes through adminApi so it picks up the shared auth header, timeout and
+       401 handling, instead of hand-rolling fetch with a raw token. */
+    adminApi.getSocietyRevenue()
       .then(res => {
-        /*
-          Expected API shape (backend should return this):
-          [
-            { month: "Jan 25", shristi: 12000, prerana: 8000 },
-            { month: "Feb 25", shristi: 15000, prerana: 9500 },
-            ...
-          ]
-
-          If your backend doesn't have this endpoint yet, see the note below
-          about how to add it. The frontend will show an empty state gracefully.
-        */
+        // Shape: [{ month: "Jan 25", shristi: 12000, prerana: 8000 }, …]
         const raw = res.data || res || [];
         setSocietyRevenue(raw.map(row => ({
           ...row,
@@ -231,6 +216,17 @@ export default function AdminDashboard() {
           <span className="admin-stat-label">Customers</span>
           <span className="admin-stat-value">{stats.totalUsers}</span>
         </div>
+        {/* Paid but not yet dispatched — the queue that actually needs action. */}
+        <Link
+          to="/admin/orders?status=PAID"
+          className={`admin-stat-card admin-stat-link${
+            stats.pendingShipments > 0 ? " admin-stat-attention" : ""
+          }`}
+        >
+          <div className="admin-stat-icon">🚚</div>
+          <span className="admin-stat-label">To dispatch</span>
+          <span className="admin-stat-value">{stats.pendingShipments ?? 0}</span>
+        </Link>
       </div>
 
       {/* ── Charts row 1 ────────────────────────────────────── */}

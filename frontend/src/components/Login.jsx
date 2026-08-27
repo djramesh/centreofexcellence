@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./Common.css";
 import "./Login.css";
@@ -7,8 +7,15 @@ import "./Login.css";
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  /* Where the visitor was headed before being asked to sign in. Without this,
+     someone who clicked "Buy now" on a product landed on the home page after
+     logging in and had to find the product again. */
+  const from = location.state?.from;
 
   const [form, setForm] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -22,17 +29,10 @@ const Login = () => {
     setError("");
     try {
       const res = await login(form);
-      if (res?.user?.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      if (res?.user?.role === "admin") navigate("/admin", { replace: true });
+      else navigate(from || "/", { replace: true });
     } catch (err) {
-      const msg =
-        err?.data?.message ||
-        err?.data?.errors?.[0]?.msg ||
-        "Login failed. Please check your details.";
-      setError(msg);
+      setError(err.message || "Login failed. Please check your details.");
     } finally {
       setSubmitting(false);
     }
@@ -58,14 +58,25 @@ const Login = () => {
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="auth-password-wrap">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={form.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                className="auth-password-toggle"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
           <button className="button auth-submit" type="submit" disabled={submitting}>
             {submitting ? "Logging in..." : "Login"}

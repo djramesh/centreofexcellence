@@ -559,3 +559,112 @@
     gap: 0.75rem;
   }
 }
+/* ═══════════════════════════════════════════════════════════════════
+   Stock warnings, server-sync notices
+═══════════════════════════════════════════════════════════════════ */
+
+.cart-notices {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 14px;
+  padding: 1rem 1.15rem;
+  margin-bottom: 1.5rem;
+  font-family: "Poppins", sans-serif;
+}
+.cart-notices-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  color: #92400e;
+  font-size: 0.9rem;
+}
+.cart-notices-head button {
+  border: 0;
+  background: none;
+  color: #a16207;
+  font-size: 0.9rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.cart-notices-head button:hover { background: rgba(161, 98, 7, 0.12); }
+.cart-notices ul { margin: 0; padding-left: 1.1rem; }
+.cart-notices li {
+  font-size: 0.83rem;
+  line-height: 1.65;
+  color: #a16207;
+}
+
+.cart-item-out { opacity: 0.72; }
+.cart-item-out .cart-item-img { filter: grayscale(0.6); }
+
+.cart-item-img-ph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eef3ff, #f6f8ff);
+  color: #94a3b8;
+}
+
+.cart-item-name a { color: inherit; text-decoration: none; }
+.cart-item-name a:hover { color: #2484ff; text-decoration: underline; }
+
+.cart-item-warn {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #b91c1c;
+  margin-top: 0.25rem;
+}
+.cart-item-note {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: #b45309;
+  margin-top: 0.25rem;
+}
+
+.qty-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.cart-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 1rem;
+  padding: 9px 16px;
+  border: 1px solid rgba(36, 132, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #475569;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.16s, color 0.16s, background 0.16s;
+}
+.cart-refresh:hover:not(:disabled) {
+  border-color: #2484ff;
+  color: #2484ff;
+  background: rgba(36, 132, 255, 0.07);
+}
+.cart-refresh:disabled { opacity: 0.6; cursor: progress; }
+
+.cart-blocked {
+  padding: 0 1.25rem;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: #b91c1c;
+}
+
+.cart-checkout-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}

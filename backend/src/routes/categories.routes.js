@@ -1,135 +1,105 @@
 import express from "express";
 import { getDbPool } from "../config/db.js";
+import { fail, parseId, parsePagination } from "../utils/http.js";
 
 const router = express.Router();
 const pool = getDbPool();
 
-/**
- * GET /api/categories
- * Public: List all categories
- */
+/** GET /api/categories — public list */
 router.get("/", async (req, res) => {
   try {
     const [rows] = await pool.query(
-      `SELECT id, name, slug, description 
-       FROM categories 
-       ORDER BY name ASC`
+      `SELECT c.id, c.name, c.slug, c.description,
+              COUNT(p.id) AS product_count
+         FROM categories c
+         LEFT JOIN products p ON p.category_id = c.id AND p.is_active = 1
+        GROUP BY c.id, c.name, c.slug, c.description
+        ORDER BY c.name ASC`
     );
     res.json(rows);
   } catch (err) {
-    console.error("Categories list error", err);
-    res.status(500).json({ message: "Failed to load categories", error: err.message });
+    fail(res, 500, "Failed to load categories", err);
   }
 });
 
-/**
- * GET /api/categories/:id
- * Public: Get single category by ID
- */
-router.get("/:id", async (req, res) => {
-  try {
-    const [rows] = await pool.query(
-      `SELECT id, name, slug, description 
-       FROM categories 
-       WHERE id = ?`,
-      [req.params.id]
-    );
-    
-    if (rows.length === 0) {
-      return res.status(404).json({ message: "Category not found" });
-    }
-    
-    res.json(rows[0]);
-  } catch (err) {
-    console.error("Category get error", err);
-    res.status(500).json({ message: "Failed to load category", error: err.message });
-  }
-});
-
-/**
- * GET /api/categories/slug/:slug
- * Public: Get single category by slug
- */
+/** GET /api/categories/slug/:slug — must stay above /:id */
 router.get("/slug/:slug", async (req, res) => {
   try {
     const [rows] = await pool.query(
-      `SELECT id, name, slug, description 
-       FROM categories 
-       WHERE slug = ?`,
+      "SELECT id, name, slug, description FROM categories WHERE slug = ? LIMIT 1",
       [req.params.slug]
     );
-    
-    if (rows.length === 0) {
-      return res.status(404).json({ message: "Category not found" });
-    }
-    
+    if (rows.length === 0) return res.status(404).json({ message: "Category not found" });
     res.json(rows[0]);
   } catch (err) {
-    console.error("Category get by slug error", err);
-    res.status(500).json({ message: "Failed to load category", error: err.message });
+    fail(res, 500, "Failed to load category", err);
   }
 });
 
-/**
- * GET /api/categories/:id/products
- * Public: Get all products in a category
- */
+/** GET /api/categories/:id/products */
 router.get("/:id/products", async (req, res) => {
+  const id = parseId(req.params.id);
+  if (!id) return res.status(400).json({ message: "Invalid category id" });
+
   try {
-    const { page = 1, limit = 20 } = req.query;
-    const validLimit = Math.min(parseInt(limit) || 20, 100);
-    const validPage = Math.max(parseInt(page) || 1, 1);
-    const offset = (validPage - 1) * validLimit;
+    const { page, limit, offset } = parsePagination(req.query);
 
-    // Get category info
     const [categoryRows] = await pool.query(
-      `SELECT id, name, slug, description FROM categories WHERE id = ?`,
-      [req.params.id]
+      "SELECT id, name, slug, description FROM categories WHERE id = ? LIMIT 1",
+      [id]
     );
-
     if (categoryRows.length === 0) {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    // Get total count
-    const [countResult] = await pool.query(
-      `SELECT COUNT(*) as total FROM products WHERE category_id = ? AND is_active = 1`,
-      [req.params.id]
+    const [[countResult]] = await pool.query(
+      "SELECT COUNT(*) AS total FROM products WHERE category_id = ? AND is_active = 1",
+      [id]
     );
-    const total = countResult[0].total;
+    const total = countResult.total;
 
-    // Get products
     const [productRows] = await pool.query(
-      `SELECT 
-        p.id, 
-        p.name, 
-        p.slug, 
-        p.description, 
-        p.price, 
-        p.stock, 
-        p.thumbnail_url
-       FROM products p
-       WHERE p.category_id = ? AND p.is_active = 1
-       ORDER BY p.created_at DESC
-       LIMIT ? OFFSET ?`,
-      [req.params.id, validLimit, offset]
+      `SELECT id, name, slug, description, price, stock, thumbnail_url,
+              length_cm, breadth_cm, height_cm
+         FROM products
+        WHERE category_id = ? AND is_active = 1
+        ORDER BY created_at DESC
+        LIMIT ? OFFSET ?`,
+      [id, limit, offset]
     );
 
+    const totalPages = Math.ceil(total / limit);
     res.json({
       category: categoryRows[0],
       products: productRows,
       pagination: {
-        page: validPage,
-        limit: validLimit,
-        total: total,
-        totalPages: Math.ceil(total / validLimit),
-        hasNext: validPage < Math.ceil(total / validLimit),
-        hasPrev: validPage > 1
-      }
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
     });
   } catch (err) {
-    console.error("Category products error", err);
-    res.status(500).json({ message: "Failed to load category products", error: err.message });
+    fail(res, 500, "Failed to load category products", err);
+  }
+});
+
+/** GET /api/categories/:id */
+router.get("/:id", async (req, res) => {
+  const id = parseId(req.params.id);
+  if (!id) return res.status(400).json({ message: "Invalid category id" });
+
+  try {
+    const [rows] = await pool.query(
+      "SELECT id, name, slug, description FROM categories WHERE id = ? LIMIT 1",
+      [id]
+    );
+    if (rows.length === 0) return res.status(404).json({ message: "Category not found" });
+    res.json(rows[0]);
+  } catch (err) {
+    fail(res, 500, "Failed to load category", err);
   }
 });
 

@@ -562,3 +562,12 @@
   .step-label { display: none; }
   .step { min-width: 36px; }
 }
+.order-item-img-ph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eef3ff, #f6f8ff);
+  color: #94a3b8;
+}

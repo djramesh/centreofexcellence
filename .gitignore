@@ -42,3 +42,12 @@ build/
 # IDE
 .vscode/
 .idea/
+# Database dumps — these contain real customer emails and bcrypt password
+# hashes. Never commit them.
+backups/
+backend/backups/
+*.sql.gz
+*.dump
+
+# Claude Code local session settings
+.claude/

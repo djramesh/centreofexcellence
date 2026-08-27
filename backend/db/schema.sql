@@ -54,22 +54,30 @@ CREATE TABLE IF NOT EXISTS products (
   price DECIMAL(10,2) NOT NULL,
   stock INT NOT NULL DEFAULT 0,
   category_id INT UNSIGNED,
-  thumbnail_url VARCHAR(255),
+  thumbnail_url VARCHAR(500),
   is_active TINYINT(1) NOT NULL DEFAULT 1,
+  length_cm DECIMAL(8,2) NULL,
+  breadth_cm DECIMAL(8,2) NULL,
+  height_cm DECIMAL(8,2) NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_products_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+  CONSTRAINT fk_products_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+  INDEX idx_products_active_category (is_active, category_id)
 ) ENGINE=InnoDB;
 
--- Product images table
+-- Product images (gallery). thumbnail_url on products stays the card image;
+-- these are the additional photos shown on the product page.
 CREATE TABLE IF NOT EXISTS product_images (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   product_id INT UNSIGNED NOT NULL,
-  image_url VARCHAR(255) NOT NULL,
+  image_url VARCHAR(500) NOT NULL,
+  alt_text VARCHAR(255) NULL,
   sort_order INT NOT NULL DEFAULT 0,
+  is_primary TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_product_images_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+  CONSTRAINT fk_product_images_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+  INDEX idx_product_images_product (product_id, is_primary DESC, sort_order)
 ) ENGINE=InnoDB;
 
 -- Orders table
@@ -82,10 +90,26 @@ CREATE TABLE IF NOT EXISTS orders (
   total_amount DECIMAL(10,2) NOT NULL,
   razorpay_order_id VARCHAR(191),
   razorpay_payment_id VARCHAR(191),
+  -- Shipping / tracking. tracking_provider records whether the shipment was
+  -- booked through ShipRocket or entered by hand for a third-party courier.
+  shiprocket_order_id VARCHAR(191),
+  shiprocket_shipment_id VARCHAR(191),
+  tracking_id VARCHAR(191),
+  courier_company VARCHAR(100),
+  tracking_url VARCHAR(500),
+  tracking_provider ENUM('MANUAL','SHIPROCKET') NULL,
+  shipping_status VARCHAR(50),
+  shipped_at TIMESTAMP NULL,
+  delivered_at TIMESTAMP NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id),
-  CONSTRAINT fk_orders_address FOREIGN KEY (address_id) REFERENCES addresses(id)
+  CONSTRAINT fk_orders_address FOREIGN KEY (address_id) REFERENCES addresses(id),
+  INDEX idx_orders_user_created (user_id, created_at DESC),
+  INDEX idx_orders_status (status),
+  INDEX idx_orders_razorpay_order (razorpay_order_id),
+  INDEX idx_orders_tracking (tracking_id),
+  INDEX idx_orders_pending_sweep (status, payment_status, created_at)
 ) ENGINE=InnoDB;
 
 -- Order items table
@@ -99,7 +123,8 @@ CREATE TABLE IF NOT EXISTS order_items (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_order_items_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-  CONSTRAINT fk_order_items_product FOREIGN KEY (product_id) REFERENCES products(id)
+  CONSTRAINT fk_order_items_product FOREIGN KEY (product_id) REFERENCES products(id),
+  INDEX idx_order_items_product (product_id)
 ) ENGINE=InnoDB;
 
 -- Payments table
@@ -114,7 +139,11 @@ CREATE TABLE IF NOT EXISTS payments (
   currency VARCHAR(10) NOT NULL DEFAULT 'INR',
   raw_payload_json JSON,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_payments_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+  CONSTRAINT fk_payments_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  -- Stops a replayed confirmation from recording the same gateway payment
+  -- twice and double-counting revenue. NULLs are allowed (pending attempts).
+  UNIQUE INDEX uniq_payments_razorpay_payment (razorpay_payment_id),
+  INDEX idx_payments_razorpay_order (razorpay_order_id)
 ) ENGINE=InnoDB;
 
 -- Admin audit logs (optional)

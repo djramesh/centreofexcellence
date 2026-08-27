@@ -1,16 +1,25 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { user, loading, isAuthenticated } = useAuth();
+  const location = useLocation();
 
   if (loading) {
-    return <div style={{ padding: "2rem", textAlign: "center" }}>Loading...</div>;
+    return (
+      <div className="route-fallback" role="status" aria-live="polite">
+        <span className="route-spinner" aria-hidden="true" />
+        <span>Loading…</span>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    /* Carry where they were going so Login can send them back there. Someone
+       deep-linked to /orders/42 previously landed on the home page after
+       signing in and had to navigate all over again. */
+    return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
   }
 
   if (requireAdmin && user?.role !== "admin") {
@@ -21,4 +30,3 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
 };
 
 export default ProtectedRoute;
-

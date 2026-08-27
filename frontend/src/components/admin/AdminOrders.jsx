@@ -1,70 +1,21 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { adminApi } from "../../api/admin.js";
-import { API_BASE_URL } from "../../api/client.js";
+import ordersApi from "../../api/orders.js";
+import SmartImage from "../common/SmartImage.jsx";
+import ImageLightbox from "../common/ImageLightbox.jsx";
 import OrderShippingSection from "../OrderShippingSection.jsx";
 import "./AdminOrders.css";
 
 const STATUS_OPTIONS = ["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"];
 
-/* ─── Helpers ─────────────────────────────────────────────────────────────── */
-function resolveImgUrl(url) {
-  if (!url) return null;
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  if (url.startsWith("/assets/") || url.startsWith("assets/")) {
-    return url.split("/").map((seg) => encodeURIComponent(seg)).join("/");
-  }
-  return url;
-}
-
-/* ─── Image Lightbox ─────────────────────────────────────────────────────── */
-function ImageLightbox({ src, alt, onClose }) {
-  useEffect(() => {
-    const handler = (e) => { if (e.key === "Escape") onClose(); };
-    document.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  return (
-    <div className="lb-backdrop" onClick={onClose}>
-      <button className="lb-close" onClick={onClose} aria-label="Close">✕</button>
-      <img
-        src={src}
-        alt={alt || "Product"}
-        className="lb-img"
-        onClick={(e) => e.stopPropagation()}
-      />
-    </div>
-  );
-}
-
-/* ─── Product thumbnail — clickable, opens lightbox ─────────────────────── */
+/* ─── Product thumbnail — click to open the shared lightbox ─────────────── */
 function ProductThumb({ url, name, onExpand }) {
-  const [err, setErr] = useState(false);
-  const src = resolveImgUrl(url);
-
-  if (!src || err) {
-    return <div className="admin-thumb-placeholder">🧺</div>;
-  }
-
   return (
-    <div
-      className="admin-thumb-wrap"
-      onClick={() => onExpand(src, name)}
-      title="Click to expand"
-    >
-      <img
-        src={src}
-        alt={name || "Product"}
-        onError={() => setErr(true)}
-        className="admin-thumb"
-      />
-      <div className="admin-thumb-overlay">🔍</div>
-    </div>
+    <button type="button" className="admin-thumb-wrap" onClick={onExpand} title="Click to expand">
+      <SmartImage src={url} alt={name || "Product"} wrapperClassName="admin-thumb-placeholder" />
+      <span className="admin-thumb-overlay">🔍</span>
+    </button>
   );
 }
 
@@ -78,17 +29,37 @@ export default function AdminOrders() {
   const [error, setError]               = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const statusFilter = searchParams.get("status") || "";
+  const search = searchParams.get("q") || "";
   const page = parseInt(searchParams.get("page") || "1", 10);
+  const [searchInput, setSearchInput] = useState(search);
+  const searchTimer = useRef(null);
 
   useEffect(() => {
     setLoading(true);
     const params = { page, limit: 20 };
     if (statusFilter) params.status = statusFilter;
+    if (search) params.search = search;
     adminApi.getOrders(params)
       .then((res) => { setOrders(res.orders); setPagination(res.pagination); })
-      .catch((err) => setError(err?.data?.message || err?.message || "Failed to load orders"))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [page, statusFilter]);
+  }, [page, statusFilter, search]);
+
+  /* Keep the query in the URL so a filtered view can be bookmarked and shared
+     with whoever else works the order queue. */
+  useEffect(() => {
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      if (searchInput === search) return;
+      const next = new URLSearchParams(searchParams);
+      if (searchInput.trim()) next.set("q", searchInput.trim());
+      else next.delete("q");
+      next.delete("page");
+      setSearchParams(next);
+    }, 350);
+    return () => clearTimeout(searchTimer.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchInput]);
 
   const setFilter = (key, value) => {
     const next = new URLSearchParams(searchParams);
@@ -118,6 +89,16 @@ export default function AdminOrders() {
             {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </label>
+        <label className="admin-filter-search">
+          Search
+          <input
+            type="search"
+            className="admin-select"
+            placeholder="Order #, customer, email or tracking no."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </label>
       </div>
 
       {error && <div className="admin-error">{error}</div>}
@@ -135,12 +116,19 @@ export default function AdminOrders() {
                   <th>Location</th>
                   <th>Amount</th>
                   <th>Status</th>
+                  <th>Shipment</th>
                   <th>Date</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {orders.map((o) => (
+                {orders.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="admin-empty-row">
+                      No orders match these filters.
+                    </td>
+                  </tr>
+                ) : orders.map((o) => (
                   <tr key={o.id}>
                     <td>
                       <Link to={"/admin/orders/" + o.id} className="admin-link">#{o.id}</Link>
@@ -152,6 +140,18 @@ export default function AdminOrders() {
                     <td>{o.city ? o.city + ", " + o.state : "—"}</td>
                     <td>₹{Number(o.total_amount).toLocaleString("en-IN")}</td>
                     <td><span className="admin-badge" data-status={o.status}>{o.status}</span></td>
+                    <td>
+                      {o.tracking ? (
+                        <div className="admin-ship-cell">
+                          <span className="admin-ship-carrier">{o.tracking.carrierName}</span>
+                          <span className="admin-muted">{o.tracking.trackingNumber}</span>
+                        </div>
+                      ) : o.payment_status === "PAID" ? (
+                        <span className="admin-ship-pending">Not dispatched</span>
+                      ) : (
+                        <span className="admin-muted">—</span>
+                      )}
+                    </td>
                     <td>{new Date(o.created_at).toLocaleDateString("en-IN")}</td>
                     <td><Link to={"/admin/orders/" + o.id} className="admin-link">View</Link></td>
                   </tr>
@@ -186,51 +186,57 @@ export function AdminOrderDetail() {
   const [newStatus, setNewStatus]     = useState("");
   const [lightbox, setLightbox]       = useState(null);
 
-  const openLightbox  = useCallback((src, alt) => setLightbox({ src, alt }), []);
   const closeLightbox = useCallback(() => setLightbox(null), []);
 
-  useEffect(() => {
+  const reload = useCallback(() => {
     if (!id) return;
     adminApi.getOrder(id)
       .then((res) => { setOrder(res.order); setItems(res.items || []); setNewStatus(res.order?.status || ""); })
-      .catch((err) => setError(err?.data?.message || err?.message || "Failed to load order"))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => { reload(); }, [reload]);
 
   const handleUpdateStatus = () => {
     if (!order || newStatus === order.status) return;
     setUpdating(true);
+    setError("");
     adminApi.updateOrderStatus(order.id, newStatus)
       .then(() => setOrder((o) => ({ ...o, status: newStatus })))
-      .catch((err) => setError(err?.data?.message || err?.message || "Failed to update"))
+      .catch((err) => setError(err.message))
       .finally(() => setUpdating(false));
+  };
+
+  const handleDownloadInvoice = async () => {
+    if (!order) return;
+    setError("");
+    try {
+      const blob = await ordersApi.downloadInvoice(order.id);
+      const url  = window.URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href = url; a.download = `invoice-${order.id}.pdf`;
+      document.body.appendChild(a); a.click(); a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.message || "Could not download the invoice.");
+    }
   };
 
   if (loading) return <div className="admin-loading">Loading order…</div>;
   if (error && !order) return <div className="admin-error">{error}</div>;
   if (!order) return null;
 
-  const handleDownloadInvoice = async () => {
-    const token = localStorage.getItem("authToken");
-    if (!order || !token) return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/orders/${order.id}/invoice`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) return;
-      const blob = await res.blob();
-      const url  = window.URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href = url; a.download = `invoice-${order.id}.pdf`;
-      document.body.appendChild(a); a.click(); a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch { /* ignore */ }
-  };
+  const galleryImages = items
+    .filter((row) => row.thumbnail_url)
+    .map((row) => ({ url: row.thumbnail_url, alt: row.product_name }));
 
   return (
     <div className="admin-page admin-order-detail">
 
-      {lightbox && <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} />}
+      {lightbox !== null && (
+        <ImageLightbox images={galleryImages} startIndex={lightbox} onClose={closeLightbox} />
+      )}
 
       <header className="admin-page-header">
         <div>
@@ -282,16 +288,18 @@ export function AdminOrderDetail() {
       <div className="admin-order-card admin-order-items">
         <h3>Items</h3>
         <div className="admin-items-list">
-          {items.map((row, i) => (
+          {items.map((row, i) => {
+            const galleryIndex = galleryImages.findIndex((img) => img.url === row.thumbnail_url);
+            return (
             <div
               key={row.id}
               className="admin-item-row"
               style={{ borderBottom: i < items.length - 1 ? "1px solid #e2e8f0" : "none" }}
             >
               <ProductThumb
-                url={row.thumbnail_url || row.product_thumbnail || null}
+                url={row.thumbnail_url}
                 name={row.product_name}
-                onExpand={openLightbox}
+                onExpand={() => galleryIndex >= 0 && setLightbox(galleryIndex)}
               />
               <div className="admin-item-info">
                 <p className="admin-item-name">{row.product_name}</p>
@@ -307,21 +315,15 @@ export function AdminOrderDetail() {
                 <p className="admin-item-total">₹{Number(row.line_total).toLocaleString("en-IN")}</p>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
         <p className="admin-order-total">
           <strong>Total: ₹{Number(order.total_amount).toLocaleString("en-IN")}</strong>
         </p>
       </div>
 
-      <OrderShippingSection
-        order={order}
-        onStatusUpdate={() => {
-          adminApi.getOrder(id)
-            .then((res) => { setOrder(res.order); setItems(res.items || []); })
-            .catch((err) => console.error("Failed to refresh order", err));
-        }}
-      />
+      <OrderShippingSection order={order} onStatusUpdate={reload} />
     </div>
   );
 }

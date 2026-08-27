@@ -5,7 +5,8 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18"
+  # Node 18 is end-of-life; Vite 6 is tested against 20 and 22.
+  NODE_VERSION = "20"
   # Set VITE_API_URL in Netlify UI to your Railway backend URL
   # Example: https://coe-backend-production.railway.app
   # Or via CLI: netlify env:set VITE_API_URL "https://your-backend-url"
@@ -14,3 +15,34 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Security headers. helmet() only protects API responses — the pages Netlify
+# serves need their own, or the storefront can be framed and clickjacked.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(self)"
+
+# Build output only (vite.config.js sets assetsDir = "static"). Every filename
+# here is content-hashed, so it can be cached forever.
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# public/assets/* — seeded photography with stable filenames. A day, so
+# replacing an image actually reaches people.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"
+
+# index.html must never be cached, or users keep booting the previous release
+# and loading asset URLs that no longer exist.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

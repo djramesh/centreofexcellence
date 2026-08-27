@@ -1,29 +1,25 @@
-import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import "./Products.css";
-import "./Common.css";
-import "./Order.jsx";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag, faShoppingCart, faSearch, faXmark } from "@fortawesome/free-solid-svg-icons";
+
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { productsApi } from "../api/products";
+import SmartImage from "./common/SmartImage";
+import "./Products.css";
+import "./Common.css";
 
 /* ─── Helpers ─────────────────────────────────────────────────────────── */
-function encodeImagePath(path = "") {
-  if (!path) return path;
-  if (path.includes("%") || path.startsWith("http")) return path;
-  return path.split("/").map((seg) => encodeURIComponent(seg)).join("/");
-}
-
 function getProductType(name = "") {
   return name.replace(/\s*\(.*?\)\s*/g, "").trim();
 }
 
-function buildCategories(products, nameKey = "title") {
+function buildCategories(products) {
   const seen = new Set();
   const cats = [{ id: "all", label: "All" }];
-  products.forEach((p) => {
-    const type = getProductType(p[nameKey] || "");
+  products.forEach((product) => {
+    const type = getProductType(product.name || "");
     if (type && !seen.has(type)) {
       seen.add(type);
       cats.push({ id: type, label: type });
@@ -32,19 +28,25 @@ function buildCategories(products, nameKey = "title") {
   return cats;
 }
 
-/* ─── Reveal hook ─────────────────────────────────────────────────────── */
+/** Where a product's own page lives. Falls back to the id when there is no slug. */
+const productPath = (product) => `/products/${product.slug || product.id}`;
+
+/* ─── Reveal-on-scroll ────────────────────────────────────────────────── */
 function useReveal(containerRef, deps = []) {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
     const els = Array.from(container.querySelectorAll(".reveal:not(.revealed)"));
     if (!els.length) return;
+
     const fallback = setTimeout(() => els.forEach((el) => el.classList.add("revealed")), 600);
+
     if (!("IntersectionObserver" in window)) {
       els.forEach((el) => el.classList.add("revealed"));
       clearTimeout(fallback);
       return;
     }
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -56,29 +58,26 @@ function useReveal(containerRef, deps = []) {
       },
       { threshold: 0, rootMargin: "0px 0px -40px 0px" }
     );
+
     els.forEach((el) => io.observe(el));
-    return () => { clearTimeout(fallback); io.disconnect(); };
+    return () => {
+      clearTimeout(fallback);
+      io.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
-}
-
-/* ─── API ─────────────────────────────────────────────────────────────── */
-const API_BASE = import.meta.env.VITE_API_URL || "";
-
-async function fetchCategoryProducts(categoryId, page = 1, limit = 100) {
-  const res = await fetch(`${API_BASE}/api/products/category/${categoryId}?page=${page}&limit=${limit}`);
-  if (!res.ok) throw new Error(`Server returned ${res.status}`);
-  return res.json();
 }
 
 /* ─── CategoryFilter ──────────────────────────────────────────────────── */
 function CategoryFilter({ categories, active, onChange }) {
   return (
-    <div className="category-filter">
+    <div className="category-filter" role="group" aria-label="Filter by product type">
       {categories.map((cat) => (
         <button
           key={cat.id}
+          type="button"
           className={`category-filter-btn${active === cat.id ? " active" : ""}`}
+          aria-pressed={active === cat.id}
           onClick={() => onChange(cat.id)}
         >
           {cat.label}
@@ -90,63 +89,90 @@ function CategoryFilter({ categories, active, onChange }) {
 
 /* ─── ProductCard ─────────────────────────────────────────────────────── */
 function ProductCard({ product, onAddToCart, onOrderNow, index }) {
-  const price    = product.price || 800;
-  const title    = product.title || product.name;
-  const desc     = product.description || "";
-  const imgSrc   = encodeImagePath(product.imgSrc || product.thumbnail_url || "");
-  const navigate = useNavigate();
-  const [imgError, setImgError] = useState(false);
+  const price = Number(product.price) || 0;
+  const stock = product.stock ?? null;
+  const soldOut = stock != null && stock <= 0;
+  const lowStock = !soldOut && stock != null && stock <= 5;
 
-  const goToDetails = () => {
-    navigate("/product-details", { state: { product: { ...product, title } } });
-  };
-
+  /* The whole card is a link, so the page is reachable by keyboard, opens in a
+     new tab with ctrl-click, and is crawlable — the old card was a div with an
+     onClick that navigated via router state only. */
   return (
-    <div
-      className="pc-card"
-      style={{ animationDelay: `${(index % 4) * 0.07}s`, cursor: "pointer" }}
-      onClick={goToDetails}
+    <Link
+      to={productPath(product)}
+      state={{ product }}
+      className={`pc-card${soldOut ? " pc-card-out" : ""}`}
+      style={{ animationDelay: `${(index % 4) * 0.07}s` }}
     >
       <div className="pc-img-wrap">
-        {imgError || !imgSrc ? (
-          <div className="pc-img-placeholder">
-            <span className="pc-img-placeholder-icon">🧺</span>
-            <span className="pc-img-placeholder-text">Handcrafted</span>
-          </div>
-        ) : (
-          <img src={imgSrc} alt={title} className="pc-img" loading="lazy" onError={() => setImgError(true)} />
-        )}
+        <SmartImage
+          src={product.thumbnail_url || product.images?.[0]?.url}
+          alt={product.name}
+          className="pc-img"
+          wrapperClassName="pc-img-placeholder"
+          placeholderLabel="Handcrafted"
+        />
         <div className="pc-img-overlay" />
+
         <div className="pc-hover-actions">
-          <button className="pc-action-btn pc-cart-btn"
-            onClick={(e) => { e.stopPropagation(); onAddToCart(e, product); }} aria-label="Add to cart">
-            <FontAwesomeIcon icon={faShoppingCart} /><span>Add to Cart</span>
+          <button
+            type="button"
+            className="pc-action-btn pc-cart-btn"
+            onClick={(e) => onAddToCart(e, product)}
+            disabled={soldOut}
+            aria-label={`Add ${product.name} to cart`}
+          >
+            <FontAwesomeIcon icon={faShoppingCart} />
+            <span>Add to cart</span>
           </button>
-          <button className="pc-action-btn pc-order-btn"
-            onClick={(e) => { e.stopPropagation(); onOrderNow(e, product); }} aria-label="Order now">
-            <FontAwesomeIcon icon={faShoppingBag} /><span>Order Now</span>
+          <button
+            type="button"
+            className="pc-action-btn pc-order-btn"
+            onClick={(e) => onOrderNow(e, product)}
+            disabled={soldOut}
+            aria-label={`Buy ${product.name} now`}
+          >
+            <FontAwesomeIcon icon={faShoppingBag} />
+            <span>Buy now</span>
           </button>
         </div>
-        <div className="pc-badge">Handcrafted</div>
+
+        {soldOut ? (
+          <div className="pc-badge pc-badge-out">Sold out</div>
+        ) : lowStock ? (
+          <div className="pc-badge pc-badge-low">Only {stock} left</div>
+        ) : (
+          <div className="pc-badge">Handcrafted</div>
+        )}
       </div>
+
       <div className="pc-body">
-        <h4 className="pc-title">{title}</h4>
-        <p className="pc-desc">{desc}</p>
+        <h4 className="pc-title">{product.name}</h4>
+        {product.description && <p className="pc-desc">{product.description}</p>}
         <div className="pc-footer">
-          <span className="pc-price">₹{Number(price).toLocaleString("en-IN")}</span>
+          <span className="pc-price">₹{price.toLocaleString("en-IN")}</span>
           <div className="pc-footer-btns">
-            <button className="pc-btn-ghost"
-              onClick={(e) => { e.stopPropagation(); onAddToCart(e, product); }}>
+            <button
+              type="button"
+              className="pc-btn-ghost"
+              onClick={(e) => onAddToCart(e, product)}
+              disabled={soldOut}
+              aria-label={`Add ${product.name} to cart`}
+            >
               <FontAwesomeIcon icon={faShoppingCart} />
             </button>
-            <button className="pc-btn-primary"
-              onClick={(e) => { e.stopPropagation(); onOrderNow(e, product); }}>
-              Order Now
+            <button
+              type="button"
+              className="pc-btn-primary"
+              onClick={(e) => onOrderNow(e, product)}
+              disabled={soldOut}
+            >
+              {soldOut ? "Sold out" : "Buy now"}
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -171,7 +197,7 @@ function SectionHeader({ section, gradient }) {
   );
 }
 
-/* ─── Society Banner ──────────────────────────────────────────────────── */
+/* ─── Society banner ──────────────────────────────────────────────────── */
 function SocietyBanner({ society }) {
   return (
     <div className={`society-banner society-banner--${society.theme}`} id={society.id}>
@@ -182,8 +208,8 @@ function SocietyBanner({ society }) {
           <p className="society-banner-desc">{society.desc}</p>
         </div>
         <div className="society-banner-tags">
-          {society.tags.map(t => (
-            <span key={t} className="society-tag">{t}</span>
+          {society.tags.map((tag) => (
+            <span key={tag} className="society-tag">{tag}</span>
           ))}
         </div>
       </div>
@@ -191,27 +217,37 @@ function SocietyBanner({ society }) {
   );
 }
 
-/* ─── DBSection ───────────────────────────────────────────────────────── */
+/* ─── Category section ────────────────────────────────────────────────── */
 function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
-  const [products, setProducts]         = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [error, setError]               = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    setLoading(true); setError(null); setActiveFilter("all");
-    fetchCategoryProducts(categoryId)
-      .then((data) => setProducts(data.products || []))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    setActiveFilter("all");
+
+    productsApi
+      .byCategory(categoryId, { limit: 100 })
+      .then((data) => !cancelled && setProducts(data.products || []))
+      .catch((err) => !cancelled && setError(err.message))
+      .finally(() => !cancelled && setLoading(false));
+
+    return () => {
+      cancelled = true;
+    };
   }, [categoryId]);
 
-  const categories = useMemo(() => buildCategories(products, "name"), [products]);
-  const filtered   = useMemo(() =>
-    activeFilter === "all"
-      ? products
-      : products.filter((p) => getProductType(p.name) === activeFilter),
+  const categories = useMemo(() => buildCategories(products), [products]);
+  const filtered = useMemo(
+    () =>
+      activeFilter === "all"
+        ? products
+        : products.filter((p) => getProductType(p.name) === activeFilter),
     [activeFilter, products]
   );
 
@@ -222,8 +258,17 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
       <div className="reveal">
         <SectionHeader section={section} gradient={si % 2 === 0 ? "a" : "b"} />
       </div>
-      {loading && <div className="products-loading">Loading {section.label} products…</div>}
-      {error   && <div className="products-error">Could not load products: {error}</div>}
+
+      {loading && (
+        <div className="pc-grid">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="pc-skeleton" />
+          ))}
+        </div>
+      )}
+
+      {error && <div className="products-error">Could not load products: {error}</div>}
+
       {!loading && !error && products.length > 0 && (
         <>
           {categories.length > 2 && (
@@ -235,7 +280,7 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
             {filtered.map((product, idx) => (
               <div className="reveal" key={product.id} style={{ animationDelay: `${(idx % 4) * 0.06}s` }}>
                 <ProductCard
-                  product={{ ...product, title: product.name, imgSrc: product.thumbnail_url }}
+                  product={product}
                   onAddToCart={onAddToCart}
                   onOrderNow={onOrderNow}
                   index={idx}
@@ -245,6 +290,7 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
           </div>
         </>
       )}
+
       {!loading && !error && products.length === 0 && (
         <div className="products-empty">No products available yet.</div>
       )}
@@ -252,99 +298,105 @@ function DBSection({ section, si, categoryId, onAddToCart, onOrderNow }) {
   );
 }
 
-/* ─── ProductSearch ───────────────────────────────────────────────────── */
+/* ─── Search ──────────────────────────────────────────────────────────── */
 function ProductSearch({ onAddToCart, onOrderNow }) {
-  const [query, setQuery]       = useState("");
-  const [results, setResults]   = useState([]);
-  const [loading, setLoading]   = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const inputRef = useRef(null);
+  const requestId = useRef(0);
 
-  // Collect all products from all category IDs on mount
-  const ALL_CATEGORY_IDS = SOCIETIES.flatMap(s => s.sections.map(sec => sec.categoryId));
-  const allProductsRef = useRef(null);
-
+  /* Searches the catalogue on the server. The previous version eagerly
+     downloaded every product in every category on mount just to filter them in
+     the browser — three full requests before the visitor typed anything. */
   useEffect(() => {
-    // Pre-fetch all products for instant client-side search
-    Promise.all(ALL_CATEGORY_IDS.map(id => fetchCategoryProducts(id)))
-      .then(responses => {
-        allProductsRef.current = responses.flatMap(r => r.products || []);
-      })
-      .catch(() => { allProductsRef.current = []; });
-  }, []);
-
-  const handleSearch = useCallback((value) => {
-    const q = value.trim().toLowerCase();
-    setQuery(value);
-    if (!q) { setResults([]); setSearched(false); return; }
-    setLoading(true);
-    setSearched(true);
-    // Small debounce feel
-    setTimeout(() => {
-      const pool = allProductsRef.current || [];
-      const found = pool.filter(p =>
-        (p.name || "").toLowerCase().includes(q) ||
-        (p.description || "").toLowerCase().includes(q)
-      );
-      setResults(found);
+    const trimmed = query.trim();
+    if (!trimmed) {
+      setResults([]);
+      setSearched(false);
       setLoading(false);
-    }, 150);
-  }, []);
+      return;
+    }
 
-  const clearSearch = () => { setQuery(""); setResults([]); setSearched(false); inputRef.current?.focus(); };
+    setLoading(true);
+    const id = ++requestId.current;
+    const timer = setTimeout(() => {
+      productsApi
+        .list({ search: trimmed, limit: 40 })
+        .then((data) => {
+          // Ignore a slow response that a newer keystroke has superseded.
+          if (id !== requestId.current) return;
+          setResults(data.products || []);
+          setSearched(true);
+        })
+        .catch(() => id === requestId.current && setResults([]))
+        .finally(() => id === requestId.current && setLoading(false));
+    }, 280);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const clearSearch = () => {
+    setQuery("");
+    inputRef.current?.focus();
+  };
 
   return (
     <div className="ps-wrap">
       <div className="ps-inner">
-        {/* Search bar */}
         <div className="ps-bar">
           <span className="ps-icon"><FontAwesomeIcon icon={faSearch} /></span>
           <input
             ref={inputRef}
             className="ps-input"
-            type="text"
+            type="search"
             placeholder="Search products — e.g. hand bag, bamboo tray, stole…"
             value={query}
-            onChange={e => handleSearch(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             autoComplete="off"
             spellCheck={false}
+            aria-label="Search products"
           />
           {query && (
-            <button className="ps-clear" onClick={clearSearch} aria-label="Clear search">
+            <button type="button" className="ps-clear" onClick={clearSearch} aria-label="Clear search">
               <FontAwesomeIcon icon={faXmark} />
             </button>
           )}
         </div>
 
-        {/* Results */}
-        {loading && (
-          <div className="ps-status">Searching…</div>
-        )}
-        {!loading && searched && results.length === 0 && (
-          <div className="ps-status">No products found for "<strong>{query}</strong>"</div>
-        )}
-        {!loading && results.length > 0 && (
-          <>
-            <p className="ps-count">{results.length} product{results.length !== 1 ? "s" : ""} found</p>
-            <div className="pc-grid ps-grid">
-              {results.map((product, idx) => (
-                <ProductCard
-                  key={product.id}
-                  product={{ ...product, title: product.name, imgSrc: product.thumbnail_url }}
-                  onAddToCart={onAddToCart}
-                  onOrderNow={onOrderNow}
-                  index={idx}
-                />
-              ))}
+        <div aria-live="polite">
+          {loading && <div className="ps-status">Searching…</div>}
+          {!loading && searched && results.length === 0 && (
+            <div className="ps-status">
+              No products found for "<strong>{query}</strong>"
             </div>
-          </>
-        )}
+          )}
+          {!loading && results.length > 0 && (
+            <>
+              <p className="ps-count">
+                {results.length} product{results.length !== 1 ? "s" : ""} found
+              </p>
+              <div className="pc-grid ps-grid">
+                {results.map((product, idx) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onAddToCart={onAddToCart}
+                    onOrderNow={onOrderNow}
+                    index={idx}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-/* ─── Society + Section config ────────────────────────────────────────── */
+/* ─── Society + section config ────────────────────────────────────────── */
 const SOCIETIES = [
   {
     id: "shristi",
@@ -355,15 +407,26 @@ const SOCIETIES = [
     tags: ["Water Hyacinth", "Bamboo Craft", "Eco-Friendly", "Women-Led"],
     sections: [
       {
-        id: "hyacinth", label: "Water Hyacinth", eyebrow: "Natural Craft",
+        id: "hyacinth",
+        label: "Water Hyacinth",
+        eyebrow: "Natural Craft",
         categoryId: 4,
-        decorImgs: ["../assets/water-hyacinth-products2.png","../assets/water-hyacinth-products1.png","../assets/water-hyacinth-products.png"],
-        icon: "../assets/water-hyacinth.png", subLabel: "Water Hyacinth Products",
+        decorImgs: [
+          "../assets/water-hyacinth-products2.png",
+          "../assets/water-hyacinth-products1.png",
+          "../assets/water-hyacinth-products.png",
+        ],
+        icon: "../assets/water-hyacinth.png",
+        subLabel: "Water Hyacinth Products",
       },
       {
-        id: "bamboo", label: "Bamboo", eyebrow: "Sustainable",
+        id: "bamboo",
+        label: "Bamboo",
+        eyebrow: "Sustainable",
         categoryId: 14,
-        decorImgs: [], icon: "../assets/bamboo-image.png", subLabel: "Bamboo Products",
+        decorImgs: [],
+        icon: "../assets/bamboo-image.png",
+        subLabel: "Bamboo Products",
       },
     ],
   },
@@ -376,56 +439,83 @@ const SOCIETIES = [
     tags: ["Handloom Weave", "Natural Dyes", "Traditional Craft", "Assam Heritage"],
     sections: [
       {
-        id: "handloom", label: "Handloom", eyebrow: "Traditional Weave",
+        id: "handloom",
+        label: "Handloom",
+        eyebrow: "Traditional Weave",
         categoryId: 3,
-        decorImgs: ["../assets/handloom-img.png","../assets/handloom-img-1.png","../assets/handloom-img-3.png"],
+        decorImgs: [
+          "../assets/handloom-img.png",
+          "../assets/handloom-img-1.png",
+          "../assets/handloom-img-3.png",
+        ],
         subLabel: "Handloom & Textile Products",
       },
     ],
   },
 ];
 
-/* ─── Products (main component) ──────────────────────────────────────── */
+/* ─── Page ────────────────────────────────────────────────────────────── */
 function Products() {
-  const { addToCart }       = useCart();
+  const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
-  const navigate            = useNavigate();
+  const navigate = useNavigate();
+  const [toast, setToast] = useState("");
 
-  const handleAddToCart = useCallback((e, product) => {
-    e.preventDefault(); e.stopPropagation();
-    addToCart({ ...product, price: product.price || 800 }, 1);
-  }, [addToCart]);
+  const handleAddToCart = useCallback(
+    (e, product) => {
+      // The card itself is a link; the buttons inside it must not navigate.
+      e.preventDefault();
+      e.stopPropagation();
+      if (product.stock != null && product.stock <= 0) return;
+      addToCart(product, 1);
+      setToast(`${product.name} added to cart`);
+      setTimeout(() => setToast(""), 2200);
+    },
+    [addToCart]
+  );
 
-  const handleOrderNow = useCallback((e, product) => {
-    e.preventDefault(); e.stopPropagation();
-    if (!isAuthenticated) { navigate("/login"); return; }
-    // "Order Now" is a direct Buy-Now flow: it must NOT add to the persistent
-    // cart. The product is passed straight to checkout via router state.
-    const buyNowItem = { ...product, price: product.price || 800, quantity: 1 };
-    navigate("/checkout", { state: { buyNowItem } });
-  }, [isAuthenticated, navigate]);
+  const handleOrderNow = useCallback(
+    (e, product) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (product.stock != null && product.stock <= 0) return;
+      if (!isAuthenticated) {
+        navigate("/login", { state: { from: "/products" } });
+        return;
+      }
+      // Buy Now bypasses the persistent cart entirely.
+      navigate("/checkout", { state: { buyNowItem: { ...product, quantity: 1 } } });
+    },
+    [isAuthenticated, navigate]
+  );
 
   return (
     <div id="products" className="products-wrap">
+      {toast && (
+        <div className="pc-toast" role="status">
+          ✓ {toast}
+        </div>
+      )}
 
-      {/* ── Hero ── */}
       <div className="products-page-hero">
         <span className="products-page-eyebrow">Our Collection</span>
         <h1 className="products-page-title">Products</h1>
         <p className="products-page-sub">Handcrafted with tradition. Designed for today.</p>
         <nav className="section-nav" aria-label="Jump to section">
-          {SOCIETIES.map((s) => (
-            <a key={s.id} href={`#${s.id}`} className={`section-nav-link section-nav-link--${s.theme}`}>
-              {s.pill}
+          {SOCIETIES.map((society) => (
+            <a
+              key={society.id}
+              href={`#${society.id}`}
+              className={`section-nav-link section-nav-link--${society.theme}`}
+            >
+              {society.pill}
             </a>
           ))}
         </nav>
       </div>
 
-      {/* ── Search ── */}
       <ProductSearch onAddToCart={handleAddToCart} onOrderNow={handleOrderNow} />
 
-      {/* ── Society groups ── */}
       {SOCIETIES.map((society, si) => (
         <div key={society.id} className="society-group">
           <SocietyBanner society={society} />

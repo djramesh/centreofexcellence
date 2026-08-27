@@ -148,63 +148,9 @@
   flex-shrink: 0;
 }
 
-/* ══════════════════════════════════════════════════════
-   LIGHTBOX
-══════════════════════════════════════════════════════ */
-@keyframes lbFadeIn  { from { opacity: 0; } to { opacity: 1; } }
-@keyframes lbScaleIn { from { opacity: 0; transform: scale(0.82); } to { opacity: 1; transform: scale(1); } }
-
-.lb-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(10, 15, 30, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  animation: lbFadeIn 0.22s ease;
-  cursor: pointer;
-}
-
-.lb-close {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(6px);
-  color: #fff;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.18s, transform 0.15s;
-  z-index: 10000;
-  line-height: 1;
-}
-
-.lb-close:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.12);
-}
-
-.lb-img {
-  max-width: 90vw;
-  max-height: 85vh;
-  border-radius: 16px;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55);
-  object-fit: contain;
-  animation: lbScaleIn 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: default;
-  user-select: none;
-}
+/* Lightbox styles moved to components/common/ImageLightbox.css — the shared
+   viewer owns the .lb-* namespace now. Duplicating them here made the two
+   definitions fight depending on CSS bundle order. */
 
 /* ══════════════════════════════════════════════════════
    EXISTING STYLES (unchanged)
@@ -475,3 +421,142 @@
   .lb-img { border-radius: 10px; }
   .admin-form-row--3 { grid-template-columns: 1fr 1fr; }
 }
+/* ══════════════════════════════════════════════════════
+   Gallery manager, notices and table polish
+══════════════════════════════════════════════════════ */
+
+.ap-id { color: #94a3b8; font-size: 0.8rem; font-weight: 600; }
+.ap-dims { font-size: 0.8rem; white-space: nowrap; }
+.ap-unset { opacity: 0.4; }
+.ap-empty-row { text-align: center; padding: 2.5rem; color: #94a3b8; }
+
+/* The thumbnail cell is a real button now, for keyboard access. */
+.ap-thumb-wrap { border: none; padding: 0; cursor: zoom-in; }
+.ap-thumb-wrap:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.ap-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Badge showing how many photos a product has. */
+.ap-thumb-count {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+}
+
+.admin-notice {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.admin-field-hint {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+.admin-stock-low {
+  border-color: #fbbf24 !important;
+  background: #fffbeb;
+  color: #b45309;
+  font-weight: 600;
+}
+
+/* ── Gallery manager ── */
+.pg {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #f8fafc;
+}
+.pg-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem; }
+.pg-title { font-size: 0.86rem; font-weight: 700; color: #0f172a; }
+.pg-count { font-size: 0.74rem; font-weight: 600; color: #64748b; }
+.pg-hint { font-size: 0.76rem; line-height: 1.6; color: #64748b; margin-bottom: 0.85rem; }
+.pg-error { margin-bottom: 0.85rem; }
+.pg-loading, .pg-empty { font-size: 0.8rem; color: #94a3b8; padding: 0.5rem 0; }
+
+.pg-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1.25rem;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.16s, background 0.16s;
+}
+.pg-drop:hover, .pg-drop-over { border-color: #2563eb; background: #eff6ff; }
+.pg-drop-busy { opacity: 0.6; cursor: progress; }
+.pg-drop:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.pg-drop-icon { font-size: 1.6rem; line-height: 1; }
+.pg-drop-text { font-size: 0.84rem; font-weight: 600; color: #334155; }
+.pg-drop-sub  { font-size: 0.72rem; color: #94a3b8; }
+
+.pg-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 0.75rem;
+  margin: 0.9rem 0 0;
+  padding: 0;
+}
+.pg-item {
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+.pg-item-primary { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
+
+.pg-thumb { position: relative; aspect-ratio: 1; background: #eef3ff; }
+.pg-thumb img, .pg-thumb-ph { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pg-primary-flag {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pg-item-actions { display: flex; border-top: 1px solid #e2e8f0; }
+.pg-item-actions button {
+  flex: 1;
+  padding: 5px 0;
+  border: 0;
+  border-right: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s;
+}
+.pg-item-actions button:last-child { border-right: 0; }
+.pg-item-actions button:hover:not(:disabled) { background: #eff6ff; color: #2563eb; }
+.pg-item-actions button:disabled { opacity: 0.3; cursor: not-allowed; }
+.pg-item-actions .pg-danger:hover:not(:disabled) { background: #fef2f2; color: #dc2626; }

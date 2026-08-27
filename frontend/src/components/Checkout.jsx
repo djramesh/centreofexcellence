@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { createOrder, verifyPayment } from "../api/checkout";
-import { HiLocationMarker, HiPhone, HiMail, HiShoppingBag, HiCheckCircle, HiCreditCard } from "react-icons/hi";
+import { HiLocationMarker, HiShoppingBag, HiCheckCircle, HiCreditCard } from "react-icons/hi";
+import SmartImage from "./common/SmartImage";
 import "./Checkout.css";
 
 const Checkout = () => {
@@ -43,6 +44,7 @@ const Checkout = () => {
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
+      if (window.Razorpay) return resolve(true);
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.onload  = () => resolve(true);
@@ -56,25 +58,39 @@ const Checkout = () => {
       setError("Please fill all required address fields");
       return;
     }
+    if (!/^[1-9][0-9]{5}$/.test(address.pincode.trim())) {
+      setError("Please enter a valid 6-digit pincode");
+      return;
+    }
 
     setLoading(true); setError("");
 
     try {
+      // Prices are not sent: the server recomputes every amount from the
+      // products table and returns the authoritative total.
       const orderResponse = await createOrder({
-        items: items.map(item => ({ productId: item.id, quantity: item.quantity, price: item.price || 0 })),
+        items: items.map(item => ({ productId: item.id, quantity: item.quantity })),
         address,
-        totalAmount: total,
       });
 
-      const { razorpayOrderId, orderId } = orderResponse;
+      const { razorpayOrderId, orderId, keyId, amount, currency } = orderResponse;
 
       const razorpayLoaded = await loadRazorpayScript();
-      if (!razorpayLoaded) { setError("Failed to load payment gateway"); setLoading(false); return; }
+      if (!razorpayLoaded) {
+        setError("Could not load the payment gateway. Please check your connection and try again.");
+        setLoading(false);
+        return;
+      }
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: total * 100,
-        currency: "INR",
+        /* The key comes from the server. This used to read
+           import.meta.env.VITE_RAZORPAY_KEY_ID, which was never defined in
+           .env.example — so Razorpay opened with an undefined key and checkout
+           failed silently. */
+        key: keyId,
+        // Server-side paise amount, so what is charged always matches the order.
+        amount,
+        currency: currency || "INR",
         name: "Shristi & Prerana Co-operative",
         description: `Order #${orderId}`,
         order_id: razorpayOrderId,
@@ -91,7 +107,11 @@ const Checkout = () => {
             if (!buyNowItem) clearCart();
             navigate(`/orders/${orderId}`, { state: { success: true, orderId } });
           } catch (err) {
-            setError(err?.data?.message || "Payment verification failed. Please contact support.");
+            setError(
+              err.message ||
+              "We could not confirm your payment. If money left your account, contact us with order number " +
+              orderId + "."
+            );
             setLoading(false);
           }
         },
@@ -101,9 +121,13 @@ const Checkout = () => {
       };
 
       const razorpay = new window.Razorpay(options);
+      razorpay.on("payment.failed", (response) => {
+        setError(response?.error?.description || "The payment did not go through. Please try again.");
+        setLoading(false);
+      });
       razorpay.open();
     } catch (err) {
-      setError(err?.data?.message || "Failed to create order. Please try again.");
+      setError(err.message || "Could not start checkout. Please try again.");
       setLoading(false);
     }
   };
@@ -231,10 +255,13 @@ const Checkout = () => {
               {items.map((item, idx) => (
                 <div key={item.id} className="order-item" style={{ animationDelay: `${0.25 + idx * 0.05}s` }}>
                   <div className="order-item-img-wrap">
-                    <img
-                      src={item.imgSrc || item.thumbnail_url || "/placeholder.jpg"}
+                    {/* SmartImage resolves the right host and falls back to a
+                        placeholder; the old /placeholder.jpg does not exist. */}
+                    <SmartImage
+                      src={item.thumbnail_url || item.imgSrc}
                       alt={item.title || item.name}
                       className="order-item-img"
+                      wrapperClassName="order-item-img-ph"
                     />
                   </div>
                   <div className="order-item-details">

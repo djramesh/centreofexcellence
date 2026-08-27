@@ -629,3 +629,90 @@
   .society-banner-inner { flex-direction: column; align-items: center; }
   .society-banner-tags  { justify-content: center; }
 }
+/* ═══════════════════════════════════════════════════════════════════
+   Stock state, skeletons and toast
+   Added alongside the linkable product cards.
+═══════════════════════════════════════════════════════════════════ */
+
+/* The card is now an <a>, so strip link styling and keep colours inherited. */
+.pc-card { text-decoration: none; color: inherit; display: block; }
+.pc-card:focus-visible { outline: 2px solid #2484ff; outline-offset: 3px; }
+
+.pc-card-out .pc-img { filter: grayscale(0.55) opacity(0.75); }
+
+.pc-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #eef3ff, #f6f8ff);
+  color: #94a3b8;
+}
+
+.pc-badge-low {
+  background: rgba(217,119,6,0.95) !important;
+  color: #fff !important;
+}
+.pc-badge-out {
+  background: rgba(220,38,38,0.95) !important;
+  color: #fff !important;
+}
+
+.pc-action-btn:disabled,
+.pc-btn-ghost:disabled,
+.pc-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Loading skeleton ── */
+@keyframes pcShimmer { to { background-position: -200% 0; } }
+.pc-skeleton {
+  height: 340px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #eaeffb 25%, #dee7ff 50%, #eaeffb 75%);
+  background-size: 200% 100%;
+  animation: pcShimmer 1.5s infinite;
+}
+
+/* ── "Added to cart" toast ── */
+@keyframes pcToastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(14px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.pc-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 900;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: #14351f;
+  color: #d7f5e3;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.86rem;
+  font-weight: 500;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.28);
+  animation: pcToastIn 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 620px) {
+  .pc-toast { left: 12px; right: 12px; bottom: 84px; transform: none; justify-content: center; }
+  @keyframes pcToastIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-skeleton, .pc-toast { animation: none; }
+}

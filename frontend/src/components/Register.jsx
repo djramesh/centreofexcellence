@@ -1,12 +1,21 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./Common.css";
 import "./Login.css";
 
+/** Mirrors the server's rule so the user is told before the round-trip. */
+const PASSWORD_RULES = [
+  { test: (p) => p.length >= 8, label: "At least 8 characters" },
+  { test: (p) => /[a-zA-Z]/.test(p), label: "Contains a letter" },
+  { test: (p) => /[0-9]/.test(p), label: "Contains a number" },
+];
+
 const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from;
 
   const [form, setForm] = useState({
     name: "",
@@ -14,6 +23,7 @@ const Register = () => {
     phone: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -21,19 +31,25 @@ const Register = () => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const passwordChecks = PASSWORD_RULES.map((rule) => ({
+    ...rule,
+    passed: rule.test(form.password),
+  }));
+  const passwordValid = passwordChecks.every((check) => check.passed);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!passwordValid) {
+      setError("Please choose a password that meets all the requirements.");
+      return;
+    }
     setSubmitting(true);
     setError("");
     try {
       await register(form);
-      navigate("/");
+      navigate(from || "/", { replace: true });
     } catch (err) {
-      const msg =
-        err?.data?.message ||
-        err?.data?.errors?.[0]?.msg ||
-        "Registration failed. Please check your details.";
-      setError(msg);
+      setError(err.message || "Registration failed. Please check your details.");
     } finally {
       setSubmitting(false);
     }
@@ -80,16 +96,40 @@ const Register = () => {
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="auth-password-wrap">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={form.password}
+                onChange={handleChange}
+                autoComplete="new-password"
+                required
+              />
+              <button
+                type="button"
+                className="auth-password-toggle"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            {form.password && (
+              <ul className="auth-password-rules">
+                {passwordChecks.map((check) => (
+                  <li key={check.label} className={check.passed ? "rule-ok" : "rule-pending"}>
+                    {check.passed ? "✓" : "○"} {check.label}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-          <button className="button auth-submit" type="submit" disabled={submitting}>
+          <button
+            className="button auth-submit"
+            type="submit"
+            disabled={submitting || !passwordValid}
+          >
             {submitting ? "Creating account..." : "Sign up"}
           </button>
         </form>
